@@ -11,7 +11,7 @@ const changeNode = (e: any, stroke: string, fill: string) => {
 };
 const eventListener = (id: string) => {
   d3.selectAll(".node").on("mouseenter", (e) => {
-    changeNode(e, "#000", "#fff");
+    changeNode(e, "#0066ff", "#fff");
     const x = e.target.getAttribute("x");
     const y = e.target.getAttribute("y");
     d3.select(`#${id}`).attr("x", x).attr("y", y);
@@ -106,7 +106,7 @@ const Main = () => {
           .attr("y", node.getY())
           .attr("fill", node.getColor())
           .attr("stroke-width", 0.2)
-          .attr("stroke", "#000")
+          .attr("stroke", "#0066ff")
           .on("mousedown", (e) => {
             const clickNodeX = e.target.getAttribute("x");
             const clickNodeY = e.target.getAttribute("y");
@@ -131,12 +131,12 @@ const Main = () => {
                   (x === startNode.getAttribute("x") &&
                     y === startNode.getAttribute("y"))
                 ) {
-                  changeNode(e, "#000", "#fff");
+                  changeNode(e, "#0066ff", "#fff");
                 } else {
-                  changeNode(e, "#fff", "#000");
+                  changeNode(e, "#fff", "#272343");
                 }
               });
-              changeNode(e, "#fff", "#000");
+              changeNode(e, "#fff", "#272343");
             }
           })
           .on("mouseup", () => {
@@ -189,7 +189,7 @@ const Main = () => {
       .attr("stroke", "currentColor")
       .attr("fill", "currentColor")
       .attr("stroke-width", 0)
-      .attr("viewBox", "0 0 24 24")
+      .attr("viewBox", "0 0 16 16")
       .attr("width", nodeWidth)
       .attr("height", nodeHeight)
       .attr("x", endX)
@@ -199,19 +199,8 @@ const Main = () => {
       .append("path")
       .attr(
         "d",
-        "M13,4.069V2h-2v2.069C7.389,4.522,4.522,7.389,4.069,11H2v2h2.069c0.453,3.611,3.319,6.478,6.931,6.931V22h2v-2.069 c3.611-0.453,6.478-3.319,6.931-6.931H22v-2h-2.069C19.478,7.389,16.611,4.522,13,4.069z M12,18c-3.309,0-6-2.691-6-6s2.691-6,6-6 s6,2.691,6,6S15.309,18,12,18z"
+        "M16 7h-1.577c-0.432-2.785-2.638-4.991-5.423-5.423v-1.577h-2v1.577c-2.785 0.432-4.991 2.638-5.423 5.423h-1.577v2h1.577c0.432 2.785 2.638 4.991 5.423 5.423v1.577h2v-1.577c2.785-0.432 4.991-2.638 5.423-5.423h1.577v-2zM12.388 7h-1.559c-0.301-0.852-0.977-1.528-1.829-1.829v-1.559c1.68 0.383 3.005 1.708 3.388 3.388zM8 9c-0.552 0-1-0.448-1-1s0.448-1 1-1c0.552 0 1 0.448 1 1s-0.448 1-1 1zM7 3.612v1.559c-0.852 0.301-1.528 0.977-1.829 1.829h-1.559c0.383-1.68 1.708-3.005 3.388-3.388zM3.612 9h1.559c0.301 0.852 0.977 1.528 1.829 1.829v1.559c-1.68-0.383-3.005-1.708-3.388-3.388zM9 12.388v-1.559c0.852-0.301 1.528-0.977 1.829-1.829h1.559c-0.383 1.68-1.708 3.005-3.388 3.388z"
       )
-      .on("mousedown", () => {
-        eventListener("end");
-      })
-      .on("mouseup", () => {
-        d3.selectAll(".node").on("mouseenter", null);
-      });
-    d3.select("#end")
-      .append("circle")
-      .attr("cx", 12)
-      .attr("cy", 12)
-      .attr("r", 3)
       .on("mousedown", () => {
         eventListener("end");
       })
