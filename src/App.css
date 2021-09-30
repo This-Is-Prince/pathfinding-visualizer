@@ -31,21 +31,6 @@ body {
   font-size: 1.5rem;
   cursor: pointer;
 }
-.example {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-}
-.svg {
-  background-color: red;
-}
-#arrow {
-  font-size: 2rem;
-  color: blue;
-  background-color: green;
-}
 
 /* 
 ================
@@ -81,7 +66,6 @@ MAIN CSS
 }
 .node {
   stroke-width: 0.1;
-  fill: aqua;
   stroke: black;
 }
 
