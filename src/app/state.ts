@@ -50,6 +50,8 @@ export interface AppStateType {
   svg: SVGStateType;
   nodeInfo: NodeInfoType;
   nodeMaxWidth: number;
+  isPlay: boolean;
+  isSettingsOpen: boolean;
 }
 
 const AppInitialState: AppStateType = {
@@ -57,6 +59,8 @@ const AppInitialState: AppStateType = {
   svg: { self: undefined, height: 0, width: 0 },
   nodeInfo: { column: 0, row: 0, height: 0, nodes: [], width: 0 },
   nodeMaxWidth: 25,
+  isPlay: false,
+  isSettingsOpen: false,
 };
 
 export default AppInitialState;

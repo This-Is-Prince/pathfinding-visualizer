@@ -3,7 +3,8 @@ import { AppStateType, NodeInfoType, SVGStateType } from "./state";
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
   | { type: "CHANGE_SVG"; payload: SVGStateType }
-  | { type: "ADD_NODES"; payload: NodeInfoType };
+  | { type: "ADD_NODES"; payload: NodeInfoType }
+  | { type: "OPEN_SETTINGS"; payload: boolean };
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
   switch (action.type) {
@@ -17,6 +18,12 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       return {
         ...state,
         svg: action.payload,
+      };
+    }
+    case "OPEN_SETTINGS": {
+      return {
+        ...state,
+        isSettingsOpen: action.payload,
       };
     }
     case "ADD_NODES": {
