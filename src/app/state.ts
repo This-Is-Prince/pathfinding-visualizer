@@ -1,5 +1,9 @@
-export interface AppStateType {}
+export interface AppStateType {
+  isFullScreen: boolean;
+}
 
-const AppInitialState = {};
+const AppInitialState: AppStateType = {
+  isFullScreen: false,
+};
 
 export default AppInitialState;

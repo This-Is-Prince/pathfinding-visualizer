@@ -5,6 +5,122 @@
   padding: 0;
   box-sizing: border-box;
 }
+:root {
+  --fullscreen-modal-z-index: 100;
+  /* color */
+  --clr-pri: #0066ff;
+  --clr-sec: #002233;
+}
 body {
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.btn {
+  text-transform: capitalize;
+  font-variant: small-caps;
+  letter-spacing: 0.2rem;
+  border: none;
+  background-color: transparent;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.example {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+.svg {
+  background-color: red;
+}
+#arrow {
+  font-size: 2rem;
+  color: blue;
+  background-color: green;
+}
+
+/* 
+================
+ROOT CSS
+================
+*/
+#root {
+  --width: 50px;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: var(--width) 1fr;
+}
+/* 
+================
+ASIDE CSS
+================
+*/
+.aside {
+  width: var(--width);
+  background-color: blue;
+}
+
+/* 
+================
+MAIN CSS
+================
+*/
+.main {
+  width: calc(100vw - var(--width));
+  height: 100vh;
+}
+.node {
+  stroke-width: 0.1;
+  fill: aqua;
+  stroke: black;
+}
+
+/* 
+================
+FULLSCREEN MODAL CSS
+================
+*/
+.fullscreen-modal {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: var(--fullscreen-modal-z-index);
+  background: url("./assets/phone-modal-bg.svg") no-repeat center;
+  background-size: cover;
+}
+.fullscreen-modal__btn {
+  background-color: var(--clr-sec);
+  color: var(--clr-pri);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+  border: 0.1rem solid var(--clr-sec);
+  font-weight: 600;
+  transition: background-color 0.3s linear, color 0.3s linear;
+}
+.fullscreen-modal__btn:hover {
+  background-color: transparent;
+  color: var(--clr-sec);
+}
+
+@media screen and (min-width: 768px) {
+  .fullscreen-modal__btn {
+    padding: 0.75rem 1.25rem;
+    border: 0.2rem solid var(--clr-sec);
+  }
+  .fullscreen-modal {
+    background: url("./assets/modal-bg.svg") no-repeat center;
+    background-size: cover;
+  }
 }
