@@ -49,12 +49,14 @@ export interface AppStateType {
   isFullScreenModelOpen: boolean;
   svg: SVGStateType;
   nodeInfo: NodeInfoType;
+  nodeMaxWidth: number;
 }
 
 const AppInitialState: AppStateType = {
   isFullScreenModelOpen: true,
   svg: { self: undefined, height: 0, width: 0 },
   nodeInfo: { column: 0, row: 0, height: 0, nodes: [], width: 0 },
+  nodeMaxWidth: 25,
 };
 
 export default AppInitialState;

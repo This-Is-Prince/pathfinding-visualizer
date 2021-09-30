@@ -50,12 +50,12 @@ const Main = () => {
       row = false,
       column = false;
     while (true) {
-      if (width / noOfNodesInColumn >= 20) {
+      if (width / noOfNodesInColumn >= AppState.nodeMaxWidth) {
         noOfNodesInColumn++;
       } else {
         row = true;
       }
-      if (height / noOfNodesInRow >= 20) {
+      if (height / noOfNodesInRow >= AppState.nodeMaxWidth) {
         noOfNodesInRow++;
       } else {
         column = true;
@@ -133,10 +133,10 @@ const Main = () => {
                 ) {
                   changeNode(e, "#0066ff", "#fff");
                 } else {
-                  changeNode(e, "#fff", "#272343");
+                  changeNode(e, "#fff", "#002233");
                 }
               });
-              changeNode(e, "#fff", "#272343");
+              changeNode(e, "#fff", "#002233");
             }
           })
           .on("mouseup", () => {

@@ -6,8 +6,6 @@ import AppInitialState from "./app/state";
 import Main from "./components/Main";
 import Aside from "./components/Aside";
 import Modal from "./components/modal/Modal";
-import { ImTarget } from "react-icons/im";
-
 const App = () => {
   const [AppState, dispatch] = useReducer(reducer, AppInitialState);
   const checkScreen = () => {
