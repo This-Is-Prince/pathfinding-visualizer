@@ -69,11 +69,10 @@ MAIN CSS
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
   border: 1px solid var(--clr-pri);
 }
-#start {
-  color: var(--clr-pri);
-}
+#start,
 #end {
   color: var(--clr-pri);
+  cursor: pointer;
 }
 /* 
 ================

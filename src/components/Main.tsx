@@ -2,8 +2,25 @@ import React, { useContext, useEffect, useRef } from "react";
 import * as d3 from "d3";
 import AppContext from "../app/AppContext";
 import { Node } from "../app/state";
+
+const changeNode = (e: any, stroke: string, fill: string) => {
+  d3.select(`#${e.target.getAttribute("id")}`)
+    .attr("stroke-width", 0.2)
+    .attr("stroke", stroke)
+    .attr("fill", fill);
+};
+const eventListener = (id: string) => {
+  d3.selectAll(".node").on("mouseenter", (e) => {
+    changeNode(e, "#000", "#fff");
+    const x = e.target.getAttribute("x");
+    const y = e.target.getAttribute("y");
+    d3.select(`#${id}`).attr("x", x).attr("y", y);
+  });
+};
+
 const Main = () => {
   const { AppState, dispatch } = useContext(AppContext);
+  // main reference
   const mainRef = useRef<HTMLElement>({} as HTMLElement);
   const updateSize = () => {
     // height width of main element
@@ -91,38 +108,38 @@ const Main = () => {
           .attr("stroke-width", 0.2)
           .attr("stroke", "#000")
           .on("mousedown", (e) => {
-            const x = e.target.getAttribute("x");
-            const y = e.target.getAttribute("y");
-            const start = document.getElementById("start")!;
-            const end = document.getElementById("end")!;
+            const clickNodeX = e.target.getAttribute("x");
+            const clickNodeY = e.target.getAttribute("y");
+            const startNode = document.getElementById("start")!;
+            const endNode = document.getElementById("end")!;
+            const allNodes = d3.selectAll(".node");
+
             if (
-              (x === start.getAttribute("x") &&
-                y === start.getAttribute("y")) ||
-              (x === end.getAttribute("x") && y === end.getAttribute("y"))
+              !(
+                (clickNodeX === endNode.getAttribute("x") &&
+                  clickNodeY === endNode.getAttribute("y")) ||
+                (clickNodeX === startNode.getAttribute("x") &&
+                  clickNodeY === startNode.getAttribute("y"))
+              )
             ) {
-            } else {
-              d3.select(`#${e.target.getAttribute("id")}`)
-                .attr("stroke-width", 0.2)
-                .attr("stroke", "#fff")
-                .attr("fill", "#000");
+              allNodes.on("mouseenter", (e) => {
+                const x = e.target.getAttribute("x");
+                const y = e.target.getAttribute("y");
+                if (
+                  (x === endNode.getAttribute("x") &&
+                    y === endNode.getAttribute("y")) ||
+                  (x === startNode.getAttribute("x") &&
+                    y === startNode.getAttribute("y"))
+                ) {
+                  changeNode(e, "#000", "#fff");
+                } else {
+                  changeNode(e, "#fff", "#000");
+                }
+              });
+              changeNode(e, "#fff", "#000");
             }
-            d3.selectAll(".node").on("mouseenter", (e) => {
-              const x = e.target.getAttribute("x");
-              const y = e.target.getAttribute("y");
-              if (
-                (x === start.getAttribute("x") &&
-                  y === start.getAttribute("y")) ||
-                (x === end.getAttribute("x") && y === end.getAttribute("y"))
-              ) {
-              } else {
-                d3.select(`#${e.target.getAttribute("id")}`)
-                  .attr("stroke-width", 0.2)
-                  .attr("stroke", "#fff")
-                  .attr("fill", "#000");
-              }
-            });
           })
-          .on("mouseup", (e) => {
+          .on("mouseup", () => {
             d3.selectAll(".node").on("mouseenter", null);
           });
         nodes.push(node);
@@ -159,7 +176,10 @@ const Main = () => {
         "M256 8c137 0 248 111 248 248S393 504 256 504 8 393 8 256 119 8 256 8zM140 300h116v70.9c0 10.7 13 16.1 20.5 8.5l114.3-114.9c4.7-4.7 4.7-12.2 0-16.9l-114.3-115c-7.6-7.6-20.5-2.2-20.5 8.5V212H140c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12z"
       )
       .on("mousedown", () => {
-        console.log("hi");
+        eventListener("start");
+      })
+      .on("mouseup", () => {
+        d3.selectAll(".node").on("mouseenter", null);
       });
 
     // adding target node
@@ -180,12 +200,24 @@ const Main = () => {
       .attr(
         "d",
         "M13,4.069V2h-2v2.069C7.389,4.522,4.522,7.389,4.069,11H2v2h2.069c0.453,3.611,3.319,6.478,6.931,6.931V22h2v-2.069 c3.611-0.453,6.478-3.319,6.931-6.931H22v-2h-2.069C19.478,7.389,16.611,4.522,13,4.069z M12,18c-3.309,0-6-2.691-6-6s2.691-6,6-6 s6,2.691,6,6S15.309,18,12,18z"
-      );
+      )
+      .on("mousedown", () => {
+        eventListener("end");
+      })
+      .on("mouseup", () => {
+        d3.selectAll(".node").on("mouseenter", null);
+      });
     d3.select("#end")
       .append("circle")
       .attr("cx", 12)
       .attr("cy", 12)
-      .attr("r", 3);
+      .attr("r", 3)
+      .on("mousedown", () => {
+        eventListener("end");
+      })
+      .on("mouseup", () => {
+        d3.selectAll(".node").on("mouseenter", null);
+      });
   };
   useEffect(() => {
     updateSize();
