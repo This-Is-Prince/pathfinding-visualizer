@@ -7,8 +7,8 @@ const Main = () => {
   const mainRef = useRef<HTMLElement>({} as HTMLElement);
   const updateSize = () => {
     // height width of main element
-    let width = mainRef.current.getBoundingClientRect().width;
-    let height = mainRef.current.getBoundingClientRect().height;
+    let width = mainRef.current.getBoundingClientRect().width - 20;
+    let height = mainRef.current.getBoundingClientRect().height - 20;
 
     // removing svg nodes-container
     d3.select("#nodes-container").remove();
@@ -87,7 +87,44 @@ const Main = () => {
           .attr("id", node.getID())
           .attr("x", node.getX())
           .attr("y", node.getY())
-          .attr("fill", node.getColor());
+          .attr("fill", node.getColor())
+          .attr("stroke-width", 0.2)
+          .attr("stroke", "#000")
+          .on("mousedown", (e) => {
+            const x = e.target.getAttribute("x");
+            const y = e.target.getAttribute("y");
+            const start = document.getElementById("start")!;
+            const end = document.getElementById("end")!;
+            if (
+              (x === start.getAttribute("x") &&
+                y === start.getAttribute("y")) ||
+              (x === end.getAttribute("x") && y === end.getAttribute("y"))
+            ) {
+            } else {
+              d3.select(`#${e.target.getAttribute("id")}`)
+                .attr("stroke-width", 0.2)
+                .attr("stroke", "#fff")
+                .attr("fill", "#000");
+            }
+            d3.selectAll(".node").on("mouseenter", (e) => {
+              const x = e.target.getAttribute("x");
+              const y = e.target.getAttribute("y");
+              if (
+                (x === start.getAttribute("x") &&
+                  y === start.getAttribute("y")) ||
+                (x === end.getAttribute("x") && y === end.getAttribute("y"))
+              ) {
+              } else {
+                d3.select(`#${e.target.getAttribute("id")}`)
+                  .attr("stroke-width", 0.2)
+                  .attr("stroke", "#fff")
+                  .attr("fill", "#000");
+              }
+            });
+          })
+          .on("mouseup", (e) => {
+            d3.selectAll(".node").on("mouseenter", null);
+          });
         nodes.push(node);
       }
     }
@@ -120,7 +157,10 @@ const Main = () => {
       .attr(
         "d",
         "M256 8c137 0 248 111 248 248S393 504 256 504 8 393 8 256 119 8 256 8zM140 300h116v70.9c0 10.7 13 16.1 20.5 8.5l114.3-114.9c4.7-4.7 4.7-12.2 0-16.9l-114.3-115c-7.6-7.6-20.5-2.2-20.5 8.5V212H140c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12z"
-      );
+      )
+      .on("mousedown", () => {
+        console.log("hi");
+      });
 
     // adding target node
     d3.select("#nodes-container")
@@ -154,7 +194,7 @@ const Main = () => {
       window.removeEventListener("resize", updateSize);
     };
   }, []);
-  return <main ref={mainRef} className="main"></main>;
+  return <main ref={mainRef} className="main flex-center"></main>;
 };
 
 export default Main;
