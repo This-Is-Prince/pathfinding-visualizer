@@ -4,7 +4,8 @@ export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
   | { type: "CHANGE_SVG"; payload: SVGStateType }
   | { type: "ADD_NODES"; payload: NodeInfoType }
-  | { type: "OPEN_SETTINGS"; payload: boolean };
+  | { type: "OPEN_SETTINGS"; payload: boolean }
+  | { type: "CHANGE_PHONE"; payload: boolean };
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
   switch (action.type) {
@@ -24,6 +25,12 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       return {
         ...state,
         isSettingsOpen: action.payload,
+      };
+    }
+    case "CHANGE_PHONE": {
+      return {
+        ...state,
+        isPhone: action.payload,
       };
     }
     case "ADD_NODES": {

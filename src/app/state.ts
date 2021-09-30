@@ -52,6 +52,7 @@ export interface AppStateType {
   nodeMaxWidth: number;
   isPlay: boolean;
   isSettingsOpen: boolean;
+  isPhone: boolean;
 }
 
 const AppInitialState: AppStateType = {
@@ -61,6 +62,7 @@ const AppInitialState: AppStateType = {
   nodeMaxWidth: 25,
   isPlay: false,
   isSettingsOpen: false,
+  isPhone: false,
 };
 
 export default AppInitialState;

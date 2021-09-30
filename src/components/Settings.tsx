@@ -1,14 +1,23 @@
 import React, { useContext, useEffect } from "react";
-import { FaRegTimesCircle } from "react-icons/fa";
+import { IoMdSpeedometer } from "react-icons/io";
+import {
+  FaSitemap,
+  FaRegTimesCircle,
+  FaBomb,
+  FaChessBoard,
+} from "react-icons/fa";
+import { GiMaze, GiBrickWall, GiPathDistance } from "react-icons/gi";
 import AppContext from "../app/AppContext";
 
 const Settings = () => {
   const { AppState, dispatch } = useContext(AppContext);
   return (
     <section
-      className={`settings ${AppState.isSettingsOpen ? "settings--open" : ""}`}
+      className={`settings-section  ${
+        AppState.isSettingsOpen ? "settings--open" : ""
+      }`}
     >
-      <header className="settings__header">
+      <header className="settings-section__header">
         <h2 className="settings__heading">Settings</h2>
         <button
           className="btn settings__close-btn flex-center"
@@ -19,6 +28,53 @@ const Settings = () => {
           <FaRegTimesCircle />
         </button>
       </header>
+      <section className="settings-section__content">
+        <aside className="settings-types">
+          <button className="btn setting-btn ">
+            <span className="flex-center">
+              <FaSitemap />
+            </span>
+            <span>Algorithm</span>
+          </button>
+          <button className="btn setting-btn ">
+            <span className="flex-center">
+              <IoMdSpeedometer />
+            </span>
+            <span>Speed</span>
+          </button>
+          <button className="btn setting-btn ">
+            <span className="flex-center">
+              <FaBomb />
+            </span>
+            <span>Add Bomb</span>
+          </button>
+          <button className="btn setting-btn ">
+            <span className="flex-center">
+              <FaChessBoard />
+            </span>
+            <span>Clear Board</span>
+          </button>
+          <button className="btn setting-btn ">
+            <span className="flex-center">
+              <GiPathDistance />
+            </span>
+            <span>Clear Path</span>
+          </button>
+          <button className="btn setting-btn ">
+            <span className="flex-center">
+              <GiMaze />
+            </span>
+            <span>Mazes & Patterns</span>
+          </button>
+          <button className="btn setting-btn ">
+            <span className="flex-center">
+              <GiBrickWall />
+            </span>
+            <span>Clear Walls & Weights</span>
+          </button>
+        </aside>
+        <div className="settings"></div>
+      </section>
     </section>
   );
 };
