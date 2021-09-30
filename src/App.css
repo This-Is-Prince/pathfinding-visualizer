@@ -172,7 +172,7 @@ MENU CSS
   height: calc(100vh - 27.2px);
   scrollbar-width: thin;
   scrollbar-color: var(--clr-yellow) transparent;
-  padding: 2rem 0 2rem 1rem;
+  padding: 1rem 0 2rem 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

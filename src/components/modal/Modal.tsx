@@ -17,7 +17,6 @@ const Modal = () => {
         ) {
           await fullScreenCheck();
           await screen.orientation.lock("landscape");
-          dispatch({ type: "CHANGE_PHONE", payload: true });
         }
         dispatch({ type: "CHANGE_FULLSCREEN_MODEL", payload: false });
       } catch (error) {

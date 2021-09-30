@@ -136,6 +136,7 @@ const Main = () => {
                   changeNode(e, "#fff", "#002233");
                 }
               });
+
               changeNode(e, "#fff", "#002233");
             }
           })
@@ -215,6 +216,10 @@ const Main = () => {
       window.removeEventListener("resize", updateSize);
     };
   }, []);
+  useEffect(() => {
+    d3.selectAll(".node").on("mouseenter", null);
+    updateSize();
+  }, [AppState.isBoardClear]);
   return <main ref={mainRef} className="main flex-center"></main>;
 };
 

@@ -52,7 +52,8 @@ export interface AppStateType {
   nodeMaxWidth: number;
   isPlay: boolean;
   isSettingsOpen: boolean;
-  isPhone: boolean;
+  isBoardClear: boolean;
+  isBoardDirty: boolean;
 }
 
 const AppInitialState: AppStateType = {
@@ -62,7 +63,8 @@ const AppInitialState: AppStateType = {
   nodeMaxWidth: 25,
   isPlay: false,
   isSettingsOpen: false,
-  isPhone: false,
+  isBoardClear: false,
+  isBoardDirty: false,
 };
 
 export default AppInitialState;

@@ -5,7 +5,8 @@ export type ActionType =
   | { type: "CHANGE_SVG"; payload: SVGStateType }
   | { type: "ADD_NODES"; payload: NodeInfoType }
   | { type: "OPEN_SETTINGS"; payload: boolean }
-  | { type: "CHANGE_PHONE"; payload: boolean };
+  | { type: "CLEAR_BOARD"; payload: boolean }
+  | { type: "IS_BOARD_DIRTY"; payload: boolean };
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
   switch (action.type) {
@@ -27,10 +28,16 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         isSettingsOpen: action.payload,
       };
     }
-    case "CHANGE_PHONE": {
+    case "IS_BOARD_DIRTY": {
       return {
         ...state,
-        isPhone: action.payload,
+        isBoardDirty: action.payload,
+      };
+    }
+    case "CLEAR_BOARD": {
+      return {
+        ...state,
+        isBoardClear: action.payload,
       };
     }
     case "ADD_NODES": {

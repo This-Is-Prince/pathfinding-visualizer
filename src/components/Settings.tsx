@@ -5,8 +5,9 @@ import {
   FaRegTimesCircle,
   FaBomb,
   FaChessBoard,
+  FaWeightHanging,
 } from "react-icons/fa";
-import { GiMaze, GiBrickWall, GiPathDistance } from "react-icons/gi";
+import { GiMaze, GiBrickWall, GiPathDistance, GiWeight } from "react-icons/gi";
 import AppContext from "../app/AppContext";
 
 const Settings = () => {
@@ -32,6 +33,12 @@ const Settings = () => {
         <aside className="settings-types">
           <button className="btn setting-btn ">
             <span className="flex-center">
+              <GiMaze />
+            </span>
+            <span>Mazes & Patterns</span>
+          </button>
+          <button className="btn setting-btn ">
+            <span className="flex-center">
               <FaSitemap />
             </span>
             <span>Algorithm</span>
@@ -44,11 +51,19 @@ const Settings = () => {
           </button>
           <button className="btn setting-btn ">
             <span className="flex-center">
-              <FaBomb />
+              <GiWeight />
             </span>
-            <span>Add Bomb</span>
+            <span>Add Weight</span>
           </button>
-          <button className="btn setting-btn ">
+          <button
+            className="btn setting-btn "
+            onClick={() => {
+              dispatch({
+                type: "CLEAR_BOARD",
+                payload: !AppState.isBoardClear,
+              });
+            }}
+          >
             <span className="flex-center">
               <FaChessBoard />
             </span>
@@ -62,15 +77,9 @@ const Settings = () => {
           </button>
           <button className="btn setting-btn ">
             <span className="flex-center">
-              <GiMaze />
-            </span>
-            <span>Mazes & Patterns</span>
-          </button>
-          <button className="btn setting-btn ">
-            <span className="flex-center">
               <GiBrickWall />
             </span>
-            <span>Clear Walls & Weights</span>
+            <span>Clear Walls</span>
           </button>
         </aside>
         <div className="settings"></div>
