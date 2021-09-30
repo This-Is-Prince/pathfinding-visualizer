@@ -1,14 +1,14 @@
 import React, { useContext, useEffect } from "react";
 import { IoMdSpeedometer } from "react-icons/io";
-import {
-  FaSitemap,
-  FaRegTimesCircle,
-  FaBomb,
-  FaChessBoard,
-  FaWeightHanging,
-} from "react-icons/fa";
+import { FaSitemap, FaRegTimesCircle, FaChessBoard } from "react-icons/fa";
 import { GiMaze, GiBrickWall, GiPathDistance, GiWeight } from "react-icons/gi";
 import AppContext from "../app/AppContext";
+import Modal from "./modal/Modal";
+
+export interface ModalType {
+  icon: any;
+  title: string;
+}
 
 const Settings = () => {
   const { AppState, dispatch } = useContext(AppContext);
@@ -41,7 +41,7 @@ const Settings = () => {
             <span className="flex-center">
               <FaSitemap />
             </span>
-            <span>Algorithm</span>
+            <span>Algorithms</span>
           </button>
           <button className="btn setting-btn ">
             <span className="flex-center">
@@ -82,7 +82,7 @@ const Settings = () => {
             <span>Clear Walls</span>
           </button>
         </aside>
-        <div className="settings"></div>
+        <Modal icon={<FaSitemap />} title="algorithms" />
       </section>
     </section>
   );

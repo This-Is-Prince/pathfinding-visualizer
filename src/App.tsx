@@ -5,7 +5,7 @@ import reducer from "./app/reducer";
 import AppInitialState from "./app/state";
 import Main from "./components/Main";
 import Aside from "./components/Aside";
-import Modal from "./components/modal/Modal";
+import FullScreenModal from "./components/modal/FullScreenModal";
 import Menu from "./components/Settings";
 const App = () => {
   const [AppState, dispatch] = useReducer(reducer, AppInitialState);
@@ -25,7 +25,7 @@ const App = () => {
   return (
     <AppContext.Provider value={{ AppState, dispatch }}>
       {AppState.isFullScreenModelOpen ? (
-        <Modal />
+        <FullScreenModal />
       ) : (
         <>
           <Aside />

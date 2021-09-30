@@ -4,6 +4,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--clr-yellow) transparent;
 }
 :root {
   --fullscreen-modal-z-index: 100;
@@ -157,21 +159,16 @@ MENU CSS
   display: grid;
   grid-template-columns: 300px 1fr;
 }
-.settings-types::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 6px;
 }
-.settings-types::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background-color: var(--clr-yellow);
   border-radius: 6px;
-}
-.settings {
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 1);
 }
 .settings-types {
   overflow: auto;
   height: calc(100vh - 27.2px);
-  scrollbar-width: thin;
-  scrollbar-color: var(--clr-yellow) transparent;
   padding: 1rem 0 2rem 1rem;
   display: flex;
   flex-direction: column;
@@ -191,4 +188,65 @@ MENU CSS
 .setting-btn > span:last-child {
   font-size: 1.2rem;
   font-variant: normal;
+}
+/* modal */
+.modal {
+  height: calc(100vh - 27.2px);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 1);
+  background: url("./assets/wave.svg") no-repeat center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+}
+.modal__header {
+  padding: 1rem;
+}
+.modal__heading {
+  display: flex;
+  gap: 2rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+@media screen and (min-height: 500px) {
+  .modal__heading {
+    padding: 2rem;
+    font-size: 1.5rem;
+  }
+}
+/* radio btn */
+.radio {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0.15rem solid var(--clr-yellow);
+  cursor: pointer;
+  position: relative;
+}
+.radio::before {
+  content: "";
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  background-color: var(--clr-yellow);
+  display: none;
+}
+.radio:checked::before {
+  display: block;
+}
+.modal__content {
+  flex-grow: 1;
+  overflow: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.radio-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.radio-container > p {
+  color: var(--clr-yellow);
 }
