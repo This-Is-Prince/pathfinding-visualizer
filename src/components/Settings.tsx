@@ -94,15 +94,30 @@ const Settings = () => {
           </button>
         </aside>
         {AppState.modalState.name === "mazes" ? (
-          <Modal>
+          <Modal
+            radioState={AppState.mazes}
+            handleChange={(e) => {
+              dispatch({ type: "CHANGE_MAZES", payload: e.target.value });
+            }}
+          >
             <GiMaze />
           </Modal>
         ) : AppState.modalState.name === "algorithm" ? (
-          <Modal>
+          <Modal
+            radioState={AppState.algorithm}
+            handleChange={(e) => {
+              dispatch({ type: "CHANGE_ALGORITHM", payload: e.target.value });
+            }}
+          >
             <FaSitemap />
           </Modal>
         ) : (
-          <Modal>
+          <Modal
+            radioState={AppState.speed}
+            handleChange={(e) => {
+              dispatch({ type: "CHANGE_SPEED", payload: e.target.value });
+            }}
+          >
             <IoMdSpeedometer />
           </Modal>
         )}

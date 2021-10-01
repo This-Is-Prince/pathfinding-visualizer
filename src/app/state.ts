@@ -67,6 +67,9 @@ export interface AppStateType {
   isBoardClear: boolean;
   isBoardDirty: boolean;
   modalState: ModalStateType;
+  speed: string;
+  algorithm: string;
+  mazes: string;
 }
 
 const AppInitialState: AppStateType = {
@@ -79,6 +82,9 @@ const AppInitialState: AppStateType = {
   isBoardClear: false,
   isBoardDirty: false,
   modalState: mazesPatterns,
+  speed: "normal",
+  algorithm: "",
+  mazes: "",
 };
 
 export default AppInitialState;

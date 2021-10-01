@@ -1,12 +1,14 @@
-import React, { useContext } from "react";
+import React, { ChangeEventHandler, useContext } from "react";
 import AppContext from "../../app/AppContext";
 import { FaWalking } from "react-icons/fa";
 import { GiRaceCar, GiTurtle } from "react-icons/gi";
 
 type ModalType = {
   children: any;
+  handleChange: (e: any) => void;
+  radioState: string;
 };
-const Modal: React.FC<ModalType> = ({ children }) => {
+const Modal: React.FC<ModalType> = ({ children, handleChange, radioState }) => {
   const { AppState } = useContext(AppContext);
   return (
     <section className="modal">
@@ -28,7 +30,9 @@ const Modal: React.FC<ModalType> = ({ children }) => {
                 type="radio"
                 aria-label={title}
                 name={AppState.modalState.name}
+                checked={radioState === value}
                 value={value}
+                onChange={handleChange}
                 className="radio flex-center"
               />
               {AppState.modalState.name === "speed" && (

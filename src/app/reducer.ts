@@ -12,7 +12,10 @@ export type ActionType =
   | { type: "OPEN_SETTINGS"; payload: boolean }
   | { type: "CLEAR_BOARD"; payload: boolean }
   | { type: "CHANGE_MODAL_STATE"; payload: ModalStateType }
-  | { type: "IS_BOARD_DIRTY"; payload: boolean };
+  | { type: "IS_BOARD_DIRTY"; payload: boolean }
+  | { type: "CHANGE_SPEED"; payload: string }
+  | { type: "CHANGE_ALGORITHM"; payload: string }
+  | { type: "CHANGE_MAZES"; payload: string };
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
   switch (action.type) {
@@ -26,6 +29,26 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       return {
         ...state,
         isFullScreenModelOpen: action.payload,
+      };
+    }
+    case "CHANGE_MAZES": {
+      console.log(action.payload);
+      return {
+        ...state,
+        mazes: action.payload,
+      };
+    }
+    case "CHANGE_ALGORITHM": {
+      console.log(action.payload);
+      return {
+        ...state,
+        algorithm: action.payload,
+      };
+    }
+    case "CHANGE_SPEED": {
+      return {
+        ...state,
+        speed: action.payload,
       };
     }
     case "CHANGE_SVG": {
