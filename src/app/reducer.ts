@@ -98,8 +98,16 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
             }
           }
         }
-      } else {
-        let nodes = dfs(state.nodeInfo.row, state.nodeInfo.column);
+      } else if (
+        action.payload === "recursive division" ||
+        action.payload === "recursive division (horizontal skew)" ||
+        action.payload === "recursive division (vertical skew)"
+      ) {
+        let nodes = dfs(
+          state.nodeInfo.row,
+          state.nodeInfo.column,
+          action.payload
+        );
         for (let i = 0; i < state.nodeInfo.row; i++) {
           for (let j = 0; j < state.nodeInfo.column; j++) {
             let idX = document
