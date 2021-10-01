@@ -5,6 +5,7 @@ import { Node } from "../app/state";
 
 const changeNode = (e: any, stroke: string, fill: string) => {
   d3.select(`#${e.target.getAttribute("id")}`)
+    .transition()
     .attr("stroke-width", 0.2)
     .attr("stroke", stroke)
     .attr("fill", fill);
@@ -136,7 +137,6 @@ const Main = () => {
                   changeNode(e, "#fff", "#002233");
                 }
               });
-
               changeNode(e, "#fff", "#002233");
             }
           })
