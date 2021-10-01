@@ -6,6 +6,7 @@ import {
   NodeInfoType,
   SVGStateType,
 } from "./state";
+import mst from "../mazes/mst";
 
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
@@ -61,6 +62,13 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
           }
         });
       }
+      let arr = mst(state.nodeInfo.row, state.nodeInfo.column);
+      arr.forEach((id) => {
+        d3.select(`#node-${id.startNode.x}-${id.startNode.y}`).attr(
+          "fill",
+          "#002233"
+        );
+      });
       return {
         ...state,
         mazesIdArray,

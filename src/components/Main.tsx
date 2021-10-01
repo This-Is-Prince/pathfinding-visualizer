@@ -52,6 +52,8 @@ const Main = () => {
   const { AppState, dispatch } = useContext(AppContext);
   // main reference
   const prevNodeRef = useRef<PrevNodeType | null>(null);
+  let startNodeRef = useRef<HTMLElement | SVGElement>({} as SVGElement);
+  let endNodeRef = useRef<HTMLElement | SVGElement>({} as SVGElement);
   const mainRef = useRef<HTMLElement>({} as HTMLElement);
   const updateSize = () => {
     // height width of main element
@@ -144,8 +146,8 @@ const Main = () => {
           .on("mousedown", (e) => {
             const clickNodeX = e.target.getAttribute("x");
             const clickNodeY = e.target.getAttribute("y");
-            const startNode = document.getElementById("start")!;
-            const endNode = document.getElementById("end")!;
+            const startNode = startNodeRef.current;
+            const endNode = endNodeRef.current;
             const allNodes = d3.selectAll(".node");
 
             if (
@@ -284,6 +286,8 @@ const Main = () => {
           d3.select(`#end`).attr("x", x).attr("y", y);
         });
       });
+    startNodeRef.current = document.getElementById("start")!;
+    endNodeRef.current = document.getElementById("end")!;
   };
   useEffect(() => {
     updateSize();
@@ -296,6 +300,9 @@ const Main = () => {
     d3.selectAll(".node").on("mouseenter", null);
     updateSize();
   }, [AppState.isBoardClear]);
+  // animation ref
+  let indexRef = useRef(0);
+  let animationFunRef = useRef();
   useEffect(() => {}, [AppState.isPlay]);
   return <main ref={mainRef} className="main flex-center"></main>;
 };
