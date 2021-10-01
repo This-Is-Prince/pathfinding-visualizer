@@ -70,6 +70,7 @@ export interface AppStateType {
   speed: string;
   algorithm: string;
   mazes: string;
+  mazesIdArray: string[];
 }
 
 const AppInitialState: AppStateType = {
@@ -85,6 +86,7 @@ const AppInitialState: AppStateType = {
   speed: "normal",
   algorithm: "",
   mazes: "",
+  mazesIdArray: [],
 };
 
 export default AppInitialState;

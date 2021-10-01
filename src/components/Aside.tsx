@@ -39,7 +39,7 @@ const Aside = () => {
         className="flex-center btn aside-btn"
         aria-label="play/pause"
         onClick={() => {
-          console.log("play");
+          dispatch({ type: "CHANGE_PLAY", payload: !AppState.isPlay });
         }}
       >
         {AppState.isPlay ? <FaPauseCircle /> : <FaPlayCircle />}

@@ -103,11 +103,11 @@ const Main = () => {
       startX = 0,
       startY = 0,
       startRow = Math.floor(noOfNodesInRow / 2),
-      startColumn = Math.floor(noOfNodesInColumn / 3),
+      startColumn = Math.floor(noOfNodesInColumn / 6),
       endX = 0,
       endY = 0,
       endRow = startRow,
-      endColumn = Math.floor(noOfNodesInColumn / 3) * 2;
+      endColumn = Math.floor(noOfNodesInColumn / 6) * 5;
     for (let i = 0; i < noOfNodesInRow; i++) {
       for (let j = 0; j < noOfNodesInColumn; j++) {
         let node = new Node(
@@ -296,6 +296,7 @@ const Main = () => {
     d3.selectAll(".node").on("mouseenter", null);
     updateSize();
   }, [AppState.isBoardClear]);
+  useEffect(() => {}, [AppState.isPlay]);
   return <main ref={mainRef} className="main flex-center"></main>;
 };
 

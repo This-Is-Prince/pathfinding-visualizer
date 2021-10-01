@@ -1,3 +1,5 @@
+import stair from "../mazes/stair";
+import * as d3 from "d3";
 import {
   AppStateType,
   ModalStateType,
@@ -13,12 +15,19 @@ export type ActionType =
   | { type: "CLEAR_BOARD"; payload: boolean }
   | { type: "CHANGE_MODAL_STATE"; payload: ModalStateType }
   | { type: "IS_BOARD_DIRTY"; payload: boolean }
+  | { type: "CHANGE_PLAY"; payload: boolean }
   | { type: "CHANGE_SPEED"; payload: string }
   | { type: "CHANGE_ALGORITHM"; payload: string }
   | { type: "CHANGE_MAZES"; payload: string };
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
   switch (action.type) {
+    case "CHANGE_PLAY": {
+      return {
+        ...state,
+        isPlay: action.payload,
+      };
+    }
     case "CHANGE_MODAL_STATE": {
       return {
         ...state,
@@ -32,9 +41,29 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       };
     }
     case "CHANGE_MAZES": {
-      console.log(action.payload);
+      let mazesIdArray: string[] = [];
+      if (action.payload === "stair pattern") {
+        mazesIdArray = stair(state.nodeInfo.row, state.nodeInfo.column);
+        const startNode = document.getElementById("start")!;
+        const endNode = document.getElementById("end")!;
+        mazesIdArray.forEach((id) => {
+          let idX = document.getElementById(id)?.getAttribute("x");
+          let idY = document.getElementById(id)?.getAttribute("y");
+          if (
+            !(
+              (idX === endNode.getAttribute("x") &&
+                idY === endNode.getAttribute("y")) ||
+              (idX === startNode.getAttribute("x") &&
+                idY === startNode.getAttribute("y"))
+            )
+          ) {
+            d3.select(`#${id}`).attr("fill", "#002233");
+          }
+        });
+      }
       return {
         ...state,
+        mazesIdArray,
         mazes: action.payload,
       };
     }
@@ -55,6 +84,9 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       return {
         ...state,
         svg: action.payload,
+        mazes: "",
+        mazesIdArray: [],
+        algorithm: "",
       };
     }
     case "OPEN_SETTINGS": {
