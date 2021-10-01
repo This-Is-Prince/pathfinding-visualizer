@@ -138,6 +138,9 @@ const Main = () => {
           .attr("fill", node.getColor())
           .attr("stroke-width", 0.2)
           .attr("stroke", "#0066ff")
+          .on("touchend", () => {
+            d3.selectAll(".node").on("touchstart", null);
+          })
           .on("mousedown", (e) => {
             const clickNodeX = e.target.getAttribute("x");
             const clickNodeY = e.target.getAttribute("y");
@@ -238,6 +241,14 @@ const Main = () => {
       })
       .on("mouseup", () => {
         d3.selectAll(".node").on("mouseenter", null);
+      })
+      .on("dblclick", (e) => {
+        d3.selectAll(".node").on("touchstart", (e) => {
+          changeNode(e, "#0066ff", "#fff", true);
+          const x = e.target.getAttribute("x");
+          const y = e.target.getAttribute("y");
+          d3.select(`#start`).attr("x", x).attr("y", y);
+        });
       });
 
     // adding target node
@@ -264,6 +275,14 @@ const Main = () => {
       })
       .on("mouseup", () => {
         d3.selectAll(".node").on("mouseenter", null);
+      })
+      .on("dblclick", (e) => {
+        d3.selectAll(".node").on("touchstart", (e) => {
+          changeNode(e, "#0066ff", "#fff", true);
+          const x = e.target.getAttribute("x");
+          const y = e.target.getAttribute("y");
+          d3.select(`#end`).attr("x", x).attr("y", y);
+        });
       });
   };
   useEffect(() => {
