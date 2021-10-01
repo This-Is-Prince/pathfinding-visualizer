@@ -100,7 +100,6 @@ const mst = (row: number, column: number) => {
       union(subsets, x, y);
     }
   }
-  console.log(noOfNodes);
-  return { nodes };
+  return nodes;
 };
 export default mst;

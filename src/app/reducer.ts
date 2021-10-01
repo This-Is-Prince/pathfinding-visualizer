@@ -72,7 +72,7 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
           }
         }
       } else if (action.payload === "mst maze") {
-        let { nodes } = mst(state.nodeInfo.row, state.nodeInfo.column);
+        let nodes = mst(state.nodeInfo.row, state.nodeInfo.column);
         for (let i = 0; i < state.nodeInfo.row; i++) {
           for (let j = 0; j < state.nodeInfo.column; j++) {
             let idX = document

@@ -85,7 +85,7 @@ MAIN CSS
 }
 #start,
 #end {
-  color: var(--clr-sec);
+  color: var(--clr-pri);
   cursor: pointer;
 }
 /* 
