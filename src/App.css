@@ -199,7 +199,8 @@ MENU CSS
   flex-direction: column;
 }
 .modal__header {
-  padding: 1rem;
+  padding: 1rem 0 1rem;
+  padding-left: 1.75rem;
 }
 .modal__heading {
   display: flex;
@@ -207,21 +208,28 @@ MENU CSS
   font-weight: 600;
   font-size: 1.25rem;
 }
-@media screen and (min-height: 500px) {
-  .modal__heading {
-    padding: 2rem;
-    font-size: 1.5rem;
-  }
-}
 /* radio btn */
 .radio {
   -webkit-appearance: none;
   appearance: none;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1rem;
+  height: 1rem;
   border: 0.15rem solid var(--clr-yellow);
   cursor: pointer;
   position: relative;
+}
+@media screen and (min-height: 500px) {
+  .modal__header {
+    padding: 1rem 0 1rem;
+  }
+  .modal__heading {
+    padding: 2rem;
+    font-size: 1.5rem;
+  }
+  .radio {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 }
 .radio::before {
   content: "";
@@ -237,10 +245,17 @@ MENU CSS
 .modal__content {
   flex-grow: 1;
   overflow: auto;
-  padding: 2rem;
+  padding: 1rem 2rem 3rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+.modal__speed {
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.speed__icon {
+  font-size: 1.75rem;
 }
 .radio-container {
   display: flex;
@@ -249,4 +264,5 @@ MENU CSS
 }
 .radio-container > p {
   color: var(--clr-yellow);
+  font-variant: normal;
 }

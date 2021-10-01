@@ -1,3 +1,5 @@
+import { mazesPatterns } from "../assets/data";
+
 export class Node {
   constructor(
     private id: string,
@@ -45,6 +47,16 @@ export type NodeInfoType = {
   column: number;
   row: number;
 };
+export interface ModalStateType {
+  heading: string;
+  name: string;
+  list: ModalListType[];
+}
+export interface ModalListType {
+  title: string;
+  value: string;
+  id: number;
+}
 export interface AppStateType {
   isFullScreenModelOpen: boolean;
   svg: SVGStateType;
@@ -54,6 +66,7 @@ export interface AppStateType {
   isSettingsOpen: boolean;
   isBoardClear: boolean;
   isBoardDirty: boolean;
+  modalState: ModalStateType;
 }
 
 const AppInitialState: AppStateType = {
@@ -65,6 +78,7 @@ const AppInitialState: AppStateType = {
   isSettingsOpen: false,
   isBoardClear: false,
   isBoardDirty: false,
+  modalState: mazesPatterns,
 };
 
 export default AppInitialState;

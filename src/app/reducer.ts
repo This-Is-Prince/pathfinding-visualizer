@@ -1,4 +1,9 @@
-import { AppStateType, NodeInfoType, SVGStateType } from "./state";
+import {
+  AppStateType,
+  ModalStateType,
+  NodeInfoType,
+  SVGStateType,
+} from "./state";
 
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
@@ -6,10 +11,17 @@ export type ActionType =
   | { type: "ADD_NODES"; payload: NodeInfoType }
   | { type: "OPEN_SETTINGS"; payload: boolean }
   | { type: "CLEAR_BOARD"; payload: boolean }
+  | { type: "CHANGE_MODAL_STATE"; payload: ModalStateType }
   | { type: "IS_BOARD_DIRTY"; payload: boolean };
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
   switch (action.type) {
+    case "CHANGE_MODAL_STATE": {
+      return {
+        ...state,
+        modalState: action.payload,
+      };
+    }
     case "CHANGE_FULLSCREEN_MODEL": {
       return {
         ...state,

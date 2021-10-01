@@ -1,14 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { IoMdSpeedometer } from "react-icons/io";
 import { FaSitemap, FaRegTimesCircle, FaChessBoard } from "react-icons/fa";
 import { GiMaze, GiBrickWall, GiPathDistance, GiWeight } from "react-icons/gi";
 import AppContext from "../app/AppContext";
 import Modal from "./modal/Modal";
-
-export interface ModalType {
-  icon: any;
-  title: string;
-}
+import { mazesPatterns, algorithms, speed } from "../assets/data";
 
 const Settings = () => {
   const { AppState, dispatch } = useContext(AppContext);
@@ -31,19 +27,34 @@ const Settings = () => {
       </header>
       <section className="settings-section__content">
         <aside className="settings-types">
-          <button className="btn setting-btn ">
+          <button
+            className="btn setting-btn "
+            onClick={() => {
+              dispatch({ type: "CHANGE_MODAL_STATE", payload: mazesPatterns });
+            }}
+          >
             <span className="flex-center">
               <GiMaze />
             </span>
             <span>Mazes & Patterns</span>
           </button>
-          <button className="btn setting-btn ">
+          <button
+            className="btn setting-btn "
+            onClick={() => {
+              dispatch({ type: "CHANGE_MODAL_STATE", payload: algorithms });
+            }}
+          >
             <span className="flex-center">
               <FaSitemap />
             </span>
             <span>Algorithms</span>
           </button>
-          <button className="btn setting-btn ">
+          <button
+            className="btn setting-btn "
+            onClick={() => {
+              dispatch({ type: "CHANGE_MODAL_STATE", payload: speed });
+            }}
+          >
             <span className="flex-center">
               <IoMdSpeedometer />
             </span>
@@ -82,7 +93,19 @@ const Settings = () => {
             <span>Clear Walls</span>
           </button>
         </aside>
-        <Modal icon={<FaSitemap />} title="algorithms" />
+        {AppState.modalState.name === "mazes" ? (
+          <Modal>
+            <GiMaze />
+          </Modal>
+        ) : AppState.modalState.name === "algorithm" ? (
+          <Modal>
+            <FaSitemap />
+          </Modal>
+        ) : (
+          <Modal>
+            <IoMdSpeedometer />
+          </Modal>
+        )}
       </section>
     </section>
   );
