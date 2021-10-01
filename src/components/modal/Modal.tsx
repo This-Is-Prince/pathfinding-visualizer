@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useContext } from "react";
+import React, { useContext } from "react";
 import AppContext from "../../app/AppContext";
 import { FaWalking } from "react-icons/fa";
 import { GiRaceCar, GiTurtle } from "react-icons/gi";
@@ -14,7 +14,7 @@ const Modal: React.FC<ModalType> = ({ children, handleChange, radioState }) => {
     <section className="modal">
       <header className="modal__header ">
         <p className="modal__heading">
-          <span className="flex-center">{children}</span>
+          <span className="flex-center modal__header__icon">{children}</span>
           <span>{AppState.modalState.heading}</span>
         </p>
       </header>
@@ -33,10 +33,16 @@ const Modal: React.FC<ModalType> = ({ children, handleChange, radioState }) => {
                 checked={radioState === value}
                 value={value}
                 onChange={handleChange}
-                className="radio flex-center"
+                className={`radio flex-center ${
+                  radioState === value ? "selected" : ""
+                }`}
               />
               {AppState.modalState.name === "speed" && (
-                <p className="speed__icon flex-center">
+                <p
+                  className={`speed__icon flex-center ${
+                    radioState === value ? "selected" : ""
+                  }`}
+                >
                   {title === "slow" ? (
                     <GiTurtle />
                   ) : title === "normal" ? (
@@ -46,7 +52,9 @@ const Modal: React.FC<ModalType> = ({ children, handleChange, radioState }) => {
                   )}
                 </p>
               )}
-              <p>{title}</p>
+              <p className={`${radioState === value ? "selected" : ""}`}>
+                {title}
+              </p>
             </div>
           );
         })}

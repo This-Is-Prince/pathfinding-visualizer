@@ -28,7 +28,11 @@ const Settings = () => {
       <section className="settings-section__content">
         <aside className="settings-types">
           <button
-            className="btn setting-btn "
+            className={`btn setting-btn ${
+              AppState.modalState.heading === "mazes & patterns"
+                ? "selected"
+                : ""
+            }`}
             onClick={() => {
               dispatch({ type: "CHANGE_MODAL_STATE", payload: mazesPatterns });
             }}
@@ -39,7 +43,9 @@ const Settings = () => {
             <span>Mazes & Patterns</span>
           </button>
           <button
-            className="btn setting-btn "
+            className={`btn setting-btn ${
+              AppState.modalState.heading === "algorithms" ? "selected" : ""
+            }`}
             onClick={() => {
               dispatch({ type: "CHANGE_MODAL_STATE", payload: algorithms });
             }}
@@ -50,7 +56,9 @@ const Settings = () => {
             <span>Algorithms</span>
           </button>
           <button
-            className="btn setting-btn "
+            className={`btn setting-btn ${
+              AppState.modalState.heading === "speed" ? "selected" : ""
+            }`}
             onClick={() => {
               dispatch({ type: "CHANGE_MODAL_STATE", payload: speed });
             }}

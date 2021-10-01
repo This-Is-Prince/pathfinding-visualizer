@@ -134,17 +134,17 @@ MENU CSS
 */
 .settings-section {
   position: absolute;
-  top: 0;
-  left: -100%;
+  inset: 0;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
   background-color: var(--clr-sec);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  transition: left 0.3s linear;
+  transform: translate(-100%);
+  transition: transform 0.3s linear;
 }
 .settings--open {
-  left: 0;
+  transform: translate(0);
 }
 .settings-section__header {
   display: flex;
@@ -185,6 +185,7 @@ MENU CSS
 .setting-btn:hover {
   color: var(--clr-pri);
 }
+
 .setting-btn > span:last-child {
   font-size: 1.2rem;
   font-variant: normal;
@@ -208,13 +209,17 @@ MENU CSS
   font-weight: 600;
   font-size: 1.25rem;
 }
+.modal__header__icon {
+  font-size: 1.75rem;
+}
 /* radio btn */
 .radio {
   -webkit-appearance: none;
   appearance: none;
   width: 1rem;
   height: 1rem;
-  border: 0.15rem solid var(--clr-yellow);
+  color: var(--clr-yellow);
+  border: 0.15rem solid currentColor;
   cursor: pointer;
   position: relative;
 }
@@ -236,7 +241,8 @@ MENU CSS
   position: absolute;
   width: 70%;
   height: 70%;
-  background-color: var(--clr-yellow);
+  color: currentColor;
+  background-color: currentColor;
   display: none;
 }
 .radio:checked::before {
@@ -262,7 +268,10 @@ MENU CSS
   align-items: center;
   gap: 1rem;
 }
-.radio-container > p {
+.radio-container {
   color: var(--clr-yellow);
   font-variant: normal;
+}
+.selected {
+  color: var(--clr-pri);
 }
