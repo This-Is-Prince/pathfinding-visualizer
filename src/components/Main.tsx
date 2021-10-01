@@ -110,6 +110,7 @@ const Main = () => {
       endY = 0,
       endRow = startRow,
       endColumn = Math.floor(noOfNodesInColumn / 6) * 5;
+
     for (let i = 0; i < noOfNodesInRow; i++) {
       for (let j = 0; j < noOfNodesInColumn; j++) {
         let node = new Node(

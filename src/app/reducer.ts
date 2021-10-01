@@ -62,12 +62,19 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
           }
         });
       }
-      let arr = mst(state.nodeInfo.row, state.nodeInfo.column);
-      arr.forEach((id) => {
-        d3.select(`#node-${id.startNode.x}-${id.startNode.y}`).attr(
-          "fill",
-          "#002233"
-        );
+      let { result, nodes } = mst(state.nodeInfo.row, state.nodeInfo.column);
+      for (let i = 0; i < state.nodeInfo.row; i++) {
+        for (let j = 0; j < state.nodeInfo.column; j++) {
+          d3.select(`#node-${i}-${j}`).attr("fill", "#002233");
+        }
+      }
+      for (let id in nodes) {
+        d3.select(`#node-${id}`).attr("fill", "#fff");
+      }
+      result.forEach((id) => {
+        d3.select(
+          `#node-${(id.src.x + id.des.x) / 2}-${(id.src.y + id.des.y) / 2}`
+        ).attr("fill", "#fff");
       });
       return {
         ...state,
