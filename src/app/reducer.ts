@@ -7,6 +7,7 @@ import {
   SVGStateType,
 } from "./state";
 import mst from "../mazes/mst";
+import dfs from "../mazes/dfs";
 
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
@@ -73,6 +74,32 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         }
       } else if (action.payload === "mst maze") {
         let nodes = mst(state.nodeInfo.row, state.nodeInfo.column);
+        for (let i = 0; i < state.nodeInfo.row; i++) {
+          for (let j = 0; j < state.nodeInfo.column; j++) {
+            let idX = document
+              .getElementById(`node-${i}-${j}`)
+              ?.getAttribute("x");
+            let idY = document
+              .getElementById(`node-${i}-${j}`)
+              ?.getAttribute("y");
+            if (
+              !(
+                (idX === endNode.getAttribute("x") &&
+                  idY === endNode.getAttribute("y")) ||
+                (idX === startNode.getAttribute("x") &&
+                  idY === startNode.getAttribute("y"))
+              )
+            ) {
+              if (nodes[`node-${i}-${j}`]) {
+                d3.select(`#node-${i}-${j}`).attr("fill", "#fff");
+              } else {
+                d3.select(`#node-${i}-${j}`).attr("fill", "#002233");
+              }
+            }
+          }
+        }
+      } else {
+        let nodes = dfs(state.nodeInfo.row, state.nodeInfo.column);
         for (let i = 0; i < state.nodeInfo.row; i++) {
           for (let j = 0; j < state.nodeInfo.column; j++) {
             let idX = document

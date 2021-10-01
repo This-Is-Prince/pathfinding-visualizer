@@ -8,7 +8,7 @@ class Subset {
   constructor(public parent: number, public rank: number) {}
 }
 
-const makesNodes = (row: number, column: number) => {
+export const makesNodes = (row: number, column: number) => {
   let i = 0,
     j = 0;
   let nodes: any = {};
