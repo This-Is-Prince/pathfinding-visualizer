@@ -1,10 +1,14 @@
+import { Node } from "./mst";
+
 const stair = (row: number, column: number) => {
-  let idArray: string[] = [];
+  let nodes: any = {};
   let i = row - 4,
     j = 3,
     isRowNeg = false;
+  let id = 0;
   while (j < column) {
-    idArray.push(`node-${i}-${j}`);
+    nodes[`node-${i}-${j}`] = new Node(i, j, id);
+    id++;
     if (i == 3) {
       isRowNeg = true;
     }
@@ -19,6 +23,6 @@ const stair = (row: number, column: number) => {
     }
     j++;
   }
-  return idArray;
+  return nodes;
 };
 export default stair;

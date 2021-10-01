@@ -1,4 +1,4 @@
-class Node {
+export class Node {
   constructor(public x: number, public y: number, public id: number) {}
 }
 class Edge {
@@ -14,7 +14,7 @@ const makesNodes = (row: number, column: number) => {
   let nodes: any = {};
   let id = 0;
   while (i < row) {
-    nodes[`${i}-${j}`] = new Node(i, j, id);
+    nodes[`node-${i}-${j}`] = new Node(i, j, id);
     id++;
     j += 2;
     if (j >= column) {
@@ -32,15 +32,15 @@ const makeEdges = (row: number, column: number) => {
     nodes = makesNodes(row, column);
   while (i < row) {
     noOfNodes++;
-    let rootNode = nodes[`${i}-${j}`];
+    let rootNode = nodes[`node-${i}-${j}`];
     if (j + 2 < column) {
-      let rightNode = nodes[`${i}-${j + 2}`];
+      let rightNode = nodes[`node-${i}-${j + 2}`];
       edgesArray.push(
         new Edge(rootNode, rightNode, Math.floor(Math.random() * 101))
       );
     }
     if (i + 2 < row) {
-      let bottomNode = nodes[`${i + 2}-${j}`];
+      let bottomNode = nodes[`node-${i + 2}-${j}`];
       edgesArray.push(
         new Edge(rootNode, bottomNode, Math.floor(Math.random() * 101))
       );
@@ -76,12 +76,8 @@ const union = (subsets: Subset[], x: number, y: number) => {
 
 const mst = (row: number, column: number) => {
   let { edgesArray, noOfNodes, nodes } = makeEdges(row, column);
-  let result: Edge[] = [];
   let e = 0,
     i = 0;
-  for (i = 0; i < noOfNodes; ++i) {
-    result[i] = new Edge(new Node(0, 0, 0), new Node(0, 0, 0), 0);
-  }
   edgesArray.sort((a, b) => {
     return a.weight > b.weight ? 1 : a.weight < b.weight ? -1 : 0;
   });
@@ -91,21 +87,20 @@ const mst = (row: number, column: number) => {
   }
   i = 0;
   while (e < noOfNodes - 1) {
-    let nxt_edge = edgesArray[i++];
-    let x = find(subsets, nxt_edge.src.id);
-    let y = find(subsets, nxt_edge.des.id);
+    let nxt_edge = edgesArray[i++],
+      src = nxt_edge.src,
+      des = nxt_edge.des,
+      x = find(subsets, src.id),
+      y = find(subsets, des.id);
     if (x !== y) {
-      result[e++] = nxt_edge;
+      e++;
+      let midX = (src.x + des.x) / 2,
+        midY = (src.y + des.y) / 2;
+      nodes[`node-${midX}-${midY}`] = new Node(midX, midY, 0);
       union(subsets, x, y);
     }
   }
   console.log(noOfNodes);
-  console.log(result);
-  // result.forEach((id) => {
-  //   let x=(id.src.x+id.des.x)/2;
-  //   let y=(id.src.y+id.des.y)/2;
-  //   nodes[`${x}-${y}`]=
-  // });
-  return { result, nodes };
+  return { nodes };
 };
 export default mst;

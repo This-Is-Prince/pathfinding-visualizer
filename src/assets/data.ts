@@ -19,8 +19,8 @@ let mazesPatterns = {
     },
     {
       id: 4,
-      title: "basic random maze",
-      value: "random maze",
+      title: "maze made from MST",
+      value: "mst maze",
     },
     {
       id: 5,

@@ -43,39 +43,61 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
     }
     case "CHANGE_MAZES": {
       let mazesIdArray: string[] = [];
+      const startNode = document.getElementById("start")!;
+      const endNode = document.getElementById("end")!;
       if (action.payload === "stair pattern") {
-        mazesIdArray = stair(state.nodeInfo.row, state.nodeInfo.column);
-        const startNode = document.getElementById("start")!;
-        const endNode = document.getElementById("end")!;
-        mazesIdArray.forEach((id) => {
-          let idX = document.getElementById(id)?.getAttribute("x");
-          let idY = document.getElementById(id)?.getAttribute("y");
-          if (
-            !(
-              (idX === endNode.getAttribute("x") &&
-                idY === endNode.getAttribute("y")) ||
-              (idX === startNode.getAttribute("x") &&
-                idY === startNode.getAttribute("y"))
-            )
-          ) {
-            d3.select(`#${id}`).attr("fill", "#002233");
+        let nodes = stair(state.nodeInfo.row, state.nodeInfo.column);
+        for (let i = 0; i < state.nodeInfo.row; i++) {
+          for (let j = 0; j < state.nodeInfo.column; j++) {
+            let idX = document
+              .getElementById(`node-${i}-${j}`)
+              ?.getAttribute("x");
+            let idY = document
+              .getElementById(`node-${i}-${j}`)
+              ?.getAttribute("y");
+            if (
+              !(
+                (idX === endNode.getAttribute("x") &&
+                  idY === endNode.getAttribute("y")) ||
+                (idX === startNode.getAttribute("x") &&
+                  idY === startNode.getAttribute("y"))
+              )
+            ) {
+              if (nodes[`node-${i}-${j}`]) {
+                d3.select(`#node-${i}-${j}`).attr("fill", "#002233");
+              } else {
+                d3.select(`#node-${i}-${j}`).attr("fill", "#fff");
+              }
+            }
           }
-        });
-      }
-      let { result, nodes } = mst(state.nodeInfo.row, state.nodeInfo.column);
-      for (let i = 0; i < state.nodeInfo.row; i++) {
-        for (let j = 0; j < state.nodeInfo.column; j++) {
-          d3.select(`#node-${i}-${j}`).attr("fill", "#002233");
+        }
+      } else if (action.payload === "mst maze") {
+        let { nodes } = mst(state.nodeInfo.row, state.nodeInfo.column);
+        for (let i = 0; i < state.nodeInfo.row; i++) {
+          for (let j = 0; j < state.nodeInfo.column; j++) {
+            let idX = document
+              .getElementById(`node-${i}-${j}`)
+              ?.getAttribute("x");
+            let idY = document
+              .getElementById(`node-${i}-${j}`)
+              ?.getAttribute("y");
+            if (
+              !(
+                (idX === endNode.getAttribute("x") &&
+                  idY === endNode.getAttribute("y")) ||
+                (idX === startNode.getAttribute("x") &&
+                  idY === startNode.getAttribute("y"))
+              )
+            ) {
+              if (nodes[`node-${i}-${j}`]) {
+                d3.select(`#node-${i}-${j}`).attr("fill", "#fff");
+              } else {
+                d3.select(`#node-${i}-${j}`).attr("fill", "#002233");
+              }
+            }
+          }
         }
       }
-      for (let id in nodes) {
-        d3.select(`#node-${id}`).attr("fill", "#fff");
-      }
-      result.forEach((id) => {
-        d3.select(
-          `#node-${(id.src.x + id.des.x) / 2}-${(id.src.y + id.des.y) / 2}`
-        ).attr("fill", "#fff");
-      });
       return {
         ...state,
         mazesIdArray,
