@@ -191,12 +191,22 @@ const Main = () => {
                 const { e, fill, stroke } = prevNodeRef.current;
                 changeNodeToSquare(e, stroke, fill);
               }
-              prevNodeRef.current = {
-                e,
-                stroke: "#fff",
-                fill: "#002233",
-              };
-              changeNode(e, "#fff", "#002233", false);
+              let fill = e.target.getAttribute("fill");
+              if (fill === "rgb(0, 34, 51)" || fill === "#002233") {
+                prevNodeRef.current = {
+                  e,
+                  stroke: "#0066ff",
+                  fill: "#fff",
+                };
+                changeNode(e, "#0066ff", "#fff", false);
+              } else {
+                prevNodeRef.current = {
+                  e,
+                  stroke: "#fff",
+                  fill: "#002233",
+                };
+                changeNode(e, "#fff", "#002233", false);
+              }
             }
           })
           .on("mouseup", () => {
