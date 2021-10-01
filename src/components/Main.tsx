@@ -3,25 +3,55 @@ import * as d3 from "d3";
 import AppContext from "../app/AppContext";
 import { Node } from "../app/state";
 
-const changeNode = (e: any, stroke: string, fill: string) => {
+const changeNode = (
+  e: any,
+  stroke: string,
+  fill: string,
+  isSpecial: boolean
+) => {
+  if (isSpecial) {
+    d3.select(`#${e.target.getAttribute("id")}`)
+      .attr("stroke-width", 0.2)
+      .attr("stroke", stroke)
+      .attr("fill", fill);
+  } else {
+    d3.select(`#${e.target.getAttribute("id")}`)
+      .transition()
+      .duration(200)
+      .attr("rx", 10)
+      .attr("stroke-width", 0.2)
+      .attr("stroke", stroke)
+      .attr("fill", fill);
+  }
+};
+const changeNodeToSquare = (e: any, stroke: string, fill: string) => {
   d3.select(`#${e.target.getAttribute("id")}`)
     .transition()
+    .duration(200)
+    .delay(500)
+    .attr("rx", 0)
     .attr("stroke-width", 0.2)
     .attr("stroke", stroke)
     .attr("fill", fill);
 };
+
 const eventListener = (id: string) => {
   d3.selectAll(".node").on("mouseenter", (e) => {
-    changeNode(e, "#0066ff", "#fff");
+    changeNode(e, "#0066ff", "#fff", true);
     const x = e.target.getAttribute("x");
     const y = e.target.getAttribute("y");
     d3.select(`#${id}`).attr("x", x).attr("y", y);
   });
 };
-
+type PrevNodeType = {
+  e: any;
+  stroke: string;
+  fill: string;
+};
 const Main = () => {
   const { AppState, dispatch } = useContext(AppContext);
   // main reference
+  const prevNodeRef = useRef<PrevNodeType | null>(null);
   const mainRef = useRef<HTMLElement>({} as HTMLElement);
   const updateSize = () => {
     // height width of main element
@@ -132,15 +162,42 @@ const Main = () => {
                   (x === startNode.getAttribute("x") &&
                     y === startNode.getAttribute("y"))
                 ) {
-                  changeNode(e, "#0066ff", "#fff");
+                  if (prevNodeRef.current !== null) {
+                    const { e, fill, stroke } = prevNodeRef.current;
+                    changeNodeToSquare(e, stroke, fill);
+                  }
+                  prevNodeRef.current = { e, stroke: "#0066ff", fill: "#fff" };
+                  changeNode(e, "#0066ff", "#fff", false);
                 } else {
-                  changeNode(e, "#fff", "#002233");
+                  if (prevNodeRef.current !== null) {
+                    const { e, fill, stroke } = prevNodeRef.current;
+                    changeNodeToSquare(e, stroke, fill);
+                  }
+                  prevNodeRef.current = {
+                    e,
+                    stroke: "#fff",
+                    fill: "#002233",
+                  };
+                  changeNode(e, "#fff", "#002233", false);
                 }
               });
-              changeNode(e, "#fff", "#002233");
+              if (prevNodeRef.current !== null) {
+                const { e, fill, stroke } = prevNodeRef.current;
+                changeNodeToSquare(e, stroke, fill);
+              }
+              prevNodeRef.current = {
+                e,
+                stroke: "#fff",
+                fill: "#002233",
+              };
+              changeNode(e, "#fff", "#002233", false);
             }
           })
           .on("mouseup", () => {
+            if (prevNodeRef.current !== null) {
+              const { e, fill, stroke } = prevNodeRef.current;
+              changeNodeToSquare(e, stroke, fill);
+            }
             d3.selectAll(".node").on("mouseenter", null);
           });
         nodes.push(node);
