@@ -35,12 +35,28 @@ const changeNodeToSquare = (e: any, stroke: string, fill: string) => {
     .attr("fill", fill);
 };
 
-const eventListener = (id: string) => {
+const eventListener = (
+  id: string,
+  dispatch: any,
+  nodes: {
+    startNode: { x: number; y: number };
+    targetNode: { x: number; y: number };
+  }
+) => {
   d3.selectAll(".node").on("mouseenter", (e) => {
     changeNode(e, "#0066ff", "#fff", true);
-    const x = e.target.getAttribute("x");
-    const y = e.target.getAttribute("y");
-    d3.select(`#${id}`).attr("x", x).attr("y", y);
+    const posX = e.target.getAttribute("x");
+    const posY = e.target.getAttribute("y");
+    d3.select(`#${id}`).attr("x", posX).attr("y", posY);
+    let nodeID = e.target.getAttribute("id").substring(5);
+    let ch = nodeID.search("-");
+    let x = parseInt(nodeID.substr(0, ch));
+    let y = parseInt(nodeID.substring(ch + 1));
+    if (id === "end") {
+      dispatch({ type: "ADD_SPECIAL_END_NODE", payload: { x, y } });
+    } else {
+      dispatch({ type: "ADD_SPECIAL_START_NODE", payload: { x, y } });
+    }
   });
 };
 type PrevNodeType = {
@@ -251,7 +267,10 @@ const Main = () => {
         "M256 8c137 0 248 111 248 248S393 504 256 504 8 393 8 256 119 8 256 8zM140 300h116v70.9c0 10.7 13 16.1 20.5 8.5l114.3-114.9c4.7-4.7 4.7-12.2 0-16.9l-114.3-115c-7.6-7.6-20.5-2.2-20.5 8.5V212H140c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12z"
       )
       .on("mousedown", () => {
-        eventListener("start");
+        eventListener("start", dispatch, {
+          startNode: AppState.specialNodes.startNode,
+          targetNode: AppState.specialNodes.targetNode,
+        });
       })
       .on("mouseup", () => {
         d3.selectAll(".node").on("mouseenter", null);
@@ -259,9 +278,14 @@ const Main = () => {
       .on("dblclick", (e) => {
         d3.selectAll(".node").on("touchstart", (e) => {
           changeNode(e, "#0066ff", "#fff", true);
-          const x = e.target.getAttribute("x");
-          const y = e.target.getAttribute("y");
-          d3.select(`#start`).attr("x", x).attr("y", y);
+          const posX = e.target.getAttribute("x");
+          const posY = e.target.getAttribute("y");
+          d3.select(`#start`).attr("x", posX).attr("y", posY);
+          let nodeID = e.target.getAttribute("id").substring(5);
+          let ch = nodeID.search("-");
+          let x = parseInt(nodeID.substr(0, ch));
+          let y = parseInt(nodeID.substring(ch + 1));
+          dispatch({ type: "ADD_SPECIAL_START_NODE", payload: { x, y } });
         });
       });
 
@@ -285,7 +309,10 @@ const Main = () => {
         "M16 7h-1.577c-0.432-2.785-2.638-4.991-5.423-5.423v-1.577h-2v1.577c-2.785 0.432-4.991 2.638-5.423 5.423h-1.577v2h1.577c0.432 2.785 2.638 4.991 5.423 5.423v1.577h2v-1.577c2.785-0.432 4.991-2.638 5.423-5.423h1.577v-2zM12.388 7h-1.559c-0.301-0.852-0.977-1.528-1.829-1.829v-1.559c1.68 0.383 3.005 1.708 3.388 3.388zM8 9c-0.552 0-1-0.448-1-1s0.448-1 1-1c0.552 0 1 0.448 1 1s-0.448 1-1 1zM7 3.612v1.559c-0.852 0.301-1.528 0.977-1.829 1.829h-1.559c0.383-1.68 1.708-3.005 3.388-3.388zM3.612 9h1.559c0.301 0.852 0.977 1.528 1.829 1.829v1.559c-1.68-0.383-3.005-1.708-3.388-3.388zM9 12.388v-1.559c0.852-0.301 1.528-0.977 1.829-1.829h1.559c-0.383 1.68-1.708 3.005-3.388 3.388z"
       )
       .on("mousedown", () => {
-        eventListener("end");
+        eventListener("end", dispatch, {
+          startNode: AppState.specialNodes.startNode,
+          targetNode: AppState.specialNodes.targetNode,
+        });
       })
       .on("mouseup", () => {
         d3.selectAll(".node").on("mouseenter", null);
@@ -293,11 +320,25 @@ const Main = () => {
       .on("dblclick", (e) => {
         d3.selectAll(".node").on("touchstart", (e) => {
           changeNode(e, "#0066ff", "#fff", true);
-          const x = e.target.getAttribute("x");
-          const y = e.target.getAttribute("y");
-          d3.select(`#end`).attr("x", x).attr("y", y);
+          const posX = e.target.getAttribute("x");
+          const posY = e.target.getAttribute("y");
+          d3.select(`#end`).attr("x", posX).attr("y", posY);
+          let nodeID = e.target.getAttribute("id").substring(5);
+          let ch = nodeID.search("-");
+          let x = parseInt(nodeID.substr(0, ch));
+          let y = parseInt(nodeID.substring(ch + 1));
+          dispatch({ type: "ADD_SPECIAL_END_NODE", payload: { x, y } });
         });
       });
+
+    dispatch({
+      type: "ADD_SPECIAL_END_NODE",
+      payload: { x: endRow, y: endColumn },
+    });
+    dispatch({
+      type: "ADD_SPECIAL_START_NODE",
+      payload: { x: startRow, y: startColumn },
+    });
     startNodeRef.current = document.getElementById("start")!;
     endNodeRef.current = document.getElementById("end")!;
   };
@@ -318,8 +359,6 @@ const Main = () => {
     };
   }, []);
   useEffect(() => {
-    console.log("use effect");
-
     removeListeners();
     updateSize();
   }, [AppState.isBoardClear, AppState.nodeMaxWidth]);

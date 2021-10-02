@@ -72,6 +72,16 @@ export interface AppStateType {
   mazes: string;
   mazesIdArray: string[];
   isAsideModalOpen: boolean;
+  specialNodes: {
+    startNode: {
+      x: number;
+      y: number;
+    };
+    targetNode: {
+      x: number;
+      y: number;
+    };
+  };
 }
 
 const AppInitialState: AppStateType = {
@@ -89,6 +99,7 @@ const AppInitialState: AppStateType = {
   algorithm: "",
   mazes: "",
   mazesIdArray: [],
+  specialNodes: { targetNode: { x: 0, y: 0 }, startNode: { x: 0, y: 0 } },
 };
 
 export default AppInitialState;

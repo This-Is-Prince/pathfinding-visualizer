@@ -1,4 +1,4 @@
-type VertexType = {
+export type VertexType = {
   x: number;
   y: number;
 };

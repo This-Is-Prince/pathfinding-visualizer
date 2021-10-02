@@ -7,13 +7,22 @@ import {
   SVGStateType,
 } from "./state";
 import mst from "../mazes/mst";
-import dfs from "../mazes/dfs";
+import dfs, { VertexType } from "../mazes/dfs";
+import bfs from "../algorithm/bfs";
 
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
   | { type: "CHANGE_ASIDE_MODAL"; payload: boolean }
   | { type: "CHANGE_SVG"; payload: SVGStateType }
   | { type: "ADD_NODES"; payload: NodeInfoType }
+  | {
+      type: "ADD_SPECIAL_START_NODE";
+      payload: VertexType;
+    }
+  | {
+      type: "ADD_SPECIAL_END_NODE";
+      payload: VertexType;
+    }
   | { type: "OPEN_SETTINGS"; payload: boolean }
   | { type: "CLEAR_BOARD"; payload: boolean }
   | { type: "CHANGE_MODAL_STATE"; payload: ModalStateType }
@@ -154,7 +163,7 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       };
     }
     case "CHANGE_ALGORITHM": {
-      console.log(action.payload);
+      // bfs(state.nodeInfo.row,state.nodeInfo.column,{})
       return {
         ...state,
         algorithm: action.payload,
@@ -197,6 +206,24 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       return {
         ...state,
         nodeInfo: action.payload,
+      };
+    }
+    case "ADD_SPECIAL_START_NODE": {
+      return {
+        ...state,
+        specialNodes: {
+          startNode: action.payload,
+          targetNode: { ...state.specialNodes.targetNode },
+        },
+      };
+    }
+    case "ADD_SPECIAL_END_NODE": {
+      return {
+        ...state,
+        specialNodes: {
+          startNode: { ...state.specialNodes.startNode },
+          targetNode: action.payload,
+        },
       };
     }
     default:
