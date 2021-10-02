@@ -56,6 +56,7 @@ const Main = () => {
   let endNodeRef = useRef<HTMLElement | SVGElement>({} as SVGElement);
   const mainRef = useRef<HTMLElement>({} as HTMLElement);
   const updateSize = () => {
+    prevNodeRef.current = null;
     // height width of main element
     let width = mainRef.current.getBoundingClientRect().width - 20;
     let height = mainRef.current.getBoundingClientRect().height - 20;
@@ -300,7 +301,16 @@ const Main = () => {
     startNodeRef.current = document.getElementById("start")!;
     endNodeRef.current = document.getElementById("end")!;
   };
+  const removeListeners = () => {
+    d3.selectAll(".node").on("mouseenter", null);
+    d3.selectAll(".node").on("mousedown", null);
+    d3.selectAll(".node").on("mouseup", null);
+    d3.selectAll(".node").on("touchstart", null);
+    d3.select("#start").on("dblclick", null);
+    d3.select("#end").on("dblclick", null);
+  };
   useEffect(() => {
+    removeListeners();
     updateSize();
     window.addEventListener("resize", updateSize);
     return () => {
@@ -308,7 +318,7 @@ const Main = () => {
     };
   }, []);
   useEffect(() => {
-    d3.selectAll(".node").on("mouseenter", null);
+    removeListeners();
     updateSize();
   }, [AppState.isBoardClear]);
   // animation ref
