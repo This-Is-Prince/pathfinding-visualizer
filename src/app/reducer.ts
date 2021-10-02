@@ -170,7 +170,7 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       };
     }
     case "CHANGE_ALGORITHM": {
-      let algorithmArr = bfs(
+      let { visitedArr, pathArr } = bfs(
         state.nodeInfo.row,
         state.nodeInfo.column,
         state.specialNodes.startNode,
@@ -179,7 +179,8 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
 
       return {
         ...state,
-        algorithmArr,
+        visitedArr,
+        pathArr,
         algorithm: action.payload,
       };
     }
@@ -196,7 +197,7 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         mazes: "",
         mazesIdArray: [],
         algorithm: "",
-        algorithmArr: [],
+        visitedArr: [],
       };
     }
     case "OPEN_SETTINGS": {

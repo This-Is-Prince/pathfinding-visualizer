@@ -364,17 +364,64 @@ const Main = () => {
     updateSize();
   }, [AppState.isBoardClear, AppState.nodeMaxWidth]);
   // animation ref
-  let indexRef = useRef(0);
+  let visitedArrIndexRef = useRef(0);
+  let pathArrIndexRef = useRef(0);
   let animationFunRef: any = useRef();
   let animationRef: any = useRef();
-  let animationFun = (arr: VertexType[]) => {
+  let animateArrRef: any = useRef();
+  let animatePathArr = (pathArr: VertexType[]) => {
+    return () => {
+      animatePath(pathArr);
+    };
+  };
+  let animatePath = (pathArr: VertexType[]) => {
+    if (pathArrIndexRef.current >= pathArr.length) {
+      let { x, y } = pathArr[pathArrIndexRef.current - 1];
+      d3.select(`#node-${x}-${y}`)
+        .transition()
+        .duration(250)
+        .delay(0)
+        .attr("fill", "#FFE900");
+      dispatch({ type: "CHANGE_PLAY", payload: !AppState.isPlay });
+      dispatch({ type: "ANIMATION_COMPLETE", payload: true });
+      animationFunRef.current = () => {};
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+      visitedArrIndexRef.current = 0;
+      animateArrRef.current = animateVisitedArr(AppState.visitedArr);
+    } else {
+      let { x, y } = pathArr[pathArrIndexRef.current];
+      if (pathArrIndexRef.current > 0) {
+        let { x, y } = pathArr[pathArrIndexRef.current - 1];
+        d3.select(`#node-${x}-${y}`)
+          .transition()
+          .duration(250)
+          .delay(0)
+          .attr("fill", "#FFE900");
+      }
+      d3.select(`#node-${x}-${y}`)
+        .transition()
+        .duration(250)
+        .attr("fill", "#F24236")
+        .on("end", () => {
+          animationRef.current = requestAnimationFrame(animationFunRef.current);
+        });
+      pathArrIndexRef.current++;
+    }
+  };
+  let animateVisitedArr = (visitedArr: VertexType[]) => {
+    return () => {
+      animateVisited(visitedArr);
+    };
+  };
+  let animateVisited = (visitedArr: VertexType[]) => {
     let {
       startNode: { x: sX, y: sY },
       targetNode: { x: tX, y: tY },
     } = AppState.specialNodes;
-    if (indexRef.current >= arr.length) {
-      if (indexRef.current > 0) {
-        let prevID = arr[indexRef.current - 1];
+    if (visitedArrIndexRef.current >= visitedArr.length) {
+      if (visitedArrIndexRef.current > 0) {
+        let prevID = visitedArr[visitedArrIndexRef.current - 1];
         if (
           !(
             (prevID.x === sX && prevID.y === sY) ||
@@ -389,8 +436,8 @@ const Main = () => {
             .attr("stroke", "#fff");
         }
       }
-      if (indexRef.current > 1) {
-        let prevID = arr[indexRef.current - 2];
+      if (visitedArrIndexRef.current > 1) {
+        let prevID = visitedArr[visitedArrIndexRef.current - 2];
         if (
           !(
             (prevID.x === sX && prevID.y === sY) ||
@@ -405,16 +452,15 @@ const Main = () => {
             .attr("stroke", "#fff");
         }
       }
-      indexRef.current = 0;
-      animationFunRef.current = () => {};
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
-      dispatch({ type: "CHANGE_PLAY", payload: !AppState.isPlay });
-      dispatch({ type: "ANIMATION_COMPLETE", payload: true });
+      visitedArrIndexRef.current = 0;
+      pathArrIndexRef.current = 0;
+      animateArrRef.current = animatePathArr(AppState.pathArr);
+      animationFunRef.current = animateArrRef.current;
+      animationRef.current = requestAnimationFrame(animationFunRef.current);
     }
-    let id = arr[indexRef.current];
-    if (indexRef.current > 0) {
-      let prevID = arr[indexRef.current - 1];
+    let id = visitedArr[visitedArrIndexRef.current];
+    if (visitedArrIndexRef.current > 0) {
+      let prevID = visitedArr[visitedArrIndexRef.current - 1];
       if (
         !(
           (prevID.x === sX && prevID.y === sY) ||
@@ -429,8 +475,8 @@ const Main = () => {
           .attr("stroke", "#0066ff");
       }
     }
-    if (indexRef.current > 1) {
-      let prevID = arr[indexRef.current - 2];
+    if (visitedArrIndexRef.current > 1) {
+      let prevID = visitedArr[visitedArrIndexRef.current - 2];
       if (
         !(
           (prevID.x === sX && prevID.y === sY) ||
@@ -457,10 +503,12 @@ const Main = () => {
     } else {
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     }
-    indexRef.current++;
+    visitedArrIndexRef.current++;
   };
+
   useEffect(() => {
-    indexRef.current = 0;
+    visitedArrIndexRef.current = 0;
+    animateArrRef.current = animateVisitedArr(AppState.visitedArr);
   }, [AppState.algorithm]);
   useEffect(() => {
     if (AppState.isPlay) {
@@ -481,9 +529,7 @@ const Main = () => {
         }
         dispatch({ type: "ANIMATION_COMPLETE", payload: false });
       }
-      animationFunRef.current = () => {
-        animationFun(AppState.algorithmArr);
-      };
+      animationFunRef.current = animateArrRef.current;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     } else {
       animationFunRef.current = () => {};

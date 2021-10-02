@@ -70,7 +70,8 @@ export interface AppStateType {
   modalState: ModalStateType;
   speed: string;
   algorithm: string;
-  algorithmArr: VertexType[];
+  visitedArr: VertexType[];
+  pathArr: VertexType[];
   mazes: string;
   mazesIdArray: string[];
   isAsideModalOpen: boolean;
@@ -101,7 +102,8 @@ const AppInitialState: AppStateType = {
   modalState: mazesPatterns,
   speed: "normal",
   algorithm: "",
-  algorithmArr: [],
+  visitedArr: [],
+  pathArr: [],
   mazes: "",
   mazesIdArray: [],
   specialNodes: { targetNode: { x: 0, y: 0 }, startNode: { x: 0, y: 0 } },

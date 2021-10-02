@@ -78,21 +78,35 @@ const bfs = (
   tmp = { x: startVertex.x, y: startVertex.y };
   visited[`node-${tmp.x}-${tmp.y}`] = true;
   queue.push(tmp);
-  let nodes: VertexType[] = [];
+  let visitedArr: VertexType[] = [];
   while (queue.length != 0) {
     tmp = queue.shift()!;
     if (tmp.x === endVertex.x && tmp.y === endVertex.y) {
       break;
     }
-    nodes.push(tmp);
+    visitedArr.push(tmp);
     let unVisitedVertices = unVisitedNeighbour(tmp);
     unVisitedVertices.forEach((vertex) => {
       if (!visited[`node-${vertex.x}-${vertex.y}`]) {
-        visited[`node-${vertex.x}-${vertex.y}`] = true;
+        visited[`node-${vertex.x}-${vertex.y}`] = tmp;
         queue.push(vertex);
       }
     });
   }
-  return nodes;
+  let pathArr: VertexType[] = [];
+  let x = endVertex.x,
+    y = endVertex.y;
+  while (visited[`node-${x}-${y}`] !== true) {
+    let parentVertex = visited[`node-${x}-${y}`];
+    if (parentVertex.x === startVertex.x && parentVertex.y === startVertex.y) {
+      break;
+    }
+    pathArr.push(parentVertex);
+    x = parentVertex.x;
+    y = parentVertex.y;
+  }
+  console.log(pathArr);
+  pathArr = pathArr.reverse();
+  return { visitedArr, pathArr };
 };
 export default bfs;
