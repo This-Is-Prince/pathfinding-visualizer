@@ -31,7 +31,7 @@ export type ActionType =
   | { type: "CHANGE_SPEED"; payload: string }
   | { type: "CHANGE_ALGORITHM"; payload: string }
   | { type: "CHANGE_MAZES"; payload: string }
-  | { type: "ANIMATION_COMPLETE" }
+  | { type: "ANIMATION_COMPLETE"; payload: boolean }
   | { type: "CHANGE_NODE_MAX_WIDTH"; payload: number };
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
@@ -45,7 +45,7 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
     case "ANIMATION_COMPLETE": {
       return {
         ...state,
-        isPlay: false,
+        isAnimationComplete: action.payload,
       };
     }
     case "CHANGE_NODE_MAX_WIDTH": {
@@ -196,6 +196,7 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         mazes: "",
         mazesIdArray: [],
         algorithm: "",
+        algorithmArr: [],
       };
     }
     case "OPEN_SETTINGS": {

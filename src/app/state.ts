@@ -74,6 +74,7 @@ export interface AppStateType {
   mazes: string;
   mazesIdArray: string[];
   isAsideModalOpen: boolean;
+  isAnimationComplete: boolean;
   specialNodes: {
     startNode: {
       x: number;
@@ -92,6 +93,7 @@ const AppInitialState: AppStateType = {
   nodeInfo: { column: 0, row: 0, height: 0, nodes: [], width: 0 },
   nodeMaxWidth: 25,
   isPlay: false,
+  isAnimationComplete: false,
   isSettingsOpen: false,
   isAsideModalOpen: false,
   isBoardClear: false,

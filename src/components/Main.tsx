@@ -368,18 +368,51 @@ const Main = () => {
   let animationFunRef: any = useRef();
   let animationRef: any = useRef();
   let animationFun = (arr: VertexType[]) => {
-    if (indexRef.current >= arr.length) {
-      indexRef.current = 0;
-      animationFunRef.current = () => {};
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
-      dispatch({ type: "ANIMATION_COMPLETE" });
-    }
-    let id = arr[indexRef.current];
     let {
       startNode: { x: sX, y: sY },
       targetNode: { x: tX, y: tY },
     } = AppState.specialNodes;
+    if (indexRef.current >= arr.length) {
+      if (indexRef.current > 0) {
+        let prevID = arr[indexRef.current - 1];
+        if (
+          !(
+            (prevID.x === sX && prevID.y === sY) ||
+            (prevID.x === tX && prevID.y === tY)
+          )
+        ) {
+          d3.select(`#node-${prevID.x}-${prevID.y}`)
+            .transition()
+            .delay(500)
+            .duration(250)
+            .attr("fill", "#0066ff")
+            .attr("stroke", "#fff");
+        }
+      }
+      if (indexRef.current > 1) {
+        let prevID = arr[indexRef.current - 2];
+        if (
+          !(
+            (prevID.x === sX && prevID.y === sY) ||
+            (prevID.x === tX && prevID.y === tY)
+          )
+        ) {
+          d3.select(`#node-${prevID.x}-${prevID.y}`)
+            .transition()
+            .duration(250)
+            .delay(1000)
+            .attr("fill", "#0066ff")
+            .attr("stroke", "#fff");
+        }
+      }
+      indexRef.current = 0;
+      animationFunRef.current = () => {};
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+      dispatch({ type: "CHANGE_PLAY", payload: !AppState.isPlay });
+      dispatch({ type: "ANIMATION_COMPLETE", payload: true });
+    }
+    let id = arr[indexRef.current];
     if (indexRef.current > 0) {
       let prevID = arr[indexRef.current - 1];
       if (
@@ -391,6 +424,23 @@ const Main = () => {
         d3.select(`#node-${prevID.x}-${prevID.y}`)
           .transition()
           .delay(500)
+          .duration(250)
+          .attr("fill", "#00ffff")
+          .attr("stroke", "#0066ff");
+      }
+    }
+    if (indexRef.current > 1) {
+      let prevID = arr[indexRef.current - 2];
+      if (
+        !(
+          (prevID.x === sX && prevID.y === sY) ||
+          (prevID.x === tX && prevID.y === tY)
+        )
+      ) {
+        d3.select(`#node-${prevID.x}-${prevID.y}`)
+          .transition()
+          .delay(1000)
+          .duration(250)
           .attr("fill", "#0066ff")
           .attr("stroke", "#fff");
       }
@@ -400,7 +450,7 @@ const Main = () => {
         .transition()
         .duration(0)
         .attr("fill", "#ffd803")
-        .attr("stroke", "#002233")
+        .attr("stroke", "#0066ff")
         .on("end", () => {
           animationRef.current = requestAnimationFrame(animationFunRef.current);
         });
@@ -414,6 +464,23 @@ const Main = () => {
   }, [AppState.algorithm]);
   useEffect(() => {
     if (AppState.isPlay) {
+      if (AppState.isAnimationComplete) {
+        let row = AppState.nodeInfo.row,
+          column = AppState.nodeInfo.column;
+        for (let i = 0; i < row; i++) {
+          for (let j = 0; j < column; j++) {
+            let fill = document
+              .getElementById(`node-${i}-${j}`)
+              ?.getAttribute("fill");
+            if (fill !== "rgb(0, 34, 51)" && fill !== "#002233") {
+              d3.select(`#node-${i}-${j}`)
+                .attr("fill", "#fff")
+                .attr("stroke", "#0066ff");
+            }
+          }
+        }
+        dispatch({ type: "ANIMATION_COMPLETE", payload: false });
+      }
       animationFunRef.current = () => {
         animationFun(AppState.algorithmArr);
       };
