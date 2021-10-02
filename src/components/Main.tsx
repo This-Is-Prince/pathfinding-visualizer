@@ -87,12 +87,12 @@ const Main = () => {
       if (width / noOfNodesInColumn >= AppState.nodeMaxWidth) {
         noOfNodesInColumn++;
       } else {
-        row = true;
+        column = true;
       }
       if (height / noOfNodesInRow >= AppState.nodeMaxWidth) {
         noOfNodesInRow++;
       } else {
-        column = true;
+        row = true;
       }
       if (row && column) {
         break;
@@ -318,9 +318,11 @@ const Main = () => {
     };
   }, []);
   useEffect(() => {
+    console.log("use effect");
+
     removeListeners();
     updateSize();
-  }, [AppState.isBoardClear]);
+  }, [AppState.isBoardClear, AppState.nodeMaxWidth]);
   // animation ref
   let indexRef = useRef(0);
   let animationFunRef = useRef();

@@ -6,7 +6,8 @@ import AppInitialState from "./app/state";
 import Main from "./components/Main";
 import Aside from "./components/Aside";
 import FullScreenModal from "./components/modal/FullScreenModal";
-import Menu from "./components/Settings";
+import Settings from "./components/Settings";
+import AsideModal from "./components/modal/AsideModal";
 const App = () => {
   const [AppState, dispatch] = useReducer(reducer, AppInitialState);
   const checkScreen = () => {
@@ -30,7 +31,8 @@ const App = () => {
         <>
           <Aside />
           <Main />
-          <Menu />
+          <Settings />
+          <AsideModal />
         </>
       )}
     </AppContext.Provider>

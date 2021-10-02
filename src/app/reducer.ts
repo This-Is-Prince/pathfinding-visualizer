@@ -11,6 +11,7 @@ import dfs from "../mazes/dfs";
 
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
+  | { type: "CHANGE_ASIDE_MODAL"; payload: boolean }
   | { type: "CHANGE_SVG"; payload: SVGStateType }
   | { type: "ADD_NODES"; payload: NodeInfoType }
   | { type: "OPEN_SETTINGS"; payload: boolean }
@@ -20,7 +21,8 @@ export type ActionType =
   | { type: "CHANGE_PLAY"; payload: boolean }
   | { type: "CHANGE_SPEED"; payload: string }
   | { type: "CHANGE_ALGORITHM"; payload: string }
-  | { type: "CHANGE_MAZES"; payload: string };
+  | { type: "CHANGE_MAZES"; payload: string }
+  | { type: "CHANGE_NODE_MAX_WIDTH"; payload: number };
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
   switch (action.type) {
@@ -30,10 +32,22 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         isPlay: action.payload,
       };
     }
+    case "CHANGE_NODE_MAX_WIDTH": {
+      return {
+        ...state,
+        nodeMaxWidth: action.payload,
+      };
+    }
     case "CHANGE_MODAL_STATE": {
       return {
         ...state,
         modalState: action.payload,
+      };
+    }
+    case "CHANGE_ASIDE_MODAL": {
+      return {
+        ...state,
+        isAsideModalOpen: action.payload,
       };
     }
     case "CHANGE_FULLSCREEN_MODEL": {

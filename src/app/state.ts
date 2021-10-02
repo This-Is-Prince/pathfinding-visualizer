@@ -71,6 +71,7 @@ export interface AppStateType {
   algorithm: string;
   mazes: string;
   mazesIdArray: string[];
+  isAsideModalOpen: boolean;
 }
 
 const AppInitialState: AppStateType = {
@@ -80,6 +81,7 @@ const AppInitialState: AppStateType = {
   nodeMaxWidth: 25,
   isPlay: false,
   isSettingsOpen: false,
+  isAsideModalOpen: false,
   isBoardClear: false,
   isBoardDirty: false,
   modalState: mazesPatterns,

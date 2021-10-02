@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { IoMdSpeedometer } from "react-icons/io";
+import { GiResize } from "react-icons/gi";
 import { FiSettings } from "react-icons/fi";
 import { FaPauseCircle, FaPlayCircle, FaSitemap } from "react-icons/fa";
 import AppContext from "../app/AppContext";
@@ -19,12 +19,12 @@ const Aside = () => {
       </button>
       <button
         className="flex-center btn aside-btn"
-        aria-label="speed"
+        aria-label="resize"
         onClick={() => {
-          console.log("speed");
+          dispatch({ type: "CHANGE_ASIDE_MODAL", payload: true });
         }}
       >
-        <IoMdSpeedometer />
+        <GiResize />
       </button>
       <button
         className={`flex-center btn aside-btn`}
