@@ -1,12 +1,15 @@
 import { VertexType } from "../mazes/dfs";
 
-let column = 0,
-  row = 0,
-  visited: any = {};
+let visited: any = {};
 
-const unVisitedNeighbour = (startVertex: VertexType) => {
-  let x = startVertex.x - 1,
-    y = startVertex.y;
+export const unVisitedNeighbour = (
+  vertex: VertexType,
+  row: number,
+  column: number,
+  visited: any
+) => {
+  let x = vertex.x - 1,
+    y = vertex.y;
   let fill = document.getElementById(`node-${x}-${y}`)?.getAttribute("fill");
   let vertices: VertexType[] = [];
   if (
@@ -20,8 +23,8 @@ const unVisitedNeighbour = (startVertex: VertexType) => {
   ) {
     vertices.push({ x, y });
   }
-  x = startVertex.x;
-  y = startVertex.y + 1;
+  x = vertex.x;
+  y = vertex.y + 1;
   fill = document.getElementById(`node-${x}-${y}`)?.getAttribute("fill");
   if (
     fill !== "rgb(0, 34, 51)" &&
@@ -34,8 +37,8 @@ const unVisitedNeighbour = (startVertex: VertexType) => {
   ) {
     vertices.push({ x, y });
   }
-  x = startVertex.x + 1;
-  y = startVertex.y;
+  x = vertex.x + 1;
+  y = vertex.y;
   fill = document.getElementById(`node-${x}-${y}`)?.getAttribute("fill");
   if (
     fill !== "rgb(0, 34, 51)" &&
@@ -48,8 +51,8 @@ const unVisitedNeighbour = (startVertex: VertexType) => {
   ) {
     vertices.push({ x, y });
   }
-  x = startVertex.x;
-  y = startVertex.y - 1;
+  x = vertex.x;
+  y = vertex.y - 1;
   fill = document.getElementById(`node-${x}-${y}`)?.getAttribute("fill");
   if (
     fill !== "rgb(0, 34, 51)" &&
@@ -64,14 +67,13 @@ const unVisitedNeighbour = (startVertex: VertexType) => {
   }
   return vertices;
 };
+
 const bfs = (
   r: number,
   c: number,
   startVertex: VertexType,
   endVertex: VertexType
 ) => {
-  row = r;
-  column = c;
   visited = {};
   let queue: VertexType[] = [],
     tmp: VertexType;
@@ -85,7 +87,7 @@ const bfs = (
       break;
     }
     visitedArr.push(tmp);
-    let unVisitedVertices = unVisitedNeighbour(tmp);
+    let unVisitedVertices = unVisitedNeighbour(tmp, r, c, visited);
     unVisitedVertices.forEach((vertex) => {
       if (!visited[`node-${vertex.x}-${vertex.y}`]) {
         visited[`node-${vertex.x}-${vertex.y}`] = tmp;
@@ -105,7 +107,6 @@ const bfs = (
     x = parentVertex.x;
     y = parentVertex.y;
   }
-  console.log(pathArr);
   pathArr = pathArr.reverse();
   return { visitedArr, pathArr };
 };

@@ -379,7 +379,7 @@ const Main = () => {
       let { x, y } = pathArr[pathArrIndexRef.current - 1];
       d3.select(`#node-${x}-${y}`)
         .transition()
-        .duration(250)
+        .duration(0)
         .delay(0)
         .attr("fill", "#FFE900");
       dispatch({ type: "CHANGE_PLAY", payload: !AppState.isPlay });
@@ -396,12 +396,12 @@ const Main = () => {
         d3.select(`#node-${x}-${y}`)
           .transition()
           .duration(250)
-          .delay(0)
+          .delay(500)
           .attr("fill", "#FFE900");
       }
       d3.select(`#node-${x}-${y}`)
         .transition()
-        .duration(250)
+        .duration(50)
         .attr("fill", "#F24236")
         .on("end", () => {
           animationRef.current = requestAnimationFrame(animationFunRef.current);

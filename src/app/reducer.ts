@@ -9,6 +9,7 @@ import {
 import mst from "../mazes/mst";
 import dfs, { VertexType } from "../mazes/dfs";
 import bfs from "../algorithm/bfs";
+import DFS from "../algorithm/dfs";
 
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
@@ -170,17 +171,26 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       };
     }
     case "CHANGE_ALGORITHM": {
-      let { visitedArr, pathArr } = bfs(
-        state.nodeInfo.row,
-        state.nodeInfo.column,
-        state.specialNodes.startNode,
-        state.specialNodes.targetNode
-      );
-
+      let obj: { visitedArr: VertexType[]; pathArr: VertexType[] };
+      if (action.payload === "bfs") {
+        obj = bfs(
+          state.nodeInfo.row,
+          state.nodeInfo.column,
+          state.specialNodes.startNode,
+          state.specialNodes.targetNode
+        );
+      } else {
+        obj = DFS(
+          state.nodeInfo.row,
+          state.nodeInfo.column,
+          state.specialNodes.startNode,
+          state.specialNodes.targetNode
+        );
+      }
       return {
         ...state,
-        visitedArr,
-        pathArr,
+        visitedArr: obj.visitedArr,
+        pathArr: obj.pathArr,
         algorithm: action.payload,
       };
     }
