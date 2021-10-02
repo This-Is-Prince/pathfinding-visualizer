@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import * as d3 from "d3";
 import AppContext from "../app/AppContext";
 import { Node } from "../app/state";
+import { VertexType } from "../mazes/dfs";
 
 const changeNode = (
   e: any,
@@ -364,8 +365,64 @@ const Main = () => {
   }, [AppState.isBoardClear, AppState.nodeMaxWidth]);
   // animation ref
   let indexRef = useRef(0);
-  let animationFunRef = useRef();
-  useEffect(() => {}, [AppState.isPlay]);
+  let animationFunRef: any = useRef();
+  let animationRef: any = useRef();
+  let animationFun = (arr: VertexType[]) => {
+    if (indexRef.current >= arr.length) {
+      indexRef.current = 0;
+      animationFunRef.current = () => {};
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+      dispatch({ type: "ANIMATION_COMPLETE" });
+    }
+    let id = arr[indexRef.current];
+    let {
+      startNode: { x: sX, y: sY },
+      targetNode: { x: tX, y: tY },
+    } = AppState.specialNodes;
+    if (indexRef.current > 0) {
+      let prevID = arr[indexRef.current - 1];
+      if (
+        !(
+          (prevID.x === sX && prevID.y === sY) ||
+          (prevID.x === tX && prevID.y === tY)
+        )
+      ) {
+        d3.select(`#node-${prevID.x}-${prevID.y}`)
+          .transition()
+          .delay(500)
+          .attr("fill", "#0066ff")
+          .attr("stroke", "#fff");
+      }
+    }
+    if (!((id.x === sX && id.y === sY) || (id.x === tX && id.y === tY))) {
+      d3.select(`#node-${id.x}-${id.y}`)
+        .transition()
+        .duration(0)
+        .attr("fill", "#ffd803")
+        .attr("stroke", "#002233")
+        .on("end", () => {
+          animationRef.current = requestAnimationFrame(animationFunRef.current);
+        });
+    } else {
+      animationRef.current = requestAnimationFrame(animationFunRef.current);
+    }
+    indexRef.current++;
+  };
+  useEffect(() => {
+    indexRef.current = 0;
+  }, [AppState.algorithm]);
+  useEffect(() => {
+    if (AppState.isPlay) {
+      animationFunRef.current = () => {
+        animationFun(AppState.algorithmArr);
+      };
+      animationRef.current = requestAnimationFrame(animationFunRef.current);
+    } else {
+      animationFunRef.current = () => {};
+      cancelAnimationFrame(animationRef.current);
+    }
+  }, [AppState.isPlay]);
   return <main ref={mainRef} className="main flex-center"></main>;
 };
 

@@ -1,4 +1,5 @@
 import { mazesPatterns } from "../assets/data";
+import { VertexType } from "../mazes/dfs";
 
 export class Node {
   constructor(
@@ -69,6 +70,7 @@ export interface AppStateType {
   modalState: ModalStateType;
   speed: string;
   algorithm: string;
+  algorithmArr: VertexType[];
   mazes: string;
   mazesIdArray: string[];
   isAsideModalOpen: boolean;
@@ -97,6 +99,7 @@ const AppInitialState: AppStateType = {
   modalState: mazesPatterns,
   speed: "normal",
   algorithm: "",
+  algorithmArr: [],
   mazes: "",
   mazesIdArray: [],
   specialNodes: { targetNode: { x: 0, y: 0 }, startNode: { x: 0, y: 0 } },
