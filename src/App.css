@@ -367,10 +367,7 @@ ASIDE MODAL CSS
 
 .black-node {
   background-color: var(--clr-sec);
-  animation-name: animateBlackNode;
-  animation-timing-function: ease-in-out;
-  animation-duration: 0.5s;
-  animation-iteration-count: 1;
+  animation: 0.5s ease-out 1 alternate forwards running animateBlackNode;
 }
 @keyframes animateBlackNode {
   0% {
@@ -388,13 +385,7 @@ ASIDE MODAL CSS
 .visited-node {
   background-color: rgba(0, 190, 218, 0.75);
   outline: 1px solid var(--clr-pri);
-  animation-name: animateVisitedNode;
-  animation-timing-function: ease-out;
-  animation-duration: 1.5s;
-  animation-direction: alternate;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-  animation-iteration-count: 1;
+  animation: 1.5s ease-out 1 alternate forwards running animateVisitedNode;
 }
 @keyframes animateVisitedNode {
   0% {
@@ -417,13 +408,7 @@ ASIDE MODAL CSS
 .path-node {
   background-color: rgb(255, 254, 106);
   outline: 1px solid var(--clr-pri);
-  animation-name: animatePathNode;
-  animation-timing-function: linear;
-  animation-duration: 1.5s;
-  animation-direction: alternate;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-  animation-iteration-count: 1;
+  animation: 1.5s ease-out 1 alternate forwards running animatePathNode;
 }
 @keyframes animatePathNode {
   0% {

@@ -114,11 +114,9 @@ const Main = () => {
 
       if (!((x === sX && y === sY) || (x === tX && y === tY))) {
         node.classList.add("black-node");
-        setTimeout(() => {
-          animationRef.current = requestAnimationFrame(animationFunRef.current);
-        }, 0);
-        mazeArrIndexRef.current++;
       }
+      animationRef.current = requestAnimationFrame(animationFunRef.current);
+      mazeArrIndexRef.current++;
     }
   };
   useEffect(() => {
