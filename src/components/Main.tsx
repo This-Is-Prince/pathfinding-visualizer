@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 import AppContext from "../app/AppContext";
-import { Node, SpecialNodeType } from "../app/state";
+import { SpecialNodeType } from "../app/state";
 import { VertexType } from "../mazes/dfs";
 export let findXY = (id: string) => {
   id = id.substring(5);

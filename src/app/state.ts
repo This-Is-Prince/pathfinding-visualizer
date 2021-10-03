@@ -61,7 +61,7 @@ export interface ModalListType {
 export type SpecialNodeType = {
   x: number;
   y: number;
-  self: HTMLDivElement;
+  self: HTMLImageElement;
 };
 export interface AppStateType {
   isFullScreenModelOpen: boolean;
@@ -106,8 +106,8 @@ const AppInitialState: AppStateType = {
   mazes: "",
   mazesIdArray: [],
   specialNodes: {
-    targetNode: { x: 0, y: 0, self: {} as HTMLDivElement },
-    startNode: { x: 0, y: 0, self: {} as HTMLDivElement },
+    targetNode: { x: 0, y: 0, self: {} as HTMLImageElement },
+    startNode: { x: 0, y: 0, self: {} as HTMLImageElement },
   },
 };
 
