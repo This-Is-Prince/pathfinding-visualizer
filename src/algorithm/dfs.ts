@@ -49,6 +49,9 @@ const dfs = (
   let { x, y } = endVertex;
   while (visited[`node-${x}-${y}`] !== true) {
     let parentVertex = visited[`node-${x}-${y}`];
+    if (!parentVertex) {
+      break;
+    }
     if (parentVertex.x === startVertex.x && parentVertex.y === startVertex.y) {
       break;
     }

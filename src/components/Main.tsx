@@ -72,8 +72,8 @@ const Main = () => {
         document.querySelectorAll(".node").forEach((node) => {
           node.addEventListener("mouseenter", handleMouseEnter);
         });
-        let bg = event.target.style.backgroundColor;
-        if (bg === "rgb(0, 34, 51)" || bg === "#002233") {
+        let isBlack = event.target.classList.contains("black-node");
+        if (isBlack) {
           event.target.classList.remove("black-node");
         } else {
           event.target.classList.add("black-node");
@@ -335,13 +335,18 @@ const Main = () => {
           column = AppState.container.column;
         for (let i = 0; i < row; i++) {
           for (let j = 0; j < column; j++) {
-            let isVisited = document
-              .getElementById(`node-${i}-${j}`)!
-              .classList.contains("visited-node");
+            let elm = document.getElementById(`node-${i}-${j}`)!;
+            let isVisited = elm.classList.contains("visited-node");
+            let isPath = elm.classList.contains("path-node");
             if (isVisited) {
               document
                 .getElementById(`node-${i}-${j}`)!
                 .classList.remove("visited-node");
+            }
+            if (isPath) {
+              document
+                .getElementById(`node-${i}-${j}`)!
+                .classList.remove("path-node");
             }
           }
         }
