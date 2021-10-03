@@ -1,4 +1,4 @@
-import { SpecialNodeType } from "../app/state";
+import { SpecialNodeType } from "../components/Main";
 import { VertexType } from "../mazes/dfs";
 
 let visited: any = {};

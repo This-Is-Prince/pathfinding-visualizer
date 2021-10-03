@@ -3,6 +3,10 @@ import bfs from "../algorithm/bfs";
 import AppContext from "../app/AppContext";
 import { VertexType } from "../mazes/dfs";
 import stair from "../mazes/stair";
+import dfsAlgorithm from "../algorithm/dfs";
+import dfs from "../mazes/dfs";
+import mst from "../mazes/mst";
+
 export let findXY = (id: string) => {
   id = id.substring(5);
   let index = id.search("-");
@@ -11,7 +15,7 @@ export let findXY = (id: string) => {
   return { x, y };
 };
 
-type SpecialNodeType = {
+export type SpecialNodeType = {
   x: number;
   y: number;
   self: HTMLElement;
@@ -95,6 +99,7 @@ const Main = () => {
   let animateMaze = () => {
     if (mazeArrIndexRef.current >= mazeArr.current.length) {
       visitedArrIndexRef.current = 0;
+      dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
       dispatch({ type: "CHANGE_PLAY", payload: false });
       visitedArrIndexRef.current = 0;
       cancelAnimationFrame(animationRef.current);
@@ -114,15 +119,151 @@ const Main = () => {
         }, 0);
         mazeArrIndexRef.current++;
       }
-      let vertices = stair(rowRef.current, columnRef.current);
     }
   };
-
+  useEffect(() => {
+    updateSize();
+    let vertices: VertexType[] = [];
+    let maze = AppState.maze;
+    let r = rowRef.current,
+      c = columnRef.current;
+    if (maze === "stair pattern") {
+      vertices = stair(r, c);
+    } else if (
+      maze === "recursive division" ||
+      maze === "recursive division (vertical skew)" ||
+      maze === "recursive division (horizontal skew)"
+    ) {
+      vertices = dfs(r, c, maze);
+    } else if (maze === "mst maze") {
+      vertices = mst(r, c);
+    }
+    mazeArrIndexRef.current = 0;
+    mazeArr.current = vertices;
+    animationFunRef.current = animateMaze;
+    animationRef.current = requestAnimationFrame(animationFunRef.current);
+  }, [AppState.maze]);
   /**
    *
-   * ANIMATION FUNCTION END
+   * EVENTS
    *
    */
+  const handleMouseEnter = (event: any) => {
+    let { x: sX, y: sY } = findXY(event.target.getAttribute("id"));
+    let x = parseInt(sX),
+      y = parseInt(sY);
+    const { x: startNodeX, y: startNodeY } = startNodeRef.current;
+    const { x: targetNodeX, y: targetNodeY } = targetNodeRef.current;
+    if (
+      (x === startNodeX && y === startNodeY) ||
+      (x === targetNodeX && y === targetNodeY)
+    ) {
+      event.target.classList.remove("black-node");
+    } else {
+      event.target.classList.add("black-node");
+    }
+  };
+  let handleMouseUp = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.removeEventListener("mouseenter", handleMouseEnter);
+    });
+  };
+
+  const handleTouchEnd = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.removeEventListener("touchstart", handleTouchStartOfStartNode);
+      node.removeEventListener("touchstart", handleTouchStartOfTargetNode);
+    });
+  };
+
+  // start node events
+
+  const startNodeOnMouseEnter = (event: any) => {
+    if (!event.target.getAttribute("id")) {
+      return;
+    }
+    event.target.classList.remove("black-node");
+    const { x, y } = findXY(event.target.getAttribute("id"));
+    let currParentOfStartNode = document.getElementById(`node-${x}-${y}`)!;
+    if (!currParentOfStartNode.hasChildNodes()) {
+      let prevParentOfStartNode = document.getElementById(
+        `node-${startNodeRef.current.x}-${startNodeRef.current.y}`
+      )!;
+      prevParentOfStartNode.removeChild(startNodeRef.current.self);
+      startNodeRef.current = {
+        ...startNodeRef.current,
+        x: parseInt(x),
+        y: parseInt(y),
+      };
+      currParentOfStartNode.appendChild(startNodeRef.current.self);
+      dispatch({
+        type: "ADD_SPECIAL_START_NODE",
+        payload: { x: parseInt(x), y: parseInt(y) },
+      });
+    }
+  };
+  const startNodeOnMouseDown = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.addEventListener("mouseenter", startNodeOnMouseEnter);
+    });
+  };
+  const startNodeOnMouseUp = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.removeEventListener("mouseenter", startNodeOnMouseEnter);
+    });
+  };
+  const handleTouchStartOfStartNode = (event: any) => {
+    startNodeOnMouseEnter(event);
+  };
+  const startNodeOnDBLClick = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.addEventListener("touchstart", handleTouchStartOfStartNode);
+    });
+  };
+
+  //  target node events
+  const targetNodeOnMouseEnter = (event: any) => {
+    if (!event.target.getAttribute("id")) {
+      return;
+    }
+    event.target.classList.remove("black-node");
+    const { x, y } = findXY(event.target.getAttribute("id"));
+    let currParentOfTargetNode = document.getElementById(`node-${x}-${y}`)!;
+    if (!currParentOfTargetNode.hasChildNodes()) {
+      let prevParentOfTargetNode = document.getElementById(
+        `node-${targetNodeRef.current.x}-${targetNodeRef.current.y}`
+      )!;
+      prevParentOfTargetNode.removeChild(targetNodeRef.current.self);
+      targetNodeRef.current = {
+        ...targetNodeRef.current,
+        x: parseInt(x),
+        y: parseInt(y),
+      };
+      currParentOfTargetNode.appendChild(targetNodeRef.current.self);
+      dispatch({
+        type: "ADD_SPECIAL_TARGET_NODE",
+        payload: { x: parseInt(x), y: parseInt(y) },
+      });
+    }
+  };
+  const targetNodeOnMouseDown = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.addEventListener("mouseenter", targetNodeOnMouseEnter);
+    });
+  };
+  const targetNodeOnMouseUp = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.removeEventListener("mouseenter", targetNodeOnMouseEnter);
+    });
+  };
+  const handleTouchStartOfTargetNode = (event: any) => {
+    targetNodeOnMouseEnter(event);
+  };
+  const targetNodeOnDBLClick = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.addEventListener("touchstart", handleTouchStartOfTargetNode);
+    });
+  };
   /**
    *
    * UPDATE SIZE END
@@ -131,7 +272,7 @@ const Main = () => {
   const updateSize = () => {
     cancelAnimationFrame(animationRef.current);
     dispatch({ type: "CHANGE_PLAY", payload: false });
-
+    dispatch({ type: "CHANGE_ALGORITHM", payload: "" });
     let width = mainRef.current.getBoundingClientRect().width - 20;
     let height = mainRef.current.getBoundingClientRect().height - 20;
 
@@ -181,33 +322,6 @@ const Main = () => {
         }
       }
     };
-    const handleMouseEnter = (event: any) => {
-      let { x: sX, y: sY } = findXY(event.target.getAttribute("id"));
-      let x = parseInt(sX),
-        y = parseInt(sY);
-      const { x: startNodeX, y: startNodeY } = startNodeRef.current;
-      const { x: targetNodeX, y: targetNodeY } = targetNodeRef.current;
-      if (
-        (x === startNodeX && y === startNodeY) ||
-        (x === targetNodeX && y === targetNodeY)
-      ) {
-        event.target.classList.remove("black-node");
-      } else {
-        event.target.classList.add("black-node");
-      }
-    };
-    let handleMouseUp = () => {
-      document.querySelectorAll(".node").forEach((node) => {
-        node.removeEventListener("mouseenter", handleMouseEnter);
-      });
-    };
-
-    const handleTouchEnd = () => {
-      document.querySelectorAll(".node").forEach((node) => {
-        node.removeEventListener("touchstart", handleTouchStartOfStartNode);
-        node.removeEventListener("touchstart", handleTouchStartOfTargetNode);
-      });
-    };
 
     let row = Math.floor(noOfNodesInRow / 2);
     let startCol = Math.floor(noOfNodesInColumn / 4);
@@ -249,107 +363,16 @@ const Main = () => {
       payload: { x: row, y: targetCol },
     });
 
-    const startNodeOnMouseEnter = (event: any) => {
-      if (!event.target.getAttribute("id")) {
-        return;
-      }
-      event.target.classList.remove("black-node");
-      const { x, y } = findXY(event.target.getAttribute("id"));
-      let currParentOfStartNode = document.getElementById(`node-${x}-${y}`)!;
-      if (!currParentOfStartNode.hasChildNodes()) {
-        let prevParentOfStartNode = document.getElementById(
-          `node-${startNodeRef.current.x}-${startNodeRef.current.y}`
-        )!;
-        prevParentOfStartNode.removeChild(startNodeRef.current.self);
-        startNodeRef.current = {
-          ...startNodeRef.current,
-          x: parseInt(x),
-          y: parseInt(y),
-        };
-        currParentOfStartNode.appendChild(startNodeRef.current.self);
-        dispatch({
-          type: "ADD_SPECIAL_START_NODE",
-          payload: { x: parseInt(x), y: parseInt(y) },
-        });
-      }
-    };
-    const startNodeOnMouseDown = () => {
-      document.querySelectorAll(".node").forEach((node) => {
-        node.addEventListener("mouseenter", startNodeOnMouseEnter);
-      });
-    };
-    const startNodeOnMouseUp = () => {
-      document.querySelectorAll(".node").forEach((node) => {
-        node.removeEventListener("mouseenter", startNodeOnMouseEnter);
-      });
-    };
-    const handleTouchStartOfStartNode = (event: any) => {
-      startNodeOnMouseEnter(event);
-    };
-    const startNodeOnDBLClick = () => {
-      document.querySelectorAll(".node").forEach((node) => {
-        node.addEventListener("touchstart", handleTouchStartOfStartNode);
-      });
-    };
-
     startNode.addEventListener("mousedown", startNodeOnMouseDown);
     startNode.addEventListener("mouseup", startNodeOnMouseUp);
     startNode.addEventListener("dblclick", startNodeOnDBLClick);
 
-    const targetNodeOnMouseEnter = (event: any) => {
-      if (!event.target.getAttribute("id")) {
-        return;
-      }
-      event.target.classList.remove("black-node");
-      const { x, y } = findXY(event.target.getAttribute("id"));
-      let currParentOfTargetNode = document.getElementById(`node-${x}-${y}`)!;
-      if (!currParentOfTargetNode.hasChildNodes()) {
-        let prevParentOfTargetNode = document.getElementById(
-          `node-${targetNodeRef.current.x}-${targetNodeRef.current.y}`
-        )!;
-        prevParentOfTargetNode.removeChild(targetNodeRef.current.self);
-        targetNodeRef.current = {
-          ...targetNodeRef.current,
-          x: parseInt(x),
-          y: parseInt(y),
-        };
-        currParentOfTargetNode.appendChild(targetNodeRef.current.self);
-        dispatch({
-          type: "ADD_SPECIAL_TARGET_NODE",
-          payload: { x: parseInt(x), y: parseInt(y) },
-        });
-      }
-    };
-    const targetNodeOnMouseDown = () => {
-      document.querySelectorAll(".node").forEach((node) => {
-        node.addEventListener("mouseenter", targetNodeOnMouseEnter);
-      });
-    };
-    const targetNodeOnMouseUp = () => {
-      document.querySelectorAll(".node").forEach((node) => {
-        node.removeEventListener("mouseenter", targetNodeOnMouseEnter);
-      });
-    };
-    const handleTouchStartOfTargetNode = (event: any) => {
-      targetNodeOnMouseEnter(event);
-    };
-    const targetNodeOnDBLClick = () => {
-      document.querySelectorAll(".node").forEach((node) => {
-        node.addEventListener("touchstart", handleTouchStartOfTargetNode);
-      });
-    };
     targetNode.addEventListener("mousedown", targetNodeOnMouseDown);
     targetNode.addEventListener("mouseup", targetNodeOnMouseUp);
     targetNode.addEventListener("dblclick", targetNodeOnDBLClick);
     visitedArrIndexRef.current = 0;
-    let obj = bfs(
-      rowRef.current,
-      columnRef.current,
-      startNodeRef.current,
-      targetNodeRef.current
-    );
-    visitedArr.current = obj.visitedArr;
-    pathArr.current = obj.pathArr;
+    visitedArr.current = [];
+    pathArr.current = [];
     animationArrRef.current = animateVisited;
   };
 
@@ -374,12 +397,23 @@ const Main = () => {
   // animation complete
   useEffect(() => {
     visitedArrIndexRef.current = 0;
-    let obj = bfs(
-      rowRef.current,
-      columnRef.current,
-      startNodeRef.current,
-      targetNodeRef.current
-    );
+    let obj = { visitedArr: [] as VertexType[], pathArr: [] as VertexType[] };
+    let algo = AppState.algorithm;
+    if (algo === "bfs") {
+      obj = bfs(
+        rowRef.current,
+        columnRef.current,
+        startNodeRef.current,
+        targetNodeRef.current
+      );
+    } else if (algo === "dfs") {
+      obj = dfsAlgorithm(
+        rowRef.current,
+        columnRef.current,
+        startNodeRef.current,
+        targetNodeRef.current
+      );
+    }
     visitedArr.current = obj.visitedArr;
     pathArr.current = obj.pathArr;
     animationArrRef.current = animateVisited;

@@ -3,7 +3,6 @@ import { AppStateType, ModalStateType, NodeInfoType } from "./state";
 import mst from "../mazes/mst";
 import dfs, { VertexType } from "../mazes/dfs";
 import bfs from "../algorithm/bfs";
-import DFS from "../algorithm/dfs";
 
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
@@ -25,6 +24,7 @@ export type ActionType =
   | { type: "CHANGE_ALGORITHM"; payload: string }
   | { type: "CHANGE_MAZES"; payload: string }
   | { type: "ANIMATION_COMPLETE"; payload: boolean }
+  | { type: "MAZE_ANIMATION_COMPLETE"; payload: boolean }
   | { type: "CHANGE_NODE_MAX_WIDTH"; payload: number };
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
@@ -33,6 +33,12 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       return {
         ...state,
         isPlay: action.payload,
+      };
+    }
+    case "MAZE_ANIMATION_COMPLETE": {
+      return {
+        ...state,
+        isMazeAnimationComplete: action.payload,
       };
     }
     case "ANIMATION_COMPLETE": {
@@ -145,8 +151,8 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       // }
       return {
         ...state,
-        mazesIdArray,
-        mazes: action.payload,
+        isMazeAnimationComplete: false,
+        maze: action.payload,
       };
     }
     case "CHANGE_ALGORITHM": {

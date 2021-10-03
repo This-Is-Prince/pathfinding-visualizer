@@ -39,7 +39,9 @@ const Aside = () => {
         className="flex-center btn aside-btn"
         aria-label="play/pause"
         onClick={() => {
-          dispatch({ type: "CHANGE_PLAY", payload: !AppState.isPlay });
+          if (AppState.isMazeAnimationComplete) {
+            dispatch({ type: "CHANGE_PLAY", payload: !AppState.isPlay });
+          }
         }}
       >
         {AppState.isPlay ? <FaPauseCircle /> : <FaPlayCircle />}

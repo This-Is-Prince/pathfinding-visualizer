@@ -103,7 +103,7 @@ const Settings = () => {
         </aside>
         {AppState.modalState.name === "mazes" ? (
           <Modal
-            radioState={AppState.mazes}
+            radioState={AppState.maze}
             handleChange={(e) => {
               dispatch({ type: "CHANGE_MAZES", payload: e.target.value });
             }}

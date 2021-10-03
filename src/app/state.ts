@@ -64,10 +64,10 @@ export interface AppStateType {
   algorithm: string;
   visitedArr: VertexType[];
   pathArr: VertexType[];
-  mazes: string;
-  mazesIdArray: string[];
-  isAsideModalOpen: boolean;
+  maze: string;
+  isMazeAnimationComplete: boolean;
   isAnimationComplete: boolean;
+  isAsideModalOpen: boolean;
 }
 
 const AppInitialState: AppStateType = {
@@ -80,11 +80,11 @@ const AppInitialState: AppStateType = {
   isBoardClear: false,
   modalState: mazesPatterns,
   speed: "normal",
-  algorithm: "bfs",
+  algorithm: "",
   visitedArr: [],
   pathArr: [],
-  mazes: "",
-  mazesIdArray: [],
+  maze: "",
+  isMazeAnimationComplete: true,
 };
 
 export default AppInitialState;

@@ -1,3 +1,5 @@
+import { findVertices } from "./dfs";
+
 export class Node {
   constructor(public x: number, public y: number, public id: number) {}
 }
@@ -100,6 +102,6 @@ const mst = (row: number, column: number) => {
       union(subsets, x, y);
     }
   }
-  return nodes;
+  return findVertices(row, column, nodes);
 };
 export default mst;

@@ -103,13 +103,23 @@ const randomizedDFS = (vertex: VertexType, which: string) => {
     }
   }
 };
-
+export let findVertices = (r: number, c: number, nodes: any) => {
+  let vertices = [] as VertexType[];
+  for (let i = 0; i < r; i++) {
+    for (let j = 0; j < c; j++) {
+      if (!nodes[`node-${i}-${j}`]) {
+        vertices.push({ x: i, y: j });
+      }
+    }
+  }
+  return vertices;
+};
 const dfs = (r: number, c: number, which: string) => {
   visited = {};
   nodes = {};
   row = r;
   column = c;
   randomizedDFS({ x: 0, y: 0 }, which);
-  return nodes;
+  return findVertices(r, c, nodes);
 };
 export default dfs;
