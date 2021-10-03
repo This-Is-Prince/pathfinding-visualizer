@@ -1,6 +1,4 @@
 import { VertexType } from "./dfs";
-import { Node } from "./mst";
-
 const stair = (row: number, column: number) => {
   let vertices: VertexType[] = [];
   let i = row - 4,

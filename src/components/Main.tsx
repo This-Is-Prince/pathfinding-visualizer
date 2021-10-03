@@ -160,6 +160,7 @@ const Main = () => {
       (x === targetNodeX && y === targetNodeY)
     ) {
       event.target.classList.remove("black-node");
+      event.target.classList.remove("black-node-1");
     } else {
       event.target.classList.add("black-node");
     }
@@ -184,6 +185,8 @@ const Main = () => {
       return;
     }
     event.target.classList.remove("black-node");
+    event.target.classList.remove("black-node-1");
+
     const { x, y } = findXY(event.target.getAttribute("id"));
     let currParentOfStartNode = document.getElementById(`node-${x}-${y}`)!;
     if (!currParentOfStartNode.hasChildNodes()) {
@@ -228,6 +231,7 @@ const Main = () => {
       return;
     }
     event.target.classList.remove("black-node");
+    event.target.classList.remove("black-node-1");
     const { x, y } = findXY(event.target.getAttribute("id"));
     let currParentOfTargetNode = document.getElementById(`node-${x}-${y}`)!;
     if (!currParentOfTargetNode.hasChildNodes()) {
@@ -315,8 +319,11 @@ const Main = () => {
         document.querySelectorAll(".node").forEach((node) => {
           node.addEventListener("mouseenter", handleMouseEnter);
         });
-        let isBlack = event.target.classList.contains("black-node");
+        let isBlack =
+          event.target.classList.contains("black-node") ||
+          event.target.classList.contains("black-node-1");
         if (isBlack) {
+          event.target.classList.remove("black-node-1");
           event.target.classList.remove("black-node");
         } else {
           event.target.classList.add("black-node");
