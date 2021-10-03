@@ -2,7 +2,7 @@ export type VertexType = {
   x: number;
   y: number;
 };
-let nodes: any,
+let vertices: VertexType[],
   visited: any,
   row = 0,
   column = 0;
@@ -88,11 +88,11 @@ const randomizedDFS = (vertex: VertexType, which: string) => {
     nxtVertex = randomUnvisitedNeighbour(vertex);
   }
   while (nxtVertex !== null) {
-    nodes[`node-${vertex.x}-${vertex.y}`] = "n";
-    nodes[
-      `node-${(nxtVertex.x + vertex.x) / 2}-${(nxtVertex.y + vertex.y) / 2}`
-    ] = "n";
-    nodes[`node-${nxtVertex.x}-${nxtVertex.y}`] = "n";
+    let { x, y } = vertex;
+    let { x: nX, y: nY } = nxtVertex;
+    vertices.push({ x, y });
+    vertices.push({ x: (x + nX) / 2, y: (y + nY) / 2 });
+    vertices.push({ x: nX, y: nY });
     randomizedDFS(nxtVertex, which);
     if (which === "recursive division (horizontal skew)") {
       nxtVertex = randomUnvisitedNeighbourHorizontal(vertex);
@@ -116,10 +116,10 @@ export let findVertices = (r: number, c: number, nodes: any) => {
 };
 const dfs = (r: number, c: number, which: string) => {
   visited = {};
-  nodes = {};
+  vertices = [];
   row = r;
   column = c;
   randomizedDFS({ x: 0, y: 0 }, which);
-  return findVertices(r, c, nodes);
+  return vertices;
 };
 export default dfs;

@@ -364,7 +364,9 @@ ASIDE MODAL CSS
 #table td {
   outline: 0.5px solid var(--clr-pri);
 }
-
+.black-node-1 {
+  background-color: var(--clr-sec);
+}
 .black-node {
   background-color: var(--clr-sec);
   animation: 0.5s ease-out 1 alternate forwards running animateBlackNode;

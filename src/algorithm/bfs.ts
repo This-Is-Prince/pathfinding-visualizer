@@ -13,11 +13,12 @@ export const unVisitedNeighbour = (
 
   let x = vertex.x - 1,
     y = vertex.y;
-  let isBlack: boolean;
+  let isBlack: boolean, elm: HTMLElement;
   if (x >= 0 && x < row && y >= 0 && y < column) {
-    isBlack = document
-      .getElementById(`node-${x}-${y}`)!
-      .classList.contains("black-node");
+    elm = document.getElementById(`node-${x}-${y}`)!;
+    isBlack =
+      elm.classList.contains("black-node-1") ||
+      elm.classList.contains("black-node");
     if (!isBlack && !visited[`node-${x}-${y}`]) {
       vertices.push({ x, y });
     }
@@ -25,18 +26,20 @@ export const unVisitedNeighbour = (
   x = vertex.x;
   y = vertex.y + 1;
   if (x >= 0 && x < row && y >= 0 && y < column) {
-    isBlack = document
-      .getElementById(`node-${x}-${y}`)!
-      .classList.contains("black-node");
+    elm = document.getElementById(`node-${x}-${y}`)!;
+    isBlack =
+      elm.classList.contains("black-node-1") ||
+      elm.classList.contains("black-node");
     if (!isBlack && !visited[`node-${x}-${y}`]) {
       vertices.push({ x, y });
     }
   }
   y = vertex.y - 1;
   if (x >= 0 && x < row && y >= 0 && y < column) {
-    isBlack = document
-      .getElementById(`node-${x}-${y}`)!
-      .classList.contains("black-node");
+    elm = document.getElementById(`node-${x}-${y}`)!;
+    isBlack =
+      elm.classList.contains("black-node-1") ||
+      elm.classList.contains("black-node");
     if (!isBlack && !visited[`node-${x}-${y}`]) {
       vertices.push({ x, y });
     }
@@ -44,9 +47,10 @@ export const unVisitedNeighbour = (
   x = vertex.x + 1;
   y = vertex.y;
   if (x >= 0 && x < row && y >= 0 && y < column) {
-    isBlack = document
-      .getElementById(`node-${x}-${y}`)!
-      .classList.contains("black-node");
+    elm = document.getElementById(`node-${x}-${y}`)!;
+    isBlack =
+      elm.classList.contains("black-node-1") ||
+      elm.classList.contains("black-node");
     if (!isBlack && !visited[`node-${x}-${y}`]) {
       vertices.push({ x, y });
     }

@@ -108,13 +108,7 @@ const Main = () => {
     } else {
       let { x, y } = mazeArr.current[mazeArrIndexRef.current];
       let node = document.getElementById(`node-${x}-${y}`)!;
-
-      let { x: sX, y: sY } = startNodeRef.current;
-      let { x: tX, y: tY } = targetNodeRef.current;
-
-      if (!((x === sX && y === sY) || (x === tX && y === tY))) {
-        node.classList.add("black-node");
-      }
+      node.classList.remove("black-node-1");
       animationRef.current = requestAnimationFrame(animationFunRef.current);
       mazeArrIndexRef.current++;
     }
@@ -136,6 +130,15 @@ const Main = () => {
     } else if (maze === "mst maze") {
       vertices = mst(r, c);
     }
+    document.querySelectorAll(".node").forEach((node) => {
+      node.classList.add("black-node-1");
+    });
+    let { x, y } = startNodeRef.current;
+    let node = document.getElementById(`node-${x}-${y}`)!;
+    node.classList.remove("black-node-1");
+    let { x: tX, y: tY } = targetNodeRef.current;
+    node = document.getElementById(`node-${tX}-${tY}`)!;
+    node.classList.remove("black-node-1");
     mazeArrIndexRef.current = 0;
     mazeArr.current = vertices;
     animationFunRef.current = animateMaze;
