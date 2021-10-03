@@ -28,8 +28,8 @@ const AsideModal = () => {
           <output className="output">{AppState.nodeMaxWidth}</output>
           <input
             type="range"
-            min={AppState.container.height < 500 ? "10" : "25"}
-            max={AppState.container.height < 500 ? "30" : "50"}
+            min={window.innerHeight < 500 ? "10" : "25"}
+            max={window.innerHeight < 500 ? "30" : "50"}
             value={AppState.nodeMaxWidth}
             onChange={(e) => {
               dispatch({

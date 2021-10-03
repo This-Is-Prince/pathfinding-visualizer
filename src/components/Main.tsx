@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useRef } from "react";
+import bfs from "../algorithm/bfs";
 import AppContext from "../app/AppContext";
-import { SpecialNodeType } from "../app/state";
 import { VertexType } from "../mazes/dfs";
+import stair from "../mazes/stair";
 export let findXY = (id: string) => {
   id = id.substring(5);
   let index = id.search("-");
@@ -10,18 +11,127 @@ export let findXY = (id: string) => {
   return { x, y };
 };
 
+type SpecialNodeType = {
+  x: number;
+  y: number;
+  self: HTMLElement;
+};
+
 const Main = () => {
   const { AppState, dispatch } = useContext(AppContext);
   const mainRef = useRef<HTMLElement>({} as HTMLElement);
   const startNodeRef = useRef({} as SpecialNodeType);
   const targetNodeRef = useRef({} as SpecialNodeType);
+  const rowRef = useRef(0);
+  const columnRef = useRef(0);
 
+  // path arr
+  let pathArr = useRef([] as VertexType[]);
+  let pathArrIndexRef = useRef(0);
+  // visited arr
+  let visitedArr = useRef([] as VertexType[]);
+  let visitedArrIndexRef = useRef(0);
+
+  // maze arr
+  let mazeArr = useRef([] as VertexType[]);
+  let mazeArrIndexRef = useRef(0);
+
+  // animation function
+  let animationFunRef: any = useRef();
+  let animationRef: any = useRef();
+  let animationArrRef: any = useRef();
+  /**
+   *
+   * ANIMATION FUNCTION START
+   *
+   */
+
+  let animatePath = () => {
+    if (pathArrIndexRef.current >= pathArr.current.length) {
+      visitedArrIndexRef.current = 0;
+      dispatch({ type: "CHANGE_PLAY", payload: false });
+      dispatch({ type: "ANIMATION_COMPLETE", payload: true });
+      visitedArrIndexRef.current = 0;
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+      animationArrRef.current = animateVisited;
+    } else {
+      let { x, y } = pathArr.current[pathArrIndexRef.current];
+      let node = document.getElementById(`node-${x}-${y}`)!;
+      node.classList.remove("visited-node");
+      node.classList.add("path-node");
+      setTimeout(() => {
+        animationRef.current = requestAnimationFrame(animationFunRef.current);
+      }, 0);
+      pathArrIndexRef.current++;
+    }
+  };
+
+  let animateVisited = () => {
+    let { x: sX, y: sY } = startNodeRef.current;
+    let { x: tX, y: tY } = targetNodeRef.current;
+    if (visitedArrIndexRef.current >= visitedArr.current.length) {
+      pathArrIndexRef.current = 0;
+      animationArrRef.current = animatePath;
+      animationFunRef.current = animationArrRef.current;
+      animationRef.current = requestAnimationFrame(animationFunRef.current);
+    } else {
+      let id = visitedArr.current[visitedArrIndexRef.current];
+      if (!((id.x === sX && id.y === sY) || (id.x === tX && id.y === tY))) {
+        document
+          .getElementById(`node-${id.x}-${id.y}`)!
+          .classList.add("visited-node");
+        setTimeout(() => {
+          animationRef.current = requestAnimationFrame(animationFunRef.current);
+        }, 0);
+      } else {
+        setTimeout(() => {
+          animationRef.current = requestAnimationFrame(animationFunRef.current);
+        }, 0);
+      }
+      visitedArrIndexRef.current++;
+    }
+  };
+  let animateMaze = () => {
+    if (mazeArrIndexRef.current >= mazeArr.current.length) {
+      visitedArrIndexRef.current = 0;
+      dispatch({ type: "CHANGE_PLAY", payload: false });
+      visitedArrIndexRef.current = 0;
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+      animationArrRef.current = animateVisited;
+    } else {
+      let { x, y } = mazeArr.current[mazeArrIndexRef.current];
+      let node = document.getElementById(`node-${x}-${y}`)!;
+
+      let { x: sX, y: sY } = startNodeRef.current;
+      let { x: tX, y: tY } = targetNodeRef.current;
+
+      if (!((x === sX && y === sY) || (x === tX && y === tY))) {
+        node.classList.add("black-node");
+        setTimeout(() => {
+          animationRef.current = requestAnimationFrame(animationFunRef.current);
+        }, 0);
+        mazeArrIndexRef.current++;
+      }
+      let vertices = stair(rowRef.current, columnRef.current);
+    }
+  };
+
+  /**
+   *
+   * ANIMATION FUNCTION END
+   *
+   */
   /**
    *
    * UPDATE SIZE END
    *
    */
   const updateSize = () => {
+    cancelAnimationFrame(animationRef.current);
+    dispatch({ type: "CHANGE_PLAY", payload: false });
+
     let width = mainRef.current.getBoundingClientRect().width - 20;
     let height = mainRef.current.getBoundingClientRect().height - 20;
 
@@ -43,17 +153,8 @@ const Main = () => {
 
     let noOfNodesInRow = Math.floor(height / AppState.nodeMaxWidth),
       noOfNodesInColumn = Math.floor(width / AppState.nodeMaxWidth);
-    dispatch({
-      type: "CHANGE_SIZE",
-      payload: {
-        self: nodesContainer,
-        height,
-        width,
-        column: noOfNodesInColumn,
-        row: noOfNodesInRow,
-      },
-    });
-
+    rowRef.current = noOfNodesInRow;
+    columnRef.current = noOfNodesInColumn;
     const handleMouseDown = (event: any) => {
       if (!event.target.getAttribute("id")) {
         return;
@@ -240,6 +341,16 @@ const Main = () => {
     targetNode.addEventListener("mousedown", targetNodeOnMouseDown);
     targetNode.addEventListener("mouseup", targetNodeOnMouseUp);
     targetNode.addEventListener("dblclick", targetNodeOnDBLClick);
+    visitedArrIndexRef.current = 0;
+    let obj = bfs(
+      rowRef.current,
+      columnRef.current,
+      startNodeRef.current,
+      targetNodeRef.current
+    );
+    visitedArr.current = obj.visitedArr;
+    pathArr.current = obj.pathArr;
+    animationArrRef.current = animateVisited;
   };
 
   /**
@@ -259,80 +370,25 @@ const Main = () => {
   }, [AppState.isBoardClear, AppState.nodeMaxWidth]);
 
   // animation for algorithm
-  let visitedArrIndexRef = useRef(0);
-  let pathArrIndexRef = useRef(0);
-  let animationFunRef: any = useRef();
-  let animationRef: any = useRef();
-  let animateArrRef: any = useRef();
-  let animatePathArr = (pathArr: VertexType[]) => {
-    return () => {
-      animatePath(pathArr);
-    };
-  };
-  let animatePath = (pathArr: VertexType[]) => {
-    if (pathArrIndexRef.current >= pathArr.length) {
-      dispatch({ type: "CHANGE_PLAY", payload: !AppState.isPlay });
-      dispatch({ type: "ANIMATION_COMPLETE", payload: true });
-      animationFunRef.current = () => {};
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
-      visitedArrIndexRef.current = 0;
-      animateArrRef.current = animateVisitedArr(AppState.visitedArr);
-    } else {
-      let { x, y } = pathArr[pathArrIndexRef.current];
-      let node = document.getElementById(`node-${x}-${y}`)!;
-      node.classList.remove("visited-node");
-      node.classList.add("path-node");
-      setTimeout(() => {
-        animationRef.current = requestAnimationFrame(animationFunRef.current);
-      }, 0);
-      pathArrIndexRef.current++;
-    }
-  };
 
-  let animateVisitedArr = (visitedArr: VertexType[]) => {
-    return () => {
-      animateVisited(visitedArr);
-    };
-  };
-  let animateVisited = (visitedArr: VertexType[]) => {
-    let {
-      startNode: { x: sX, y: sY },
-      targetNode: { x: tX, y: tY },
-    } = AppState.specialNodes;
-    if (visitedArrIndexRef.current >= visitedArr.length) {
-      visitedArrIndexRef.current = 0;
-      pathArrIndexRef.current = 0;
-      animateArrRef.current = animatePathArr(AppState.pathArr);
-      animationFunRef.current = animateArrRef.current;
-      animationRef.current = requestAnimationFrame(animationFunRef.current);
-    } else {
-      let id = visitedArr[visitedArrIndexRef.current];
-      if (!((id.x === sX && id.y === sY) || (id.x === tX && id.y === tY))) {
-        document
-          .getElementById(`node-${id.x}-${id.y}`)!
-          .classList.add("visited-node");
-        setTimeout(() => {
-          animationRef.current = requestAnimationFrame(animationFunRef.current);
-        }, 0);
-      } else {
-        setTimeout(() => {
-          animationRef.current = requestAnimationFrame(animationFunRef.current);
-        }, 0);
-      }
-      visitedArrIndexRef.current++;
-    }
-  };
   // animation complete
   useEffect(() => {
     visitedArrIndexRef.current = 0;
-    animateArrRef.current = animateVisitedArr(AppState.visitedArr);
+    let obj = bfs(
+      rowRef.current,
+      columnRef.current,
+      startNodeRef.current,
+      targetNodeRef.current
+    );
+    visitedArr.current = obj.visitedArr;
+    pathArr.current = obj.pathArr;
+    animationArrRef.current = animateVisited;
   }, [AppState.algorithm]);
   useEffect(() => {
     if (AppState.isPlay) {
       if (AppState.isAnimationComplete) {
-        let row = AppState.container.row,
-          column = AppState.container.column;
+        let row = rowRef.current,
+          column = columnRef.current;
         for (let i = 0; i < row; i++) {
           for (let j = 0; j < column; j++) {
             let elm = document.getElementById(`node-${i}-${j}`)!;
@@ -353,8 +409,7 @@ const Main = () => {
         dispatch({ type: "ANIMATION_COMPLETE", payload: false });
       }
       console.log("play");
-
-      animationFunRef.current = animateArrRef.current;
+      animationFunRef.current = animationArrRef.current;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     } else {
       console.log("pause");

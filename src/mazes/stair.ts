@@ -1,14 +1,13 @@
+import { VertexType } from "./dfs";
 import { Node } from "./mst";
 
 const stair = (row: number, column: number) => {
-  let nodes: any = {};
+  let vertices: VertexType[] = [];
   let i = row - 4,
     j = 3,
     isRowNeg = false;
-  let id = 0;
   while (j < column) {
-    nodes[`node-${i}-${j}`] = new Node(i, j, id);
-    id++;
+    vertices.push({ x: i, y: j });
     if (i == 3) {
       isRowNeg = true;
     }
@@ -23,6 +22,6 @@ const stair = (row: number, column: number) => {
     }
     j++;
   }
-  return nodes;
+  return vertices;
 };
 export default stair;

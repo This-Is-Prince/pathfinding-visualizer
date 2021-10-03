@@ -36,13 +36,6 @@ export class Node {
   }
 }
 
-export type ContainerType = {
-  self: HTMLElement;
-  width: number;
-  height: number;
-  row: number;
-  column: number;
-};
 export type NodeInfoType = {
   nodes: Node[];
   width: number;
@@ -60,19 +53,12 @@ export interface ModalListType {
   value: string;
   id: number;
 }
-export type SpecialNodeType = {
-  x: number;
-  y: number;
-  self: HTMLImageElement;
-};
 export interface AppStateType {
   isFullScreenModelOpen: boolean;
-  container: ContainerType;
   nodeMaxWidth: number;
   isPlay: boolean;
   isSettingsOpen: boolean;
   isBoardClear: boolean;
-  isBoardDirty: boolean;
   modalState: ModalStateType;
   speed: string;
   algorithm: string;
@@ -82,39 +68,23 @@ export interface AppStateType {
   mazesIdArray: string[];
   isAsideModalOpen: boolean;
   isAnimationComplete: boolean;
-  specialNodes: {
-    startNode: SpecialNodeType;
-    targetNode: SpecialNodeType;
-  };
 }
 
 const AppInitialState: AppStateType = {
   isFullScreenModelOpen: true,
-  container: {
-    self: {} as HTMLElement,
-    height: 0,
-    width: 0,
-    row: 0,
-    column: 0,
-  },
   nodeMaxWidth: 25,
   isPlay: false,
   isAnimationComplete: false,
   isSettingsOpen: false,
   isAsideModalOpen: false,
   isBoardClear: false,
-  isBoardDirty: false,
   modalState: mazesPatterns,
   speed: "normal",
-  algorithm: "",
+  algorithm: "bfs",
   visitedArr: [],
   pathArr: [],
   mazes: "",
   mazesIdArray: [],
-  specialNodes: {
-    targetNode: { x: 0, y: 0, self: {} as HTMLImageElement },
-    startNode: { x: 0, y: 0, self: {} as HTMLImageElement },
-  },
 };
 
 export default AppInitialState;
