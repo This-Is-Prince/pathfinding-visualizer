@@ -1,3 +1,4 @@
+import { SpecialNodeType } from "../app/state";
 import { VertexType } from "../mazes/dfs";
 
 let visited: any = {};
@@ -8,71 +9,57 @@ export const unVisitedNeighbour = (
   column: number,
   visited: any
 ) => {
+  let vertices: VertexType[] = [];
+
   let x = vertex.x - 1,
     y = vertex.y;
-  let fill = document.getElementById(`node-${x}-${y}`)?.getAttribute("fill");
-  let vertices: VertexType[] = [];
-  if (
-    fill !== "rgb(0, 34, 51)" &&
-    fill !== "#002233" &&
-    x >= 0 &&
-    x < row &&
-    y >= 0 &&
-    y < column &&
-    !visited[`node-${x}-${y}`]
-  ) {
-    vertices.push({ x, y });
+  let isBlack: boolean;
+  if (x >= 0 && x < row && y >= 0 && y < column) {
+    isBlack = document
+      .getElementById(`node-${x}-${y}`)!
+      .classList.contains("black-node");
+    if (!isBlack && !visited[`node-${x}-${y}`]) {
+      vertices.push({ x, y });
+    }
   }
   x = vertex.x;
   y = vertex.y + 1;
-  fill = document.getElementById(`node-${x}-${y}`)?.getAttribute("fill");
-  if (
-    fill !== "rgb(0, 34, 51)" &&
-    fill !== "#002233" &&
-    x >= 0 &&
-    x < row &&
-    y >= 0 &&
-    y < column &&
-    !visited[`node-${x}-${y}`]
-  ) {
-    vertices.push({ x, y });
+  if (x >= 0 && x < row && y >= 0 && y < column) {
+    isBlack = document
+      .getElementById(`node-${x}-${y}`)!
+      .classList.contains("black-node");
+    if (!isBlack && !visited[`node-${x}-${y}`]) {
+      vertices.push({ x, y });
+    }
+  }
+  y = vertex.y - 1;
+  if (x >= 0 && x < row && y >= 0 && y < column) {
+    isBlack = document
+      .getElementById(`node-${x}-${y}`)!
+      .classList.contains("black-node");
+    if (!isBlack && !visited[`node-${x}-${y}`]) {
+      vertices.push({ x, y });
+    }
   }
   x = vertex.x + 1;
   y = vertex.y;
-  fill = document.getElementById(`node-${x}-${y}`)?.getAttribute("fill");
-  if (
-    fill !== "rgb(0, 34, 51)" &&
-    fill !== "#002233" &&
-    x >= 0 &&
-    x < row &&
-    y >= 0 &&
-    y < column &&
-    !visited[`node-${x}-${y}`]
-  ) {
-    vertices.push({ x, y });
+  if (x >= 0 && x < row && y >= 0 && y < column) {
+    isBlack = document
+      .getElementById(`node-${x}-${y}`)!
+      .classList.contains("black-node");
+    if (!isBlack && !visited[`node-${x}-${y}`]) {
+      vertices.push({ x, y });
+    }
   }
-  x = vertex.x;
-  y = vertex.y - 1;
-  fill = document.getElementById(`node-${x}-${y}`)?.getAttribute("fill");
-  if (
-    fill !== "rgb(0, 34, 51)" &&
-    fill !== "#002233" &&
-    x >= 0 &&
-    x < row &&
-    y >= 0 &&
-    y < column &&
-    !visited[`node-${x}-${y}`]
-  ) {
-    vertices.push({ x, y });
-  }
+
   return vertices;
 };
 
 const bfs = (
   r: number,
   c: number,
-  startVertex: VertexType,
-  endVertex: VertexType
+  startVertex: SpecialNodeType,
+  endVertex: SpecialNodeType
 ) => {
   visited = {};
   let queue: VertexType[] = [],

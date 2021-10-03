@@ -1,5 +1,4 @@
 import stair from "../mazes/stair";
-import * as d3 from "d3";
 import {
   AppStateType,
   ModalStateType,
@@ -10,6 +9,7 @@ import mst from "../mazes/mst";
 import dfs, { VertexType } from "../mazes/dfs";
 import bfs from "../algorithm/bfs";
 import DFS from "../algorithm/dfs";
+import { findXY } from "../components/Main";
 
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
@@ -21,7 +21,7 @@ export type ActionType =
       payload: VertexType;
     }
   | {
-      type: "ADD_SPECIAL_END_NODE";
+      type: "ADD_SPECIAL_TARGET_NODE";
       payload: VertexType;
     }
   | { type: "OPEN_SETTINGS"; payload: boolean }
@@ -75,30 +75,25 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
     }
     case "CHANGE_MAZES": {
       let mazesIdArray: string[] = [];
-      const startNode = document.getElementById("start")!;
-      const endNode = document.getElementById("end")!;
+      const { startNode, targetNode } = state.specialNodes;
       if (action.payload === "stair pattern") {
         let nodes = stair(state.nodeInfo.row, state.nodeInfo.column);
         for (let i = 0; i < state.nodeInfo.row; i++) {
           for (let j = 0; j < state.nodeInfo.column; j++) {
-            let idX = document
-              .getElementById(`node-${i}-${j}`)
-              ?.getAttribute("x");
-            let idY = document
-              .getElementById(`node-${i}-${j}`)
-              ?.getAttribute("y");
             if (
               !(
-                (idX === endNode.getAttribute("x") &&
-                  idY === endNode.getAttribute("y")) ||
-                (idX === startNode.getAttribute("x") &&
-                  idY === startNode.getAttribute("y"))
+                (i === targetNode.x && j === targetNode.y) ||
+                (i === startNode.x && j === startNode.y)
               )
             ) {
               if (nodes[`node-${i}-${j}`]) {
-                d3.select(`#node-${i}-${j}`).attr("fill", "#002233");
+                document
+                  .getElementById(`node-${i}-${j}`)!
+                  .classList.add("black-node");
               } else {
-                d3.select(`#node-${i}-${j}`).attr("fill", "#fff");
+                document
+                  .getElementById(`node-${i}-${j}`)!
+                  .classList.remove("black-node");
               }
             }
           }
@@ -107,24 +102,20 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         let nodes = mst(state.nodeInfo.row, state.nodeInfo.column);
         for (let i = 0; i < state.nodeInfo.row; i++) {
           for (let j = 0; j < state.nodeInfo.column; j++) {
-            let idX = document
-              .getElementById(`node-${i}-${j}`)
-              ?.getAttribute("x");
-            let idY = document
-              .getElementById(`node-${i}-${j}`)
-              ?.getAttribute("y");
             if (
               !(
-                (idX === endNode.getAttribute("x") &&
-                  idY === endNode.getAttribute("y")) ||
-                (idX === startNode.getAttribute("x") &&
-                  idY === startNode.getAttribute("y"))
+                (i === targetNode.x && j === targetNode.y) ||
+                (i === startNode.x && j === startNode.y)
               )
             ) {
               if (nodes[`node-${i}-${j}`]) {
-                d3.select(`#node-${i}-${j}`).attr("fill", "#fff");
+                document
+                  .getElementById(`node-${i}-${j}`)!
+                  .classList.remove("black-node");
               } else {
-                d3.select(`#node-${i}-${j}`).attr("fill", "#002233");
+                document
+                  .getElementById(`node-${i}-${j}`)!
+                  .classList.add("black-node");
               }
             }
           }
@@ -141,24 +132,20 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         );
         for (let i = 0; i < state.nodeInfo.row; i++) {
           for (let j = 0; j < state.nodeInfo.column; j++) {
-            let idX = document
-              .getElementById(`node-${i}-${j}`)
-              ?.getAttribute("x");
-            let idY = document
-              .getElementById(`node-${i}-${j}`)
-              ?.getAttribute("y");
             if (
               !(
-                (idX === endNode.getAttribute("x") &&
-                  idY === endNode.getAttribute("y")) ||
-                (idX === startNode.getAttribute("x") &&
-                  idY === startNode.getAttribute("y"))
+                (i === targetNode.x && j === targetNode.y) ||
+                (i === startNode.x && j === startNode.y)
               )
             ) {
               if (nodes[`node-${i}-${j}`]) {
-                d3.select(`#node-${i}-${j}`).attr("fill", "#fff");
+                document
+                  .getElementById(`node-${i}-${j}`)!
+                  .classList.remove("black-node");
               } else {
-                d3.select(`#node-${i}-${j}`).attr("fill", "#002233");
+                document
+                  .getElementById(`node-${i}-${j}`)!
+                  .classList.add("black-node");
               }
             }
           }
@@ -238,17 +225,17 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       return {
         ...state,
         specialNodes: {
-          startNode: action.payload,
+          startNode: { ...state.specialNodes.startNode, ...action.payload },
           targetNode: { ...state.specialNodes.targetNode },
         },
       };
     }
-    case "ADD_SPECIAL_END_NODE": {
+    case "ADD_SPECIAL_TARGET_NODE": {
       return {
         ...state,
         specialNodes: {
           startNode: { ...state.specialNodes.startNode },
-          targetNode: action.payload,
+          targetNode: { ...state.specialNodes.targetNode, ...action.payload },
         },
       };
     }

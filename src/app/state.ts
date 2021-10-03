@@ -58,6 +58,11 @@ export interface ModalListType {
   value: string;
   id: number;
 }
+export type SpecialNodeType = {
+  x: number;
+  y: number;
+  self: HTMLDivElement;
+};
 export interface AppStateType {
   isFullScreenModelOpen: boolean;
   svg: SVGStateType;
@@ -77,14 +82,8 @@ export interface AppStateType {
   isAsideModalOpen: boolean;
   isAnimationComplete: boolean;
   specialNodes: {
-    startNode: {
-      x: number;
-      y: number;
-    };
-    targetNode: {
-      x: number;
-      y: number;
-    };
+    startNode: SpecialNodeType;
+    targetNode: SpecialNodeType;
   };
 }
 
@@ -106,7 +105,10 @@ const AppInitialState: AppStateType = {
   pathArr: [],
   mazes: "",
   mazesIdArray: [],
-  specialNodes: { targetNode: { x: 0, y: 0 }, startNode: { x: 0, y: 0 } },
+  specialNodes: {
+    targetNode: { x: 0, y: 0, self: {} as HTMLDivElement },
+    startNode: { x: 0, y: 0, self: {} as HTMLDivElement },
+  },
 };
 
 export default AppInitialState;
