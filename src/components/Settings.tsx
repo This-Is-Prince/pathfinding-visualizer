@@ -18,6 +18,8 @@ const Settings = () => {
         <h2 className="settings__heading">Settings</h2>
         <button
           className="btn settings__close-btn flex-center"
+          aria-label="settings close "
+          title="Settings Close"
           onClick={() => {
             dispatch({ type: "OPEN_SETTINGS", payload: false });
           }}
@@ -33,6 +35,8 @@ const Settings = () => {
                 ? "selected"
                 : ""
             }`}
+            aria-label="choose mazes"
+            title="Choose Mazes"
             onClick={() => {
               dispatch({ type: "CHANGE_MODAL_STATE", payload: mazesPatterns });
             }}
@@ -46,6 +50,8 @@ const Settings = () => {
             className={`btn setting-btn ${
               AppState.modalState.heading === "algorithms" ? "selected" : ""
             }`}
+            aria-label="Choose Algorithm"
+            title="Choose Algorithm"
             onClick={() => {
               dispatch({ type: "CHANGE_MODAL_STATE", payload: algorithms });
             }}
@@ -59,6 +65,8 @@ const Settings = () => {
             className={`btn setting-btn ${
               AppState.modalState.heading === "speed" ? "selected" : ""
             }`}
+            aria-label="Change Speed"
+            title="Change Speed"
             onClick={() => {
               dispatch({ type: "CHANGE_MODAL_STATE", payload: speed });
             }}
@@ -68,7 +76,11 @@ const Settings = () => {
             </span>
             <span>Speed</span>
           </button>
-          <button className="btn setting-btn ">
+          <button
+            className="btn setting-btn "
+            aria-label="Add Weight"
+            title="Add Weight"
+          >
             <span className="flex-center">
               <GiWeight />
             </span>
@@ -76,6 +88,8 @@ const Settings = () => {
           </button>
           <button
             className="btn setting-btn "
+            aria-label="Clear Board"
+            title="Clear Board"
             onClick={() => {
               dispatch({
                 type: "CLEAR_BOARD",
@@ -88,13 +102,35 @@ const Settings = () => {
             </span>
             <span>Clear Board</span>
           </button>
-          <button className="btn setting-btn ">
+          <button
+            className="btn setting-btn "
+            aria-label="Clear Path"
+            title="Clear Path"
+            onClick={() => {
+              document.querySelectorAll(".path-node").forEach((node) => {
+                node.classList.remove("visited-node");
+                node.classList.remove("path-node");
+              });
+              document.querySelectorAll(".visited-node").forEach((node) => {
+                node.classList.remove("visited-node");
+              });
+            }}
+          >
             <span className="flex-center">
               <GiPathDistance />
             </span>
             <span>Clear Path</span>
           </button>
-          <button className="btn setting-btn ">
+          <button
+            className="btn setting-btn "
+            aria-label="Clear Walls"
+            title="Clear Walls"
+            onClick={() => {
+              document.querySelectorAll(".black-node").forEach((node) => {
+                node.classList.remove("black-node");
+              });
+            }}
+          >
             <span className="flex-center">
               <GiBrickWall />
             </span>

@@ -328,8 +328,12 @@ const Main = () => {
     let targetCol = Math.floor(noOfNodesInColumn / 4) * 3;
     let startNode = document.createElement("img");
     startNode.src = "http://localhost:3000/src/assets/start.png";
+    startNode.title = "Starting Node";
+    startNode.alt = "Starting Node Image";
     let targetNode = document.createElement("img");
     targetNode.src = "http://localhost:3000/src/assets/target.png";
+    targetNode.title = "Target Node";
+    targetNode.alt = "Target Node Image";
     // making all nodes
     for (let i = 0; i < noOfNodesInRow; i++) {
       let nodesRow = document.createElement("article");

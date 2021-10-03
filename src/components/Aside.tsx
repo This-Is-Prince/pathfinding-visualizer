@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { GiResize } from "react-icons/gi";
 import { FiSettings } from "react-icons/fi";
-import { FaPauseCircle, FaPlayCircle, FaSitemap } from "react-icons/fa";
+import { FaChessBoard, FaPauseCircle, FaPlayCircle } from "react-icons/fa";
 import AppContext from "../app/AppContext";
 const Aside = () => {
   const { AppState, dispatch } = useContext(AppContext);
@@ -10,6 +10,7 @@ const Aside = () => {
       <button
         className="flex-center btn aside-btn"
         aria-label="settings"
+        title="Settings"
         onClick={() => {
           console.log("settings");
           dispatch({ type: "OPEN_SETTINGS", payload: true });
@@ -20,6 +21,7 @@ const Aside = () => {
       <button
         className="flex-center btn aside-btn"
         aria-label="resize"
+        title="Resize"
         onClick={() => {
           dispatch({ type: "CHANGE_ASIDE_MODAL", payload: true });
         }}
@@ -27,17 +29,22 @@ const Aside = () => {
         <GiResize />
       </button>
       <button
-        className={`flex-center btn aside-btn`}
-        aria-label="algorithm"
+        className="flex-center btn aside-btn"
+        aria-label="clear board"
+        title="Clear Board"
         onClick={() => {
-          console.log("algorithm");
+          dispatch({
+            type: "CLEAR_BOARD",
+            payload: !AppState.isBoardClear,
+          });
         }}
       >
-        <FaSitemap />
+        <FaChessBoard />
       </button>
       <button
         className="flex-center btn aside-btn"
         aria-label="play/pause"
+        title="Play / Pause"
         onClick={() => {
           if (AppState.isMazeAnimationComplete) {
             dispatch({ type: "CHANGE_PLAY", payload: !AppState.isPlay });
