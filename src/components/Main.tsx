@@ -38,15 +38,21 @@ const Main = () => {
     nodesContainer.style.width = `${width}px`;
     nodesContainer.style.height = `${height}px`;
     main.appendChild(nodesContainer);
-    dispatch({
-      type: "CHANGE_SVG",
-      payload: { self: nodesContainer, height, width },
-    });
 
     // calculating row and column
 
     let noOfNodesInRow = Math.floor(height / AppState.nodeMaxWidth),
       noOfNodesInColumn = Math.floor(width / AppState.nodeMaxWidth);
+    dispatch({
+      type: "CHANGE_SIZE",
+      payload: {
+        self: nodesContainer,
+        height,
+        width,
+        column: noOfNodesInColumn,
+        row: noOfNodesInRow,
+      },
+    });
 
     const handleMouseDown = (event: any) => {
       if (!event.target.getAttribute("id")) {
@@ -133,16 +139,6 @@ const Main = () => {
         node.addEventListener("touchend", handleTouchEnd);
       }
     }
-    dispatch({
-      type: "ADD_NODES",
-      payload: {
-        nodes: [],
-        width: 0,
-        height: 0,
-        column: noOfNodesInColumn,
-        row: noOfNodesInRow,
-      },
-    });
     dispatch({
       type: "ADD_SPECIAL_START_NODE",
       payload: { x: row, y: startCol },
@@ -335,8 +331,8 @@ const Main = () => {
   useEffect(() => {
     if (AppState.isPlay) {
       if (AppState.isAnimationComplete) {
-        let row = AppState.nodeInfo.row,
-          column = AppState.nodeInfo.column;
+        let row = AppState.container.row,
+          column = AppState.container.column;
         for (let i = 0; i < row; i++) {
           for (let j = 0; j < column; j++) {
             let isVisited = document

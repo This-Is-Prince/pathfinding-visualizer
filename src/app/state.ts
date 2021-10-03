@@ -36,10 +36,12 @@ export class Node {
   }
 }
 
-export type SVGStateType = {
-  self: any;
+export type ContainerType = {
+  self: HTMLElement;
   width: number;
   height: number;
+  row: number;
+  column: number;
 };
 export type NodeInfoType = {
   nodes: Node[];
@@ -65,8 +67,7 @@ export type SpecialNodeType = {
 };
 export interface AppStateType {
   isFullScreenModelOpen: boolean;
-  svg: SVGStateType;
-  nodeInfo: NodeInfoType;
+  container: ContainerType;
   nodeMaxWidth: number;
   isPlay: boolean;
   isSettingsOpen: boolean;
@@ -89,8 +90,13 @@ export interface AppStateType {
 
 const AppInitialState: AppStateType = {
   isFullScreenModelOpen: true,
-  svg: { self: undefined, height: 0, width: 0 },
-  nodeInfo: { column: 0, row: 0, height: 0, nodes: [], width: 0 },
+  container: {
+    self: {} as HTMLElement,
+    height: 0,
+    width: 0,
+    row: 0,
+    column: 0,
+  },
   nodeMaxWidth: 25,
   isPlay: false,
   isAnimationComplete: false,

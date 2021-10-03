@@ -3,18 +3,17 @@ import {
   AppStateType,
   ModalStateType,
   NodeInfoType,
-  SVGStateType,
+  ContainerType,
 } from "./state";
 import mst from "../mazes/mst";
 import dfs, { VertexType } from "../mazes/dfs";
 import bfs from "../algorithm/bfs";
 import DFS from "../algorithm/dfs";
-import { findXY } from "../components/Main";
 
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
   | { type: "CHANGE_ASIDE_MODAL"; payload: boolean }
-  | { type: "CHANGE_SVG"; payload: SVGStateType }
+  | { type: "CHANGE_SIZE"; payload: ContainerType }
   | { type: "ADD_NODES"; payload: NodeInfoType }
   | {
       type: "ADD_SPECIAL_START_NODE";
@@ -77,9 +76,9 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       let mazesIdArray: string[] = [];
       const { startNode, targetNode } = state.specialNodes;
       if (action.payload === "stair pattern") {
-        let nodes = stair(state.nodeInfo.row, state.nodeInfo.column);
-        for (let i = 0; i < state.nodeInfo.row; i++) {
-          for (let j = 0; j < state.nodeInfo.column; j++) {
+        let nodes = stair(state.container.row, state.container.column);
+        for (let i = 0; i < state.container.row; i++) {
+          for (let j = 0; j < state.container.column; j++) {
             if (
               !(
                 (i === targetNode.x && j === targetNode.y) ||
@@ -99,9 +98,9 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
           }
         }
       } else if (action.payload === "mst maze") {
-        let nodes = mst(state.nodeInfo.row, state.nodeInfo.column);
-        for (let i = 0; i < state.nodeInfo.row; i++) {
-          for (let j = 0; j < state.nodeInfo.column; j++) {
+        let nodes = mst(state.container.row, state.container.column);
+        for (let i = 0; i < state.container.row; i++) {
+          for (let j = 0; j < state.container.column; j++) {
             if (
               !(
                 (i === targetNode.x && j === targetNode.y) ||
@@ -126,12 +125,12 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         action.payload === "recursive division (vertical skew)"
       ) {
         let nodes = dfs(
-          state.nodeInfo.row,
-          state.nodeInfo.column,
+          state.container.row,
+          state.container.column,
           action.payload
         );
-        for (let i = 0; i < state.nodeInfo.row; i++) {
-          for (let j = 0; j < state.nodeInfo.column; j++) {
+        for (let i = 0; i < state.container.row; i++) {
+          for (let j = 0; j < state.container.column; j++) {
             if (
               !(
                 (i === targetNode.x && j === targetNode.y) ||
@@ -161,15 +160,15 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       let obj: { visitedArr: VertexType[]; pathArr: VertexType[] };
       if (action.payload === "bfs") {
         obj = bfs(
-          state.nodeInfo.row,
-          state.nodeInfo.column,
+          state.container.row,
+          state.container.column,
           state.specialNodes.startNode,
           state.specialNodes.targetNode
         );
       } else {
         obj = DFS(
-          state.nodeInfo.row,
-          state.nodeInfo.column,
+          state.container.row,
+          state.container.column,
           state.specialNodes.startNode,
           state.specialNodes.targetNode
         );
@@ -187,10 +186,10 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         speed: action.payload,
       };
     }
-    case "CHANGE_SVG": {
+    case "CHANGE_SIZE": {
       return {
         ...state,
-        svg: action.payload,
+        container: action.payload,
         mazes: "",
         mazesIdArray: [],
         algorithm: "",
@@ -213,12 +212,6 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       return {
         ...state,
         isBoardClear: action.payload,
-      };
-    }
-    case "ADD_NODES": {
-      return {
-        ...state,
-        nodeInfo: action.payload,
       };
     }
     case "ADD_SPECIAL_START_NODE": {
