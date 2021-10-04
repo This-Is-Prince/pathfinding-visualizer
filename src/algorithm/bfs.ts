@@ -1,4 +1,3 @@
-import { SpecialNodeType } from "../components/Main";
 import { VertexType } from "../mazes/dfs";
 
 let visited: any = {};
@@ -62,8 +61,8 @@ export const unVisitedNeighbour = (
 const bfs = (
   r: number,
   c: number,
-  startVertex: SpecialNodeType,
-  endVertex: SpecialNodeType
+  startVertex: VertexType,
+  endVertex: VertexType
 ) => {
   visited = {};
   let queue: VertexType[] = [],
@@ -72,17 +71,24 @@ const bfs = (
   visited[`node-${tmp.x}-${tmp.y}`] = true;
   queue.push(tmp);
   let visitedArr: VertexType[] = [];
+  let isTargetVertexFind = false;
   while (queue.length != 0) {
     tmp = queue.shift()!;
-    if (tmp.x === endVertex.x && tmp.y === endVertex.y) {
+    if (isTargetVertexFind) {
       break;
     }
     visitedArr.push(tmp);
     let unVisitedVertices = unVisitedNeighbour(tmp, r, c, visited);
     unVisitedVertices.forEach((vertex) => {
-      if (!visited[`node-${vertex.x}-${vertex.y}`]) {
+      if (vertex.x === endVertex.x && vertex.y === endVertex.y) {
+        isTargetVertexFind = true;
         visited[`node-${vertex.x}-${vertex.y}`] = tmp;
-        queue.push(vertex);
+      }
+      if (!isTargetVertexFind) {
+        if (!visited[`node-${vertex.x}-${vertex.y}`]) {
+          visited[`node-${vertex.x}-${vertex.y}`] = tmp;
+          queue.push(vertex);
+        }
       }
     });
   }
@@ -91,10 +97,10 @@ const bfs = (
     y = endVertex.y;
   while (visited[`node-${x}-${y}`] !== true) {
     let parentVertex = visited[`node-${x}-${y}`];
-    if (!parentVertex) {
-      break;
-    }
-    if (parentVertex.x === startVertex.x && parentVertex.y === startVertex.y) {
+    if (
+      !parentVertex ||
+      (parentVertex.x === startVertex.x && parentVertex.y === startVertex.y)
+    ) {
       break;
     }
     pathArr.push(parentVertex);

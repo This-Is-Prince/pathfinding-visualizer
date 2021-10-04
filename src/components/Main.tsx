@@ -415,19 +415,19 @@ const Main = () => {
     let obj = { visitedArr: [] as VertexType[], pathArr: [] as VertexType[] };
     let algo = AppState.algorithm;
     let r = rowRef.current,
-      c = columnRef.current,
-      startNode = startNodeRef.current,
-      targetNode = targetNodeRef.current;
+      c = columnRef.current;
+    let { x, y } = startNodeRef.current;
+    let { x: tX, y: tY } = targetNodeRef.current;
     if (algo === "bfs") {
-      obj = bfs(r, c, startNode, targetNode);
+      obj = bfs(r, c, { x, y }, { x: tX, y: tY });
     } else if (algo === "dfs") {
-      obj = dfsAlgorithm(r, c, startNode, targetNode);
+      obj = dfsAlgorithm(r, c, { x, y }, { x: tX, y: tY });
     } else if (algo === "dijkstra") {
-      obj = dijkstra(r, c, startNode, targetNode);
+      obj = dijkstra(r, c, { x, y }, { x: tX, y: tY });
     } else if (algo === "greedy best-first search") {
-      obj = gbfs(r, c, startNode, targetNode);
+      obj = gbfs(r, c, { x, y }, { x: tX, y: tY });
     } else if (algo === "a*") {
-      obj = aStar(r, c, startNode, targetNode);
+      obj = aStar(r, c, { x, y }, { x: tX, y: tY });
     }
     visitedArr.current = obj.visitedArr;
     pathArr.current = obj.pathArr;
