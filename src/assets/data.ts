@@ -72,7 +72,7 @@ let algorithms = {
     {
       id: 3,
       title: "greedy best-first search",
-      value: "greedy",
+      value: "greedy best-first search",
     },
     {
       id: 4,

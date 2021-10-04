@@ -7,6 +7,8 @@ import dfsAlgorithm from "../algorithm/dfs";
 import dfs from "../mazes/dfs";
 import mst from "../mazes/mst";
 import dijkstra from "../algorithm/dijkstra";
+import gbfs from "../algorithm/gbfs";
+import aStar from "../algorithm/a_star";
 
 export let findXY = (id: string) => {
   id = id.substring(5);
@@ -422,6 +424,10 @@ const Main = () => {
       obj = dfsAlgorithm(r, c, startNode, targetNode);
     } else if (algo === "dijkstra") {
       obj = dijkstra(r, c, startNode, targetNode);
+    } else if (algo === "greedy best-first search") {
+      obj = gbfs(r, c, startNode, targetNode);
+    } else if (algo === "a*") {
+      obj = aStar(r, c, startNode, targetNode);
     }
     visitedArr.current = obj.visitedArr;
     pathArr.current = obj.pathArr;

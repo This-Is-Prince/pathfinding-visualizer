@@ -1,11 +1,11 @@
 import { VertexType } from "../mazes/dfs";
-import { unVisitedNeighbour } from "./bfs";
 import { PriorityQueue } from "./PriorityQueue";
 export const neighbour = (
   vertex: VertexType,
   row: number,
   column: number,
-  visited: any
+  visited: any,
+  targetVertex: VertexType
 ) => {
   let vertices: Node[] = [];
 
@@ -21,7 +21,15 @@ export const neighbour = (
       if (visited[`node-${x}-${y}`]) {
         vertices.push(visited[`node-${x}-${y}`]);
       } else {
-        vertices.push(new Node({ x, y }, 99999, null));
+        vertices.push(
+          new Node(
+            { x, y },
+            99999,
+            null,
+            10,
+            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y)
+          )
+        );
       }
     }
   }
@@ -36,7 +44,15 @@ export const neighbour = (
       if (visited[`node-${x}-${y}`]) {
         vertices.push(visited[`node-${x}-${y}`]);
       } else {
-        vertices.push(new Node({ x, y }, 99999, null));
+        vertices.push(
+          new Node(
+            { x, y },
+            99999,
+            null,
+            10,
+            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y)
+          )
+        );
       }
     }
   }
@@ -50,7 +66,15 @@ export const neighbour = (
       if (visited[`node-${x}-${y}`]) {
         vertices.push(visited[`node-${x}-${y}`]);
       } else {
-        vertices.push(new Node({ x, y }, 99999, null));
+        vertices.push(
+          new Node(
+            { x, y },
+            99999,
+            null,
+            10,
+            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y)
+          )
+        );
       }
     }
   }
@@ -65,7 +89,15 @@ export const neighbour = (
       if (visited[`node-${x}-${y}`]) {
         vertices.push(visited[`node-${x}-${y}`]);
       } else {
-        vertices.push(new Node({ x, y }, 99999, null));
+        vertices.push(
+          new Node(
+            { x, y },
+            99999,
+            null,
+            10,
+            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y)
+          )
+        );
       }
     }
   }
@@ -74,11 +106,18 @@ export const neighbour = (
 };
 
 export class Node {
+  f: number;
+  g: number;
   constructor(
     public self: VertexType,
     public wsf: number,
-    public parent: Node | null
-  ) {}
+    public parent: Node | null,
+    public weight: number,
+    public heuristic: number
+  ) {
+    this.f = Number.MAX_VALUE;
+    this.g = Number.MAX_VALUE;
+  }
 }
 export type CompareToFun = (a: Node, b: Node) => number;
 
@@ -99,7 +138,16 @@ const dijkstra = (
     new Set<Node>()
   );
   let isTargetNodeFind = false;
-  que.add(new Node(startVertex, 0, null));
+  que.add(
+    new Node(
+      startVertex,
+      0,
+      null,
+      10,
+      Math.abs(startVertex.x - targetVertex.x) +
+        Math.abs(startVertex.y - targetVertex.y)
+    )
+  );
   while (!que.isEmpty()) {
     let u = que.get();
     let { x, y } = u.self;
@@ -111,7 +159,7 @@ const dijkstra = (
     }
     visited[`node-${x}-${y}`] = u;
     visitedArr.push(u.self);
-    let vertexNeighbour = neighbour(u.self, r, c, visited);
+    let vertexNeighbour = neighbour(u.self, r, c, visited, targetVertex);
     vertexNeighbour.forEach((v) => {
       let { x, y } = v.self;
       if (x === targetVertex.x && y === targetVertex.y) {
@@ -120,11 +168,11 @@ const dijkstra = (
         visited[`node-${x}-${y}`] = v;
       }
       if (!isTargetNodeFind) {
-        if (v.wsf > u.wsf + 10) {
+        if (v.wsf > u.wsf + v.weight) {
           if (que.contains(v)) {
             que.remove(v);
           }
-          v.wsf = u.wsf + 10;
+          v.wsf = u.wsf + v.weight;
           v.parent = u;
           que.add(v);
         }
