@@ -1,5 +1,16 @@
-import { findVertices } from "./dfs";
+import { VertexType } from "./dfs";
 
+export let findVertices = (r: number, c: number, nodes: any) => {
+  let vertices = [] as VertexType[];
+  for (let i = 0; i < r; i++) {
+    for (let j = 0; j < c; j++) {
+      if (!nodes[`node-${i}-${j}`]) {
+        vertices.push({ x: i, y: j });
+      }
+    }
+  }
+  return vertices;
+};
 export class Node {
   constructor(public x: number, public y: number, public id: number) {}
 }

@@ -6,6 +6,7 @@ import stair from "../mazes/stair";
 import dfsAlgorithm from "../algorithm/dfs";
 import dfs from "../mazes/dfs";
 import mst from "../mazes/mst";
+import dijkstra from "../algorithm/dijkstra";
 
 export let findXY = (id: string) => {
   id = id.substring(5);
@@ -411,25 +412,22 @@ const Main = () => {
     visitedArrIndexRef.current = 0;
     let obj = { visitedArr: [] as VertexType[], pathArr: [] as VertexType[] };
     let algo = AppState.algorithm;
+    let r = rowRef.current,
+      c = columnRef.current,
+      startNode = startNodeRef.current,
+      targetNode = targetNodeRef.current;
     if (algo === "bfs") {
-      obj = bfs(
-        rowRef.current,
-        columnRef.current,
-        startNodeRef.current,
-        targetNodeRef.current
-      );
+      obj = bfs(r, c, startNode, targetNode);
     } else if (algo === "dfs") {
-      obj = dfsAlgorithm(
-        rowRef.current,
-        columnRef.current,
-        startNodeRef.current,
-        targetNodeRef.current
-      );
+      obj = dfsAlgorithm(r, c, startNode, targetNode);
+    } else if (algo === "dijkstra") {
+      obj = dijkstra(r, c, startNode, targetNode);
     }
     visitedArr.current = obj.visitedArr;
     pathArr.current = obj.pathArr;
     animationArrRef.current = animateVisited;
   }, [AppState.algorithm]);
+
   useEffect(() => {
     if (AppState.isPlay) {
       if (AppState.isAnimationComplete) {

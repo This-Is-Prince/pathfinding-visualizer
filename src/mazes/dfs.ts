@@ -6,7 +6,7 @@ let vertices: VertexType[],
   visited: any,
   row = 0,
   column = 0;
-const randomUnvisitedNeighbour = (startVertex: VertexType) => {
+export const randomUnvisitedNeighbour = (startVertex: VertexType) => {
   let x = startVertex.x,
     y = startVertex.y + 2;
   let arr: VertexType[] = [];
@@ -103,17 +103,7 @@ const randomizedDFS = (vertex: VertexType, which: string) => {
     }
   }
 };
-export let findVertices = (r: number, c: number, nodes: any) => {
-  let vertices = [] as VertexType[];
-  for (let i = 0; i < r; i++) {
-    for (let j = 0; j < c; j++) {
-      if (!nodes[`node-${i}-${j}`]) {
-        vertices.push({ x: i, y: j });
-      }
-    }
-  }
-  return vertices;
-};
+
 const dfs = (r: number, c: number, which: string) => {
   visited = {};
   vertices = [];
