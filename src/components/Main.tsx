@@ -75,27 +75,18 @@ const Main = () => {
   };
 
   let animateVisited = () => {
-    let { x: sX, y: sY } = startNodeRef.current;
-    let { x: tX, y: tY } = targetNodeRef.current;
     if (visitedArrIndexRef.current >= visitedArr.current.length) {
       pathArrIndexRef.current = 0;
       animationArrRef.current = animatePath;
       animationFunRef.current = animationArrRef.current;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     } else {
-      let id = visitedArr.current[visitedArrIndexRef.current];
-      if (!((id.x === sX && id.y === sY) || (id.x === tX && id.y === tY))) {
-        document
-          .getElementById(`node-${id.x}-${id.y}`)!
-          .classList.add("visited-node");
-        setTimeout(() => {
-          animationRef.current = requestAnimationFrame(animationFunRef.current);
-        }, 0);
-      } else {
-        setTimeout(() => {
-          animationRef.current = requestAnimationFrame(animationFunRef.current);
-        }, 0);
-      }
+      let { x, y } = visitedArr.current[visitedArrIndexRef.current];
+      document.getElementById(`node-${x}-${y}`)!.classList.add("visited-node");
+      setTimeout(() => {
+        animationRef.current = requestAnimationFrame(animationFunRef.current);
+      }, 0);
+
       visitedArrIndexRef.current++;
     }
   };
