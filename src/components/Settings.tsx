@@ -1,12 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import { IoMdSpeedometer } from "react-icons/io";
 import { FaSitemap, FaRegTimesCircle, FaChessBoard } from "react-icons/fa";
 import { GiMaze, GiBrickWall, GiPathDistance, GiWeight } from "react-icons/gi";
 import AppContext from "../app/AppContext";
 import Modal from "./modal/Modal";
 import { mazesPatterns, algorithms, speed } from "../assets/data";
+import { VertexType } from "../mazes/dfs";
 
 const Settings = () => {
+  const weightArr = useRef([] as VertexType[]);
   const { AppState, dispatch } = useContext(AppContext);
   return (
     <section
@@ -80,6 +82,32 @@ const Settings = () => {
             className="btn setting-btn "
             aria-label="Add Weight"
             title="Add Weight"
+            onClick={() => {
+              weightArr.current.forEach(({ x, y }) => {
+                document.getElementById(`node-${x}-${y}`)!.textContent = "";
+              });
+              weightArr.current = [];
+              let { row, column } = AppState.grid,
+                r = 0,
+                c = 0,
+                weight = 0,
+                elm: HTMLElement;
+              for (let i = 0; i < 100; i++) {
+                r = Math.floor(Math.random() * row);
+                c = Math.floor(Math.random() * column);
+                elm = document.getElementById(`node-${r}-${c}`)!;
+                let isValid =
+                  !elm.hasChildNodes() &&
+                  !elm.classList.contains("black-node") &&
+                  !elm.classList.contains("black-node-1");
+                if (isValid) {
+                  weight = Math.floor(Math.random() * 40) + 10;
+                  weightArr.current.push({ x: r, y: c });
+                  elm.setAttribute("data-weight", `${weight}`);
+                  elm.textContent = `${weight}`;
+                }
+              }
+            }}
           >
             <span className="flex-center">
               <GiWeight />

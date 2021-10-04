@@ -1,125 +1,65 @@
 import { VertexType } from "../mazes/dfs";
 import { PriorityQueue } from "./PriorityQueue";
+
+const findNeighbour = (
+  x: number,
+  y: number,
+  row: number,
+  column: number,
+  visited: any,
+  vertices: Node[]
+) => {
+  if (x >= 0 && x < row && y >= 0 && y < column) {
+    let isBlack: boolean, elm: HTMLElement;
+    elm = document.getElementById(`node-${x}-${y}`)!;
+    isBlack =
+      elm.classList.contains("black-node-1") ||
+      elm.classList.contains("black-node");
+    if (!isBlack) {
+      if (visited[`node-${x}-${y}`]) {
+        vertices.push(visited[`node-${x}-${y}`]);
+      } else {
+        let dataWeight = elm.getAttribute("data-weight");
+        let weight = 0;
+        if (dataWeight) {
+          weight = parseInt(dataWeight);
+        }
+        vertices.push(new Node({ x, y }, 99999, null, weight));
+      }
+    }
+  }
+};
+
 export const neighbour = (
   vertex: VertexType,
   row: number,
   column: number,
-  visited: any,
-  targetVertex: VertexType
+  visited: any
 ) => {
   let vertices: Node[] = [];
-
   let x = vertex.x - 1,
     y = vertex.y;
-  let isBlack: boolean, elm: HTMLElement;
-  if (x >= 0 && x < row && y >= 0 && y < column) {
-    elm = document.getElementById(`node-${x}-${y}`)!;
-    isBlack =
-      elm.classList.contains("black-node-1") ||
-      elm.classList.contains("black-node");
-    if (!isBlack) {
-      if (visited[`node-${x}-${y}`]) {
-        vertices.push(visited[`node-${x}-${y}`]);
-      } else {
-        vertices.push(
-          new Node(
-            { x, y },
-            99999,
-            null,
-            10,
-            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y)
-          )
-        );
-      }
-    }
-  }
+  findNeighbour(x, y, row, column, visited, vertices);
   x = vertex.x;
   y = vertex.y + 1;
-  if (x >= 0 && x < row && y >= 0 && y < column) {
-    elm = document.getElementById(`node-${x}-${y}`)!;
-    isBlack =
-      elm.classList.contains("black-node-1") ||
-      elm.classList.contains("black-node");
-    if (!isBlack) {
-      if (visited[`node-${x}-${y}`]) {
-        vertices.push(visited[`node-${x}-${y}`]);
-      } else {
-        vertices.push(
-          new Node(
-            { x, y },
-            99999,
-            null,
-            10,
-            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y)
-          )
-        );
-      }
-    }
-  }
+  findNeighbour(x, y, row, column, visited, vertices);
   y = vertex.y - 1;
-  if (x >= 0 && x < row && y >= 0 && y < column) {
-    elm = document.getElementById(`node-${x}-${y}`)!;
-    isBlack =
-      elm.classList.contains("black-node-1") ||
-      elm.classList.contains("black-node");
-    if (!isBlack) {
-      if (visited[`node-${x}-${y}`]) {
-        vertices.push(visited[`node-${x}-${y}`]);
-      } else {
-        vertices.push(
-          new Node(
-            { x, y },
-            99999,
-            null,
-            10,
-            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y)
-          )
-        );
-      }
-    }
-  }
+  findNeighbour(x, y, row, column, visited, vertices);
   x = vertex.x + 1;
   y = vertex.y;
-  if (x >= 0 && x < row && y >= 0 && y < column) {
-    elm = document.getElementById(`node-${x}-${y}`)!;
-    isBlack =
-      elm.classList.contains("black-node-1") ||
-      elm.classList.contains("black-node");
-    if (!isBlack) {
-      if (visited[`node-${x}-${y}`]) {
-        vertices.push(visited[`node-${x}-${y}`]);
-      } else {
-        vertices.push(
-          new Node(
-            { x, y },
-            99999,
-            null,
-            10,
-            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y)
-          )
-        );
-      }
-    }
-  }
-
+  findNeighbour(x, y, row, column, visited, vertices);
   return vertices;
 };
 
 export class Node {
-  f: number;
-  g: number;
   constructor(
     public self: VertexType,
     public wsf: number,
     public parent: Node | null,
-    public weight: number,
-    public heuristic: number
-  ) {
-    this.f = Number.MAX_VALUE;
-    this.g = Number.MAX_VALUE;
-  }
+    public weight: number
+  ) {}
 }
-export type CompareToFun = (a: Node, b: Node) => number;
+export type CompareToFun<T> = (a: T, b: T) => number;
 
 const dijkstra = (
   r: number,
@@ -130,24 +70,9 @@ const dijkstra = (
   let visited: any = {};
   let visitedArr = [] as VertexType[];
   let pathArr = [] as VertexType[];
-  let que = new PriorityQueue(
-    (a: Node, b: Node) => {
-      return a.wsf - b.wsf;
-    },
-    [],
-    new Set<Node>()
-  );
+  let que = new PriorityQueue<Node>((a, b) => a.wsf - b.wsf, [], new Set());
   let isTargetNodeFind = false;
-  que.add(
-    new Node(
-      startVertex,
-      0,
-      null,
-      10,
-      Math.abs(startVertex.x - targetVertex.x) +
-        Math.abs(startVertex.y - targetVertex.y)
-    )
-  );
+  que.add(new Node(startVertex, 0, null, 0));
   while (!que.isEmpty()) {
     let u = que.get();
     let { x, y } = u.self;
@@ -159,13 +84,14 @@ const dijkstra = (
     }
     visited[`node-${x}-${y}`] = u;
     visitedArr.push(u.self);
-    let vertexNeighbour = neighbour(u.self, r, c, visited, targetVertex);
+    let vertexNeighbour = neighbour(u.self, r, c, visited);
     vertexNeighbour.forEach((v) => {
       let { x, y } = v.self;
       if (x === targetVertex.x && y === targetVertex.y) {
         isTargetNodeFind = true;
         v.parent = u;
         visited[`node-${x}-${y}`] = v;
+        visitedArr.push(v.self);
       }
       if (!isTargetNodeFind) {
         if (v.wsf > u.wsf + v.weight) {

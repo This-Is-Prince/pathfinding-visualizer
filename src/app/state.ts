@@ -36,13 +36,6 @@ export class Node {
   }
 }
 
-export type NodeInfoType = {
-  nodes: Node[];
-  width: number;
-  height: number;
-  column: number;
-  row: number;
-};
 export interface ModalStateType {
   heading: string;
   name: string;
@@ -53,7 +46,12 @@ export interface ModalListType {
   value: string;
   id: number;
 }
+export type GridType = {
+  row: number;
+  column: number;
+};
 export interface AppStateType {
+  grid: GridType;
   isFullScreenModelOpen: boolean;
   nodeMaxWidth: number;
   isPlay: boolean;
@@ -71,6 +69,7 @@ export interface AppStateType {
 }
 
 const AppInitialState: AppStateType = {
+  grid: { row: 0, column: 0 },
   isFullScreenModelOpen: true,
   nodeMaxWidth: 25,
   isPlay: false,

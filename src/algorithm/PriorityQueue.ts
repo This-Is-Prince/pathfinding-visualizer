@@ -1,10 +1,9 @@
 import { CompareToFun } from "./dijkstra";
-import { Node } from "./dijkstra";
-export class PriorityQueue {
+export class PriorityQueue<T> {
   constructor(
-    public compareTo: CompareToFun,
-    public queue: Node[],
-    public set: Set<Node>
+    public compareTo: CompareToFun<T>,
+    public queue: T[],
+    public set: Set<T>
   ) {}
   size() {
     return this.queue.length;
@@ -12,7 +11,7 @@ export class PriorityQueue {
   isEmpty() {
     return this.queue.length > 0 ? false : true;
   }
-  contains(node: Node) {
+  contains(node: T) {
     return this.set.has(node);
   }
   peek() {
@@ -24,7 +23,7 @@ export class PriorityQueue {
   get() {
     return this.remove(this.peek());
   }
-  remove(node: Node) {
+  remove(node: T) {
     this.set.delete(node);
     let index = 0;
     for (index = 0; index < this.size(); index++) {
@@ -52,12 +51,12 @@ export class PriorityQueue {
     this.queue.splice(parent, 1);
     return tmp;
   }
-  add(node: Node) {
+  add(node: T) {
     this.set.add(node);
     this.queue.push(node);
     let child = this.size() - 1,
       parent = Math.floor((child - 1) / 2);
-    let tmp: Node;
+    let tmp: T;
     while (
       child > 0 &&
       this.compareTo(this.queue[parent], this.queue[child]) >= 1

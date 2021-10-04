@@ -293,6 +293,11 @@ const Main = () => {
 
     let noOfNodesInRow = Math.floor(height / AppState.nodeMaxWidth),
       noOfNodesInColumn = Math.floor(width / AppState.nodeMaxWidth);
+    dispatch({
+      type: "ADD_GRID",
+      payload: { row: noOfNodesInRow, column: noOfNodesInColumn },
+    });
+
     rowRef.current = noOfNodesInRow;
     columnRef.current = noOfNodesInColumn;
     const handleMouseDown = (event: any) => {

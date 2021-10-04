@@ -1,6 +1,68 @@
 import { VertexType } from "../mazes/dfs";
 import { PriorityQueue } from "./PriorityQueue";
-import { neighbour, Node } from "./dijkstra";
+
+const findNeighbour = (
+  x: number,
+  y: number,
+  row: number,
+  column: number,
+  visited: any,
+  targetVertex: VertexType,
+  vertices: Node[]
+) => {
+  if (x >= 0 && x < row && y >= 0 && y < column) {
+    let isBlack: boolean, elm: HTMLElement;
+    elm = document.getElementById(`node-${x}-${y}`)!;
+    isBlack =
+      elm.classList.contains("black-node-1") ||
+      elm.classList.contains("black-node");
+    if (!isBlack) {
+      if (visited[`node-${x}-${y}`]) {
+        vertices.push(visited[`node-${x}-${y}`]);
+      } else {
+        vertices.push(
+          new Node(
+            { x, y },
+            null,
+            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y)
+          )
+        );
+      }
+    }
+  }
+};
+const neighbour = (
+  vertex: VertexType,
+  row: number,
+  column: number,
+  visited: any,
+  targetVertex: VertexType
+) => {
+  let vertices: Node[] = [];
+
+  let x = vertex.x - 1,
+    y = vertex.y;
+  findNeighbour(x, y, row, column, visited, targetVertex, vertices);
+  x = vertex.x;
+  y = vertex.y + 1;
+  findNeighbour(x, y, row, column, visited, targetVertex, vertices);
+
+  y = vertex.y - 1;
+  findNeighbour(x, y, row, column, visited, targetVertex, vertices);
+
+  x = vertex.x + 1;
+  y = vertex.y;
+  findNeighbour(x, y, row, column, visited, targetVertex, vertices);
+
+  return vertices;
+};
+class Node {
+  constructor(
+    public self: VertexType,
+    public parent: Node | null,
+    public heuristic: number
+  ) {}
+}
 const gbfs = (
   r: number,
   c: number,
@@ -21,9 +83,7 @@ const gbfs = (
   que.add(
     new Node(
       startVertex,
-      0,
       null,
-      10,
       Math.abs(startVertex.x - targetVertex.x) +
         Math.abs(startVertex.y - targetVertex.y)
     )
@@ -46,6 +106,7 @@ const gbfs = (
         isTargetNodeFind = true;
         v.parent = u;
         visited[`node-${x}-${y}`] = v;
+        visitedArr.push(v.self);
       }
       if (!isTargetNodeFind) {
         if (!visited[`node-${x}-${y}`]) {

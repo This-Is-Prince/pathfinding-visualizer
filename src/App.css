@@ -426,3 +426,7 @@ ASIDE MODAL CSS
     background-color: rgb(255, 254, 106);
   }
 }
+.weight {
+  background: url("./assets/weight.png") no-repeat center;
+  background-size: contain;
+}

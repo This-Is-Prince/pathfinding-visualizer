@@ -1,5 +1,5 @@
 import stair from "../mazes/stair";
-import { AppStateType, ModalStateType, NodeInfoType } from "./state";
+import { AppStateType, GridType, ModalStateType } from "./state";
 import mst from "../mazes/mst";
 import dfs, { VertexType } from "../mazes/dfs";
 import bfs from "../algorithm/bfs";
@@ -7,11 +7,11 @@ import bfs from "../algorithm/bfs";
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
   | { type: "CHANGE_ASIDE_MODAL"; payload: boolean }
-  | { type: "ADD_NODES"; payload: NodeInfoType }
   | {
       type: "ADD_SPECIAL_START_NODE";
       payload: VertexType;
     }
+  | { type: "ADD_GRID"; payload: GridType }
   | {
       type: "ADD_SPECIAL_TARGET_NODE";
       payload: VertexType;
@@ -29,6 +29,12 @@ export type ActionType =
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
   switch (action.type) {
+    case "ADD_GRID": {
+      return {
+        ...state,
+        grid: action.payload,
+      };
+    }
     case "CHANGE_PLAY": {
       return {
         ...state,
