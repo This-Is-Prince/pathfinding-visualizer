@@ -1,16 +1,4 @@
 import { VertexType } from "./dfs";
-
-export let findVertices = (r: number, c: number, nodes: any) => {
-  let vertices = [] as VertexType[];
-  for (let i = 0; i < r; i++) {
-    for (let j = 0; j < c; j++) {
-      if (!nodes[`node-${i}-${j}`]) {
-        vertices.push({ x: i, y: j });
-      }
-    }
-  }
-  return vertices;
-};
 export class Node {
   constructor(public x: number, public y: number, public id: number) {}
 }
@@ -64,7 +52,7 @@ const makeEdges = (row: number, column: number) => {
       i += 2;
     }
   }
-  return { edgesArray, noOfNodes, nodes };
+  return { edgesArray, noOfNodes };
 };
 
 const find = (subsets: Subset[], i: number) => {
@@ -88,7 +76,8 @@ const union = (subsets: Subset[], x: number, y: number) => {
 };
 
 const mst = (row: number, column: number) => {
-  let { edgesArray, noOfNodes, nodes } = makeEdges(row, column);
+  let { edgesArray, noOfNodes } = makeEdges(row, column);
+  let vertices = [] as VertexType[];
   let e = 0,
     i = 0;
   edgesArray.sort((a, b) => {
@@ -109,10 +98,12 @@ const mst = (row: number, column: number) => {
       e++;
       let midX = (src.x + des.x) / 2,
         midY = (src.y + des.y) / 2;
-      nodes[`node-${midX}-${midY}`] = new Node(midX, midY, 0);
+      vertices.push({ x: src.x, y: src.y });
+      vertices.push({ x: midX, y: midY });
+      vertices.push({ x: des.x, y: des.y });
       union(subsets, x, y);
     }
   }
-  return findVertices(row, column, nodes);
+  return vertices;
 };
 export default mst;
