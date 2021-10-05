@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useRef } from "react";
 import bfs from "../algorithm/bfs";
 import AppContext from "../app/AppContext";
 import { VertexType } from "../mazes/dfs";
-import stair from "../mazes/stair";
 import dfsAlgorithm from "../algorithm/dfs";
 import dfs from "../mazes/dfs";
 import mst from "../mazes/mst";
 import dijkstra from "../algorithm/dijkstra";
 import gbfs from "../algorithm/gbfs";
 import aStar from "../algorithm/a_star";
+import circle from "../mazes/circle";
 
 export let findXY = (id: string) => {
   id = id.substring(5);
@@ -116,7 +116,7 @@ const Main = () => {
     let { x, y } = startNodeRef.current;
     let { x: tX, y: tY } = targetNodeRef.current;
     if (maze === "circle pattern") {
-      vertices = stair(r, c, { x, y }, { x: tX, y: tY });
+      vertices = circle(r, c, { x, y }, { x: tX, y: tY });
     } else if (
       maze === "recursive division" ||
       maze === "recursive division (vertical skew)" ||

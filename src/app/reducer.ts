@@ -1,8 +1,5 @@
-import stair from "../mazes/stair";
 import { AppStateType, GridType, ModalStateType } from "./state";
-import mst from "../mazes/mst";
-import dfs, { VertexType } from "../mazes/dfs";
-import bfs from "../algorithm/bfs";
+import { VertexType } from "../mazes/dfs";
 
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
