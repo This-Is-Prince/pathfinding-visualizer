@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import bfs from "../algorithm/bfs";
 import AppContext from "../app/AppContext";
 import { VertexType } from "../mazes/dfs";
@@ -58,6 +58,7 @@ const Main = () => {
       visitedArrIndexRef.current = 0;
       dispatch({ type: "CHANGE_PLAY", payload: false });
       dispatch({ type: "ANIMATION_COMPLETE", payload: true });
+      addAllEventListeners();
       visitedArrIndexRef.current = 0;
       cancelAnimationFrame(animationRef.current);
       animationRef.current = null;
@@ -86,7 +87,6 @@ const Main = () => {
       setTimeout(() => {
         animationRef.current = requestAnimationFrame(animationFunRef.current);
       }, 0);
-
       visitedArrIndexRef.current++;
     }
   };
@@ -96,6 +96,8 @@ const Main = () => {
       dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
       dispatch({ type: "CHANGE_PLAY", payload: false });
       visitedArrIndexRef.current = 0;
+      addAllEventListeners();
+
       cancelAnimationFrame(animationRef.current);
       animationRef.current = null;
       animationArrRef.current = animateVisited;
@@ -117,13 +119,16 @@ const Main = () => {
     let { x: tX, y: tY } = targetNodeRef.current;
     if (maze === "circle pattern") {
       vertices = circle(r, c, { x, y }, { x: tX, y: tY });
+      removeAllEventListeners();
     } else if (
       maze === "recursive division" ||
       maze === "recursive division (vertical skew)" ||
       maze === "recursive division (horizontal skew)"
     ) {
+      removeAllEventListeners();
       vertices = dfs(r, c, maze);
     } else if (maze === "mst maze") {
+      removeAllEventListeners();
       vertices = mst(r, c);
     }
     document.querySelectorAll(".node").forEach((node) => {
@@ -143,7 +148,7 @@ const Main = () => {
    * EVENTS
    *
    */
-  const handleMouseEnter = (event: any) => {
+  const handleMouseEnter = useCallback((event: any) => {
     let { x: sX, y: sY } = findXY(event.target.getAttribute("id"));
     let x = parseInt(sX),
       y = parseInt(sY);
@@ -158,23 +163,52 @@ const Main = () => {
     } else {
       event.target.classList.add("black-node");
     }
-  };
-  let handleMouseUp = () => {
+  }, []);
+  const handleMouseDown = useCallback((event: any) => {
+    if (!event.target.getAttribute("id")) {
+      return;
+    }
+    let { x: sX, y: sY } = findXY(event.target.getAttribute("id"));
+    let clickNodeX = parseInt(sX),
+      clickNodeY = parseInt(sY);
+    const { x: startNodeX, y: startNodeY } = startNodeRef.current;
+    const { x: targetNodeX, y: targetNodeY } = targetNodeRef.current;
+    if (
+      !(
+        (clickNodeX === startNodeX && clickNodeY === startNodeY) ||
+        (clickNodeX === targetNodeX && clickNodeY === targetNodeY)
+      )
+    ) {
+      document.querySelectorAll(".node").forEach((node) => {
+        node.addEventListener("mouseenter", handleMouseEnter);
+      });
+      let isBlack =
+        event.target.classList.contains("black-node") ||
+        event.target.classList.contains("black-node-1");
+      if (isBlack) {
+        event.target.classList.remove("black-node-1");
+        event.target.classList.remove("black-node");
+      } else {
+        event.target.classList.add("black-node");
+      }
+    }
+  }, []);
+  let handleMouseUp = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
       node.removeEventListener("mouseenter", handleMouseEnter);
     });
-  };
+  }, []);
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
       node.removeEventListener("touchstart", handleTouchStartOfStartNode);
       node.removeEventListener("touchstart", handleTouchStartOfTargetNode);
     });
-  };
+  }, []);
 
   // start node events
 
-  const startNodeOnMouseEnter = (event: any) => {
+  const startNodeOnMouseEnter = useCallback((event: any) => {
     if (!event.target.getAttribute("id")) {
       return;
     }
@@ -199,28 +233,28 @@ const Main = () => {
         payload: { x: parseInt(x), y: parseInt(y) },
       });
     }
-  };
-  const startNodeOnMouseDown = () => {
+  }, []);
+  const startNodeOnMouseDown = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
       node.addEventListener("mouseenter", startNodeOnMouseEnter);
     });
-  };
-  const startNodeOnMouseUp = () => {
+  }, []);
+  const startNodeOnMouseUp = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
       node.removeEventListener("mouseenter", startNodeOnMouseEnter);
     });
-  };
-  const handleTouchStartOfStartNode = (event: any) => {
+  }, []);
+  const handleTouchStartOfStartNode = useCallback((event: any) => {
     startNodeOnMouseEnter(event);
-  };
-  const startNodeOnDBLClick = () => {
+  }, []);
+  const startNodeOnDBLClick = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
       node.addEventListener("touchstart", handleTouchStartOfStartNode);
     });
-  };
+  }, []);
 
   //  target node events
-  const targetNodeOnMouseEnter = (event: any) => {
+  const targetNodeOnMouseEnter = useCallback((event: any) => {
     if (!event.target.getAttribute("id")) {
       return;
     }
@@ -244,25 +278,26 @@ const Main = () => {
         payload: { x: parseInt(x), y: parseInt(y) },
       });
     }
-  };
-  const targetNodeOnMouseDown = () => {
+  }, []);
+  const targetNodeOnMouseDown = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
       node.addEventListener("mouseenter", targetNodeOnMouseEnter);
     });
-  };
-  const targetNodeOnMouseUp = () => {
+  }, []);
+  const targetNodeOnMouseUp = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
       node.removeEventListener("mouseenter", targetNodeOnMouseEnter);
     });
-  };
-  const handleTouchStartOfTargetNode = (event: any) => {
+  }, []);
+  const handleTouchStartOfTargetNode = useCallback((event: any) => {
     targetNodeOnMouseEnter(event);
-  };
-  const targetNodeOnDBLClick = () => {
+  }, []);
+  const targetNodeOnDBLClick = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
       node.addEventListener("touchstart", handleTouchStartOfTargetNode);
     });
-  };
+  }, []);
+
   /**
    *
    * UPDATE SIZE END
@@ -300,35 +335,6 @@ const Main = () => {
 
     rowRef.current = noOfNodesInRow;
     columnRef.current = noOfNodesInColumn;
-    const handleMouseDown = (event: any) => {
-      if (!event.target.getAttribute("id")) {
-        return;
-      }
-      let { x: sX, y: sY } = findXY(event.target.getAttribute("id"));
-      let clickNodeX = parseInt(sX),
-        clickNodeY = parseInt(sY);
-      const { x: startNodeX, y: startNodeY } = startNodeRef.current;
-      const { x: targetNodeX, y: targetNodeY } = targetNodeRef.current;
-      if (
-        !(
-          (clickNodeX === startNodeX && clickNodeY === startNodeY) ||
-          (clickNodeX === targetNodeX && clickNodeY === targetNodeY)
-        )
-      ) {
-        document.querySelectorAll(".node").forEach((node) => {
-          node.addEventListener("mouseenter", handleMouseEnter);
-        });
-        let isBlack =
-          event.target.classList.contains("black-node") ||
-          event.target.classList.contains("black-node-1");
-        if (isBlack) {
-          event.target.classList.remove("black-node-1");
-          event.target.classList.remove("black-node");
-        } else {
-          event.target.classList.add("black-node");
-        }
-      }
-    };
 
     let row = Math.floor(noOfNodesInRow / 2);
     let startCol = Math.floor(noOfNodesInColumn / 4);
@@ -377,7 +383,6 @@ const Main = () => {
     startNode.addEventListener("mousedown", startNodeOnMouseDown);
     startNode.addEventListener("mouseup", startNodeOnMouseUp);
     startNode.addEventListener("dblclick", startNodeOnDBLClick);
-
     targetNode.addEventListener("mousedown", targetNodeOnMouseDown);
     targetNode.addEventListener("mouseup", targetNodeOnMouseUp);
     targetNode.addEventListener("dblclick", targetNodeOnDBLClick);
@@ -386,7 +391,59 @@ const Main = () => {
     pathArr.current = [];
     animationArrRef.current = animateVisited;
   };
-
+  const removeAllEventListeners = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.removeEventListener("mousedown", handleMouseDown);
+      node.removeEventListener("mouseup", handleMouseUp);
+      node.removeEventListener("touchend", handleTouchEnd);
+    });
+    startNodeRef.current.self.removeEventListener(
+      "mousedown",
+      startNodeOnMouseDown
+    );
+    startNodeRef.current.self.removeEventListener(
+      "mouseup",
+      startNodeOnMouseUp
+    );
+    startNodeRef.current.self.removeEventListener(
+      "dblclick",
+      startNodeOnDBLClick
+    );
+    targetNodeRef.current.self.removeEventListener(
+      "mousedown",
+      targetNodeOnMouseDown
+    );
+    targetNodeRef.current.self.removeEventListener(
+      "mouseup",
+      targetNodeOnMouseUp
+    );
+    targetNodeRef.current.self.removeEventListener(
+      "dblclick",
+      targetNodeOnDBLClick
+    );
+  };
+  const addAllEventListeners = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.addEventListener("mousedown", handleMouseDown);
+      node.addEventListener("mouseup", handleMouseUp);
+      node.addEventListener("touchend", handleTouchEnd);
+    });
+    startNodeRef.current.self.addEventListener(
+      "mousedown",
+      startNodeOnMouseDown
+    );
+    startNodeRef.current.self.addEventListener("mouseup", startNodeOnMouseUp);
+    startNodeRef.current.self.addEventListener("dblclick", startNodeOnDBLClick);
+    targetNodeRef.current.self.addEventListener(
+      "mousedown",
+      targetNodeOnMouseDown
+    );
+    targetNodeRef.current.self.addEventListener("mouseup", targetNodeOnMouseUp);
+    targetNodeRef.current.self.addEventListener(
+      "dblclick",
+      targetNodeOnDBLClick
+    );
+  };
   /**
    *
    * UPDATE SIZE END
@@ -424,6 +481,10 @@ const Main = () => {
       obj = gbfs(r, c, { x, y }, { x: tX, y: tY });
     } else if (algo === "a*") {
       obj = aStar(r, c, { x, y }, { x: tX, y: tY });
+    }
+    if (obj.visitedArr.length > 0) {
+      console.log("hi");
+      removeAllEventListeners();
     }
     visitedArr.current = obj.visitedArr;
     pathArr.current = obj.pathArr;

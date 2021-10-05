@@ -1,15 +1,15 @@
 import { VertexType } from "./dfs";
-type IndexType = {
+type Index = {
   r: number;
   c: number;
 };
-type PointType = {
-  tRC: IndexType;
-  tLC: IndexType;
-  bRC: IndexType;
-  bLC: IndexType;
+type Point = {
+  tRC: Index;
+  tLC: Index;
+  bRC: Index;
+  bLC: Index;
 };
-type IndexDoneType = {
+type IndexDone = {
   isTRC: boolean;
   isTLC: boolean;
   isBRC: boolean;
@@ -20,8 +20,8 @@ let findVertex = (
   row: number,
   column: number,
   currIndex: { i: number; j: number },
-  point: PointType,
-  indexDone: IndexDoneType,
+  point: Point,
+  indexDone: IndexDone,
   vertices: VertexType[]
 ) => {
   if (
@@ -95,7 +95,7 @@ const circle = (
   let vertices: VertexType[] = [];
   let { x, y } = targetVertex;
   x = x - 1;
-  let targetPoints: PointType = {
+  let targetPoints = {
     tRC: {
       r: x,
       c: y + 1,
@@ -113,7 +113,7 @@ const circle = (
       c: y - 1,
     },
   };
-  let targetIndexDone: IndexDoneType = {
+  let targetDone = {
     isTRC: false,
     isTLC: false,
     isBRC: false,
@@ -125,7 +125,7 @@ const circle = (
   };
   y = startVertex.y;
   x = startVertex.x - 1;
-  let startPoints: PointType = {
+  let startPoints = {
     tRC: {
       r: x,
       c: y + 1,
@@ -143,7 +143,7 @@ const circle = (
       c: y - 1,
     },
   };
-  let startIndexDone: IndexDoneType = {
+  let startDone = {
     isTRC: false,
     isTLC: false,
     isBRC: false,
@@ -157,8 +157,8 @@ const circle = (
     (target.i >= 0 && target.j >= 0 && target.i < row && target.j < column) ||
     (start.i >= 0 && start.j >= 0 && start.i < row && start.j < column)
   ) {
-    findVertex(row, column, start, startPoints, startIndexDone, vertices);
-    findVertex(row, column, target, targetPoints, targetIndexDone, vertices);
+    findVertex(row, column, start, startPoints, startDone, vertices);
+    findVertex(row, column, target, targetPoints, targetDone, vertices);
   }
   x = Math.floor((startVertex.x + targetVertex.x) / 2);
   y = Math.floor((startVertex.y + targetVertex.y) / 2);
