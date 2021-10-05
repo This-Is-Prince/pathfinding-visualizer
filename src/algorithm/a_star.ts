@@ -21,7 +21,7 @@ const findNeighbour = (
         vertices.push(visited[`node-${x}-${y}`]);
       } else {
         let dataWeight = elm.getAttribute("data-weight");
-        let weight = 0;
+        let weight = 1;
         if (dataWeight) {
           weight = parseInt(dataWeight);
         }
