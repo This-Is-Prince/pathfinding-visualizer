@@ -31,7 +31,7 @@ const Main = () => {
   const targetNodeRef = useRef({} as SpecialNodeType);
   const rowRef = useRef(0);
   const columnRef = useRef(0);
-
+  let animateRef: any = useRef();
   // path arr
   let pathArr = useRef([] as VertexType[]);
   let pathArrIndexRef = useRef(0);
@@ -59,6 +59,11 @@ const Main = () => {
       dispatch({ type: "CHANGE_PLAY", payload: false });
       dispatch({ type: "ANIMATION_COMPLETE", payload: true });
       addAllEventListeners();
+      animateRef.current = animate;
+      targetNodeRef.current.self.addEventListener(
+        "mousedown",
+        animateRef.current
+      );
       visitedArrIndexRef.current = 0;
       cancelAnimationFrame(animationRef.current);
       animationRef.current = null;
@@ -67,6 +72,7 @@ const Main = () => {
       let { x, y } = pathArr.current[pathArrIndexRef.current];
       let node = document.getElementById(`node-${x}-${y}`)!;
       node.classList.remove("visited-node");
+      node.classList.remove("visited-node-1");
       node.classList.add("path-node");
       setTimeout(() => {
         animationRef.current = requestAnimationFrame(animationFunRef.current);
@@ -108,6 +114,46 @@ const Main = () => {
       animationRef.current = requestAnimationFrame(animationFunRef.current);
       mazeArrIndexRef.current++;
     }
+  };
+  let animate = () => {
+    console.log("animation");
+    let obj = { visitedArr: [] as VertexType[], pathArr: [] as VertexType[] };
+    let algo = AppState.algorithm;
+    let r = rowRef.current,
+      c = columnRef.current;
+    let { x, y } = startNodeRef.current;
+    let { x: tX, y: tY } = targetNodeRef.current;
+    if (algo === "bfs") {
+      obj = bfs(r, c, { x, y }, { x: tX, y: tY });
+    } else if (algo === "dfs") {
+      obj = dfsAlgorithm(r, c, { x, y }, { x: tX, y: tY });
+    } else if (algo === "dijkstra") {
+      obj = dijkstra(r, c, { x, y }, { x: tX, y: tY });
+    } else if (algo === "greedy best-first search") {
+      obj = gbfs(r, c, { x, y }, { x: tX, y: tY });
+    } else if (algo === "a*") {
+      obj = aStar(r, c, { x, y }, { x: tX, y: tY });
+    }
+    visitedArr.current.forEach(({ x, y }) => {
+      let node = document.getElementById(`node-${x}-${y}`)!;
+      node.classList.remove("visited-node");
+      node.classList.remove("visited-node-1");
+    });
+    pathArr.current.forEach(({ x, y }) => {
+      let node = document.getElementById(`node-${x}-${y}`)!;
+      node.classList.remove("path-node");
+      node.classList.remove("path-node-1");
+    });
+    visitedArr.current = obj.visitedArr;
+    pathArr.current = obj.pathArr;
+    visitedArr.current.forEach(({ x, y }) => {
+      let node = document.getElementById(`node-${x}-${y}`)!;
+      node.classList.add("visited-node-1");
+    });
+    pathArr.current.forEach(({ x, y }) => {
+      let node = document.getElementById(`node-${x}-${y}`)!;
+      node.classList.add("path-node-1");
+    });
   };
   useEffect(() => {
     updateSize();
@@ -414,6 +460,10 @@ const Main = () => {
       targetNodeOnMouseDown
     );
     targetNodeRef.current.self.removeEventListener(
+      "mousedown",
+      animateRef.current
+    );
+    targetNodeRef.current.self.removeEventListener(
       "mouseup",
       targetNodeOnMouseUp
     );
@@ -499,17 +549,19 @@ const Main = () => {
         for (let i = 0; i < row; i++) {
           for (let j = 0; j < column; j++) {
             let elm = document.getElementById(`node-${i}-${j}`)!;
-            let isVisited = elm.classList.contains("visited-node");
-            let isPath = elm.classList.contains("path-node");
+            let isVisited =
+              elm.classList.contains("visited-node") ||
+              elm.classList.contains("visited-node-1");
+            let isPath =
+              elm.classList.contains("path-node") ||
+              elm.classList.contains("path-node-1");
             if (isVisited) {
-              document
-                .getElementById(`node-${i}-${j}`)!
-                .classList.remove("visited-node");
+              elm.classList.remove("visited-node");
+              elm.classList.remove("visited-node-1");
             }
             if (isPath) {
-              document
-                .getElementById(`node-${i}-${j}`)!
-                .classList.remove("path-node");
+              elm.classList.remove("path-node");
+              elm.classList.remove("path-node-1");
             }
           }
         }

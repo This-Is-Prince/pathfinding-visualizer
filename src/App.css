@@ -389,6 +389,10 @@ ASIDE MODAL CSS
   outline: 1px solid var(--clr-pri);
   animation: 1.5s ease-out 1 alternate forwards running animateVisitedNode;
 }
+.visited-node-1 {
+  background-color: rgba(0, 190, 218, 0.75);
+  outline: 1px solid var(--clr-pri);
+}
 @keyframes animateVisitedNode {
   0% {
     transform: scale(0.3);
@@ -411,6 +415,10 @@ ASIDE MODAL CSS
   background-color: rgb(255, 254, 106);
   outline: 1px solid var(--clr-pri);
   animation: 1.5s ease-out 1 alternate forwards running animatePathNode;
+}
+.path-node-1 {
+  background-color: rgb(255, 254, 106);
+  outline: 1px solid var(--clr-pri);
 }
 @keyframes animatePathNode {
   0% {
