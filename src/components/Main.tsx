@@ -32,6 +32,11 @@ const Main = () => {
   const rowRef = useRef(0);
   const columnRef = useRef(0);
   let animateRef: any = useRef();
+  let speed = useRef(500);
+  useEffect(() => {
+    speed.current =
+      AppState.speed === "fast" ? 0 : AppState.speed === "slow" ? 500 : 250;
+  }, [AppState.speed]);
   // path arr
   let pathArr = useRef([] as VertexType[]);
   let pathArrIndexRef = useRef(0);
@@ -76,7 +81,7 @@ const Main = () => {
       node.classList.add("path-node");
       setTimeout(() => {
         animationRef.current = requestAnimationFrame(animationFunRef.current);
-      }, 0);
+      }, speed.current);
       pathArrIndexRef.current++;
     }
   };
@@ -89,10 +94,11 @@ const Main = () => {
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     } else {
       let { x, y } = visitedArr.current[visitedArrIndexRef.current];
-      document.getElementById(`node-${x}-${y}`)!.classList.add("visited-node");
+      let elm = document.getElementById(`node-${x}-${y}`)!;
+      elm.classList.add("visited-node");
       setTimeout(() => {
         animationRef.current = requestAnimationFrame(animationFunRef.current);
-      }, 0);
+      }, speed.current);
       visitedArrIndexRef.current++;
     }
   };
