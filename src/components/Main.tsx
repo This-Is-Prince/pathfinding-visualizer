@@ -113,8 +113,10 @@ const Main = () => {
     let maze = AppState.maze;
     let r = rowRef.current,
       c = columnRef.current;
+    let { x, y } = startNodeRef.current;
+    let { x: tX, y: tY } = targetNodeRef.current;
     if (maze === "stair pattern") {
-      vertices = stair(r, c);
+      vertices = stair(r, c, { x, y }, { x: tX, y: tY });
     } else if (
       maze === "recursive division" ||
       maze === "recursive division (vertical skew)" ||
@@ -127,10 +129,8 @@ const Main = () => {
     document.querySelectorAll(".node").forEach((node) => {
       node.classList.add("black-node-1");
     });
-    let { x, y } = startNodeRef.current;
     let node = document.getElementById(`node-${x}-${y}`)!;
     node.classList.remove("black-node-1");
-    let { x: tX, y: tY } = targetNodeRef.current;
     node = document.getElementById(`node-${tX}-${tY}`)!;
     node.classList.remove("black-node-1");
     mazeArrIndexRef.current = 0;
