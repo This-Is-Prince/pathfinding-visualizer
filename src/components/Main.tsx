@@ -533,7 +533,6 @@ const Main = () => {
       obj = aStar(r, c, { x, y }, { x: tX, y: tY });
     }
     if (obj.visitedArr.length > 0) {
-      console.log("hi");
       removeAllEventListeners();
     }
     visitedArr.current = obj.visitedArr;

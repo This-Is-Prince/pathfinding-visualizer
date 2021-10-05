@@ -112,8 +112,6 @@ const dijkstra = (
     pathArr.push(parent.self);
     parent = parent.parent;
   }
-  console.log(pathArr);
-
   pathArr.reverse();
   return { visitedArr, pathArr };
 };
