@@ -24,7 +24,7 @@ const findNeighbour = (
         if (dataWeight) {
           weight = parseInt(dataWeight);
         }
-        vertices.push(new Node({ x, y }, 99999, null, weight));
+        vertices.push(new Node({ x, y }, Number.MAX_VALUE, null, weight));
       }
     }
   }
@@ -68,6 +68,7 @@ const dijkstra = (
   targetVertex: VertexType
 ) => {
   let visited: any = {};
+  let visit: any = {};
   let visitedArr = [] as VertexType[];
   let pathArr = [] as VertexType[];
   let que = new PriorityQueue<Node>((a, b) => a.wsf - b.wsf, [], new Set());
@@ -79,22 +80,21 @@ const dijkstra = (
     if (isTargetNodeFind) {
       break;
     }
-    if (visited[`node-${x}-${y}`]) {
+    if (visit[`node-${x}-${y}`]) {
       continue;
     }
-    visited[`node-${x}-${y}`] = u;
+    visit[`node-${x}-${y}`] = true;
     visitedArr.push(u.self);
     let vertexNeighbour = neighbour(u.self, r, c, visited);
     vertexNeighbour.forEach((v) => {
       let { x, y } = v.self;
-      if (x === targetVertex.x && y === targetVertex.y) {
-        isTargetNodeFind = true;
-        v.parent = u;
-        visited[`node-${x}-${y}`] = v;
-        visitedArr.push(v.self);
-      }
       if (!isTargetNodeFind) {
-        if (v.wsf > u.wsf + v.weight) {
+        if (x === targetVertex.x && y === targetVertex.y) {
+          isTargetNodeFind = true;
+          v.parent = u;
+          visited[`node-${x}-${y}`] = v;
+          visitedArr.push(v.self);
+        } else if (v.wsf === Number.MAX_VALUE || v.wsf > u.wsf + v.weight) {
           if (que.contains(v)) {
             que.remove(v);
           }
@@ -103,6 +103,7 @@ const dijkstra = (
           que.add(v);
         }
       }
+      visited[`node-${x}-${y}`] = v;
     });
   }
   let { x, y } = targetVertex;
@@ -111,6 +112,8 @@ const dijkstra = (
     pathArr.push(parent.self);
     parent = parent.parent;
   }
+  console.log(pathArr);
+
   pathArr.reverse();
   return { visitedArr, pathArr };
 };
