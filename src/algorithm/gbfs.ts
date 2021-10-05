@@ -20,11 +20,16 @@ const findNeighbour = (
       if (visited[`node-${x}-${y}`]) {
         vertices.push(visited[`node-${x}-${y}`]);
       } else {
+        let dataWeight = elm.getAttribute("data-weight");
+        let weight = 1;
+        if (dataWeight) {
+          weight = parseInt(dataWeight);
+        }
         vertices.push(
           new Node(
             { x, y },
             null,
-            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y)
+            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y) + weight
           )
         );
       }

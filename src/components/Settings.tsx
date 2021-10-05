@@ -84,7 +84,9 @@ const Settings = () => {
             title="Add Weight"
             onClick={() => {
               weightArr.current.forEach(({ x, y }) => {
-                document.getElementById(`node-${x}-${y}`)!.textContent = "";
+                let elm = document.getElementById(`node-${x}-${y}`)!;
+                elm.textContent = "";
+                elm.removeAttribute("data-weight");
               });
               weightArr.current = [];
               let { row, column } = AppState.grid,

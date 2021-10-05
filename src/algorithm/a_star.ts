@@ -86,68 +86,55 @@ const aStar = (
   let pathArr = [] as VertexType[];
   let openList = new PriorityQueue(
     (a: Node, b: Node) => {
-      return a.heuristic - b.heuristic;
+      return a.f - b.f;
     },
     [],
     new Set<Node>()
   );
   let closeList = new PriorityQueue(
     (a: Node, b: Node) => {
-      return a.heuristic - b.heuristic;
+      return a.f - b.f;
     },
     [],
     new Set<Node>()
   );
   let isTargetNodeFind = false;
-  let start = new Node(
-    startVertex,
-    null,
-    0,
-    Math.abs(startVertex.x - targetVertex.x) +
-      Math.abs(startVertex.y - targetVertex.y)
-  );
+  let start = new Node(startVertex, null, 0, 0);
   start.g = 0;
-  start.f = start.g + start.heuristic;
+  start.f = 0;
   openList.add(start);
+  visited[`node-${start.self.x}-${start.self.y}`] = start;
   while (!openList.isEmpty()) {
     let current = openList.get();
-    let { x, y } = current.self;
     if (isTargetNodeFind) {
       break;
     }
-    if (visited[`node-${x}-${y}`]) {
-      continue;
-    }
-    visited[`node-${x}-${y}`] = current;
-    visitedArr.push(current.self);
-
     let vertexNeighbour = neighbour(current.self, r, c, visited, targetVertex);
     vertexNeighbour.forEach((vertex) => {
       let { x, y } = vertex.self;
-      if (x === targetVertex.x && y === targetVertex.y) {
-        isTargetNodeFind = true;
-        vertex.parent = current;
-        visited[`node-${x}-${y}`] = vertex;
-      }
       if (!isTargetNodeFind) {
-        let totalWeight = vertex.weight + current.g;
-        if (!openList.contains(vertex) && !closeList.contains(vertex)) {
+        if (x === targetVertex.x && y === targetVertex.y) {
+          isTargetNodeFind = true;
           vertex.parent = current;
-          vertex.g = totalWeight;
-          vertex.f = totalWeight + vertex.heuristic;
-          openList.add(vertex);
-        } else if (totalWeight < vertex.g) {
-          vertex.parent = current;
-          vertex.g = totalWeight;
-          vertex.f = totalWeight + vertex.heuristic;
-          if (closeList.contains(vertex)) {
-            closeList.remove(vertex);
+          visitedArr.push(vertex.self);
+        } else if (!closeList.contains(vertex)) {
+          let gNew = current.g + vertex.weight;
+          let fNew = vertex.heuristic + gNew;
+          if (vertex.f === Number.MAX_VALUE || vertex.f > fNew) {
+            if (openList.contains(vertex)) {
+              openList.remove(vertex);
+            }
+            vertex.f = fNew;
+            vertex.g = gNew;
+            vertex.parent = current;
             openList.add(vertex);
           }
         }
       }
+      visited[`node-${x}-${y}`] = vertex;
     });
     closeList.add(current);
+    visitedArr.push(current.self);
   }
   let { x, y } = targetVertex;
   let parent = visited[`node-${x}-${y}`];
