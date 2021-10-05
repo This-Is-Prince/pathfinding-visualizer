@@ -115,7 +115,7 @@ const Main = () => {
       c = columnRef.current;
     let { x, y } = startNodeRef.current;
     let { x: tX, y: tY } = targetNodeRef.current;
-    if (maze === "stair pattern") {
+    if (maze === "circle pattern") {
       vertices = stair(r, c, { x, y }, { x: tX, y: tY });
     } else if (
       maze === "recursive division" ||

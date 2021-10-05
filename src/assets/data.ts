@@ -29,8 +29,8 @@ let mazesPatterns = {
     },
     {
       id: 6,
-      title: "simple stair pattern",
-      value: "stair pattern",
+      title: "simple circle pattern",
+      value: "circle pattern",
     },
   ],
 };
