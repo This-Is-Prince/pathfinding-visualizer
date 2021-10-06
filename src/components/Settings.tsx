@@ -144,6 +144,13 @@ const Settings = () => {
               document.querySelectorAll(".visited-node").forEach((node) => {
                 node.classList.remove("visited-node");
               });
+              document.querySelectorAll(".path-node-1").forEach((node) => {
+                node.classList.remove("visited-node-1");
+                node.classList.remove("path-node-1");
+              });
+              document.querySelectorAll(".visited-node-1").forEach((node) => {
+                node.classList.remove("visited-node-1");
+              });
             }}
           >
             <span className="flex-center">
@@ -159,6 +166,10 @@ const Settings = () => {
               document.querySelectorAll(".black-node").forEach((node) => {
                 node.classList.remove("black-node");
               });
+              document.querySelectorAll(".black-node-1").forEach((node) => {
+                node.classList.remove("black-node-1");
+              });
+              dispatch({ type: "CHANGE_MAZES", payload: "" });
             }}
           >
             <span className="flex-center">

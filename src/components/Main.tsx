@@ -10,8 +10,7 @@ import gbfs from "../algorithm/gbfs";
 import aStar from "../algorithm/a_star";
 import circle from "../mazes/circle";
 
-let findXY = (event: any) => {
-  let id = event.target.getAttribute("id");
+let findXY = (id: string) => {
   id = id.substring(5);
   let index = id.search("-");
   let x = id.substring(0, index),
@@ -30,6 +29,7 @@ const Main = () => {
   const mainRef = useRef<HTMLElement>({} as HTMLElement);
   const startNodeRef = useRef({} as SpecialNodeType);
   const targetNodeRef = useRef({} as SpecialNodeType);
+  const whichSpecialNode = useRef("target");
   const rowRef = useRef(0);
   const columnRef = useRef(0);
   let animateRef: any = useRef();
@@ -59,10 +59,9 @@ const Main = () => {
       dispatch({ type: "CHANGE_PLAY", payload: false });
       dispatch({ type: "ANIMATION_COMPLETE", payload: true });
       animateRef.current = animate;
-      // targetNodeRef.current.self.addEventListener(
-      //   "dragover",
-      //   animateRef.current
-      // );
+      document.querySelectorAll(".node").forEach((node) => {
+        node.addEventListener("drop", animateRef.current);
+      });
       resetAnimation();
       addAllEventListeners();
     } else {
@@ -210,25 +209,27 @@ const Main = () => {
   /**
    * Node Mouse Enter event
    */
-  const mainMouseOverEvent = (event: any) => {
+  const mainMouseOverEvent = useCallback((event: any) => {
     let classList = event.target.classList;
     let isNode =
       classList.contains("node") && !classList.contains("black-node");
     if (isNode) {
       classList.add("black-node");
     }
-  };
+  }, []);
 
   /**
    * target node event
    */
   let targetDragStart = useCallback((event: any) => {
+    whichSpecialNode.current = "target";
     event.dataTransfer!.setData("text", event.target.id);
   }, []);
   /**
    * start node event
    */
   let startDragStart = useCallback((event: any) => {
+    whichSpecialNode.current = "start";
     event.dataTransfer!.setData("text", event.target.id);
   }, []);
   /**
@@ -257,6 +258,31 @@ const Main = () => {
    */
   let handleDragOver = useCallback((event: any) => {
     event.preventDefault();
+    let elm = event.target,
+      id = elm.getAttribute("id"),
+      s = startNodeRef.current,
+      t = targetNodeRef.current;
+
+    if (
+      elm.classList.contains("node") &&
+      id !== `node-${t.x}-${t.y}` &&
+      id !== `node-${s.x}-${s.y}`
+    ) {
+      let { x, y } = findXY(id);
+      if (whichSpecialNode.current === "target") {
+        targetNodeRef.current = {
+          ...targetNodeRef.current,
+          x,
+          y,
+        };
+      } else {
+        startNodeRef.current = {
+          ...startNodeRef.current,
+          x,
+          y,
+        };
+      }
+    }
   }, []);
   /**
    * Node Drop event
@@ -268,11 +294,14 @@ const Main = () => {
     let parentID = elm.id;
     if (parentID !== "startNode" && parentID !== "targetNode") {
       elm.appendChild(document.getElementById(id));
-      let isBlack = elm.classList.contains("black-node");
+      let isBlack =
+        elm.classList.contains("black-node") ||
+        elm.classList.contains("black-node-1");
       if (isBlack) {
         elm.classList.remove("black-node");
+        elm.classList.remove("black-node-1");
       }
-      let { x, y } = findXY(event);
+      let { x, y } = findXY(event.target.getAttribute("id"));
       if (id === "startNode") {
         startNodeRef.current = { ...startNodeRef.current, x, y };
       } else {
@@ -392,7 +421,6 @@ const Main = () => {
    */
   const removeAllEventListeners = () => {
     console.log("remove all listeners");
-
     document.querySelectorAll(".node").forEach(nodeEventRemove);
     removeSpecialNodeEvents();
   };
