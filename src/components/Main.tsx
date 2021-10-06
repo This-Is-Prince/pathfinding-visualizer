@@ -54,7 +54,7 @@ const Main = () => {
   /**
    * Path Node Animation
    */
-  let animatePath = () => {
+  let animatePathNode = () => {
     if (pathArrIndexRef.current >= pathArr.current.length) {
       dispatch({ type: "CHANGE_PLAY", payload: false });
       dispatch({ type: "ANIMATION_COMPLETE", payload: true });
@@ -82,10 +82,10 @@ const Main = () => {
    * Visited Node Animation
    */
 
-  let animateVisited = () => {
+  let animateVisitedNode = () => {
     if (visitedArrIndexRef.current >= visitedArr.current.length) {
       pathArrIndexRef.current = 0;
-      animationArrRef.current = animatePath;
+      animationArrRef.current = animatePathNode;
       animationFunRef.current = animationArrRef.current;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     } else {
@@ -103,17 +103,13 @@ const Main = () => {
    * Maze Animation
    */
 
-  let animateMaze = () => {
+  let animateMazeNode = () => {
     if (mazeArrIndexRef.current >= mazeArr.current.length) {
       visitedArrIndexRef.current = 0;
       dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
       dispatch({ type: "CHANGE_PLAY", payload: false });
-      visitedArrIndexRef.current = 0;
       addAllEventListeners();
-
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
-      animationArrRef.current = animateVisited;
+      resetAnimation();
     } else {
       let { x, y } = mazeArr.current[mazeArrIndexRef.current];
       let node = document.getElementById(`node-${x}-${y}`)!;
@@ -130,7 +126,7 @@ const Main = () => {
     visitedArrIndexRef.current = 0;
     cancelAnimationFrame(animationRef.current);
     animationRef.current = null;
-    animationArrRef.current = animateVisited;
+    animationArrRef.current = animateVisitedNode;
   };
 
   /**
@@ -448,7 +444,7 @@ const Main = () => {
     addSpecialNodeEvents();
     visitedArr.current = [];
     pathArr.current = [];
-    animationArrRef.current = animateVisited;
+    animationArrRef.current = animateVisitedNode;
   };
   /**
    * add all event
@@ -554,7 +550,7 @@ const Main = () => {
       node.classList.remove("black-node-1");
       mazeArrIndexRef.current = 0;
       mazeArr.current = vertices;
-      animationFunRef.current = animateMaze;
+      animationFunRef.current = animateMazeNode;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     }
   }, [AppState.maze]);
@@ -595,7 +591,7 @@ const Main = () => {
       }
       visitedArr.current = obj.visitedArr;
       pathArr.current = obj.pathArr;
-      animationArrRef.current = animateVisited;
+      animationArrRef.current = animateVisitedNode;
     }
   }, [AppState.algorithm]);
 
