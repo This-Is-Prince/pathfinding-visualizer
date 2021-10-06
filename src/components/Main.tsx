@@ -59,10 +59,10 @@ const Main = () => {
       dispatch({ type: "CHANGE_PLAY", payload: false });
       dispatch({ type: "ANIMATION_COMPLETE", payload: true });
       animateRef.current = animate;
-      targetNodeRef.current.self.addEventListener(
-        "mousedown",
-        animateRef.current
-      );
+      // targetNodeRef.current.self.addEventListener(
+      //   "dragover",
+      //   animateRef.current
+      // );
       resetAnimation();
       addAllEventListeners();
     } else {
@@ -411,14 +411,14 @@ const Main = () => {
     let row = Math.floor(noOfNodesInRow / 2);
     let startCol = Math.floor(noOfNodesInColumn / 4);
     let targetCol = Math.floor(noOfNodesInColumn / 4) * 3;
-    let startNode = document.createElement("img");
-    startNode.src = "http://localhost:3000/src/assets/start.png";
+    let startNode = document.createElement("div");
     startNode.title = "Starting Node";
-    startNode.alt = "Starting Node Image";
-    let targetNode = document.createElement("img");
-    targetNode.src = "http://localhost:3000/src/assets/target.png";
+    startNode.id = "startNode";
+    startNode.draggable = true;
+    let targetNode = document.createElement("div");
     targetNode.title = "Target Node";
-    targetNode.alt = "Target Node Image";
+    targetNode.draggable = true;
+    targetNode.id = "targetNode";
     // making all nodes
     for (let i = 0; i < noOfNodesInRow; i++) {
       let nodesRow = document.createElement("article");
@@ -433,7 +433,7 @@ const Main = () => {
           node.appendChild(startNode);
           startNodeRef.current = { x: row, y: startCol, self: startNode };
         } else if (i === row && j === targetCol) {
-          targetNode.classList.add("endNode");
+          targetNode.classList.add("targetNode");
           node.appendChild(targetNode);
           targetNodeRef.current = { x: row, y: targetCol, self: targetNode };
         }
@@ -601,11 +601,19 @@ const Main = () => {
     if (AppState.isPlay) {
       console.log("play");
       if (AppState.isAnimationComplete) {
+        console.log("animation complete");
+        removeAllEventListeners();
+        // targetNodeRef.current.self.removeEventListener(
+        //   "mouseup",
+        //   animateRef.current
+        // );
         resetPathVisitedNode();
         dispatch({ type: "ANIMATION_COMPLETE", payload: false });
       }
-      animationFunRef.current = animationArrRef.current;
-      animationRef.current = requestAnimationFrame(animationFunRef.current);
+      if (AppState.algorithm) {
+        animationFunRef.current = animationArrRef.current;
+        animationRef.current = requestAnimationFrame(animationFunRef.current);
+      }
     } else {
       console.log("pause");
       animationFunRef.current = () => {};

@@ -15,6 +15,12 @@
   --clr-sec: #002233;
   --clr-yellow: #ffd803;
 }
+.startNode {
+  background-image: url("./src/assets/start.png");
+}
+.targetNode {
+  background-image: url("./src/assets/target.png");
+}
 body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-tap-highlight-color: transparent;
