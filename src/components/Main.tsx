@@ -10,7 +10,8 @@ import gbfs from "../algorithm/gbfs";
 import aStar from "../algorithm/a_star";
 import circle from "../mazes/circle";
 
-export let findXY = (id: string) => {
+let findXY = (event: any) => {
+  let id = event.target.getAttribute("id");
   id = id.substring(5);
   let index = id.search("-");
   let x = id.substring(0, index),
@@ -205,13 +206,17 @@ const Main = () => {
     });
   };
 
+  const specialNodeXY = () => {
+    let { x: sX, y: sY } = startNodeRef.current;
+    let { x: tX, y: tY } = targetNodeRef.current;
+    return { sX, sY, tX, tY };
+  };
   /**
    * Node Mouse Enter event
    */
   const handleMouseEnter = useCallback((event: any) => {
-    let { x, y } = findXY(event.target.getAttribute("id"));
-    const { x: sX, y: sY } = startNodeRef.current;
-    const { x: tX, y: tY } = targetNodeRef.current;
+    let { x, y } = findXY(event);
+    const { sX, sY, tX, tY } = specialNodeXY();
     if ((x === sX && y === sY) || (x === tX && y === tY)) {
       event.target.classList.remove("black-node");
       event.target.classList.remove("black-node-1");
@@ -228,9 +233,8 @@ const Main = () => {
     if (!event.target.getAttribute("id")) {
       return;
     }
-    let { x, y } = findXY(event.target.getAttribute("id"));
-    const { x: sX, y: sY } = startNodeRef.current;
-    const { x: tX, y: tY } = targetNodeRef.current;
+    let { x, y } = findXY(event);
+    const { sX, sY, tX, tY } = specialNodeXY();
     if (!((x === sX && y === sY) || (x === tX && y === tY))) {
       document.querySelectorAll(".node").forEach((node) => {
         node.addEventListener("mouseenter", handleMouseEnter);
@@ -280,7 +284,7 @@ const Main = () => {
     }
     event.target.classList.remove("black-node");
     event.target.classList.remove("black-node-1");
-    const { x, y } = findXY(event.target.getAttribute("id"));
+    const { x, y } = findXY(event);
     let currParentOfTargetNode = document.getElementById(`node-${x}-${y}`)!;
     if (!currParentOfTargetNode.hasChildNodes()) {
       let prevParentOfTargetNode = document.getElementById(
@@ -517,6 +521,7 @@ const Main = () => {
   }, [AppState.speed]);
 
   // useEffect for Maze
+
   useEffect(() => {
     console.log("useEffect maze");
     if (AppState.maze) {
@@ -526,10 +531,9 @@ const Main = () => {
       let maze = AppState.maze;
       let r = rowRef.current,
         c = columnRef.current;
-      let { x, y } = startNodeRef.current;
-      let { x: tX, y: tY } = targetNodeRef.current;
+      let { sX, sY, tX, tY } = specialNodeXY();
       if (maze === "circle pattern") {
-        vertices = circle(r, c, { x, y }, { x: tX, y: tY });
+        vertices = circle(r, c, { x: sX, y: sY }, { x: tX, y: tY });
       } else if (
         maze === "recursive division" ||
         maze === "recursive division (vertical skew)" ||
@@ -544,7 +548,7 @@ const Main = () => {
         node.classList.add("black-node-1");
       });
       removeSpecialNodeEvents();
-      let node = document.getElementById(`node-${x}-${y}`)!;
+      let node = document.getElementById(`node-${sX}-${sY}`)!;
       node.classList.remove("black-node-1");
       node = document.getElementById(`node-${tX}-${tY}`)!;
       node.classList.remove("black-node-1");
