@@ -15,7 +15,7 @@ export let findXY = (id: string) => {
   let index = id.search("-");
   let x = id.substring(0, index),
     y = id.substring(index + 1);
-  return { x, y };
+  return { x: parseInt(x), y: parseInt(y) };
 };
 
 export type SpecialNodeType = {
@@ -209,15 +209,10 @@ const Main = () => {
    * Node Mouse Enter event
    */
   const handleMouseEnter = useCallback((event: any) => {
-    let { x: sX, y: sY } = findXY(event.target.getAttribute("id"));
-    let x = parseInt(sX),
-      y = parseInt(sY);
-    const { x: startNodeX, y: startNodeY } = startNodeRef.current;
-    const { x: targetNodeX, y: targetNodeY } = targetNodeRef.current;
-    if (
-      (x === startNodeX && y === startNodeY) ||
-      (x === targetNodeX && y === targetNodeY)
-    ) {
+    let { x, y } = findXY(event.target.getAttribute("id"));
+    const { x: sX, y: sY } = startNodeRef.current;
+    const { x: tX, y: tY } = targetNodeRef.current;
+    if ((x === sX && y === sY) || (x === tX && y === tY)) {
       event.target.classList.remove("black-node");
       event.target.classList.remove("black-node-1");
     } else {
@@ -233,17 +228,10 @@ const Main = () => {
     if (!event.target.getAttribute("id")) {
       return;
     }
-    let { x: sX, y: sY } = findXY(event.target.getAttribute("id"));
-    let clickNodeX = parseInt(sX),
-      clickNodeY = parseInt(sY);
-    const { x: startNodeX, y: startNodeY } = startNodeRef.current;
-    const { x: targetNodeX, y: targetNodeY } = targetNodeRef.current;
-    if (
-      !(
-        (clickNodeX === startNodeX && clickNodeY === startNodeY) ||
-        (clickNodeX === targetNodeX && clickNodeY === targetNodeY)
-      )
-    ) {
+    let { x, y } = findXY(event.target.getAttribute("id"));
+    const { x: sX, y: sY } = startNodeRef.current;
+    const { x: tX, y: tY } = targetNodeRef.current;
+    if (!((x === sX && y === sY) || (x === tX && y === tY))) {
       document.querySelectorAll(".node").forEach((node) => {
         node.addEventListener("mouseenter", handleMouseEnter);
       });
@@ -302,8 +290,8 @@ const Main = () => {
       currParentOfTargetNode.appendChild(specialNode.self);
       return {
         ...specialNode,
-        x: parseInt(x),
-        y: parseInt(y),
+        x,
+        y,
       };
     }
     return null;
@@ -462,18 +450,14 @@ const Main = () => {
    * add all event
    */
   const addAllEventListeners = () => {
-    document.querySelectorAll(".node").forEach((node) => {
-      nodeEventAdd(node);
-    });
+    document.querySelectorAll(".node").forEach(nodeEventAdd);
     addSpecialNodeEvents();
   };
   /**
    * remove all events
    */
   const removeAllEventListeners = () => {
-    document.querySelectorAll(".node").forEach((node) => {
-      nodeEventRemove(node);
-    });
+    document.querySelectorAll(".node").forEach(nodeEventRemove);
     removeSpecialNodeEvents();
   };
   /**
@@ -497,55 +481,28 @@ const Main = () => {
    * add special node event
    */
   const addSpecialNodeEvents = () => {
-    startNodeRef.current.self.addEventListener(
-      "mousedown",
-      startNodeOnMouseDown
-    );
-    startNodeRef.current.self.addEventListener("mouseup", startNodeOnMouseUp);
-    startNodeRef.current.self.addEventListener("dblclick", startNodeOnDBLClick);
-    targetNodeRef.current.self.addEventListener(
-      "mousedown",
-      targetNodeOnMouseDown
-    );
-    targetNodeRef.current.self.addEventListener("mouseup", targetNodeOnMouseUp);
-    targetNodeRef.current.self.addEventListener(
-      "dblclick",
-      targetNodeOnDBLClick
-    );
+    let target = targetNodeRef.current.self;
+    let start = startNodeRef.current.self;
+    start.addEventListener("mousedown", startNodeOnMouseDown);
+    start.addEventListener("mouseup", startNodeOnMouseUp);
+    start.addEventListener("dblclick", startNodeOnDBLClick);
+    target.addEventListener("mousedown", targetNodeOnMouseDown);
+    target.addEventListener("mouseup", targetNodeOnMouseUp);
+    target.addEventListener("dblclick", targetNodeOnDBLClick);
   };
   /**
    * remove special node event
    */
 
   const removeSpecialNodeEvents = () => {
-    startNodeRef.current.self.removeEventListener(
-      "mousedown",
-      startNodeOnMouseDown
-    );
-    startNodeRef.current.self.removeEventListener(
-      "mouseup",
-      startNodeOnMouseUp
-    );
-    startNodeRef.current.self.removeEventListener(
-      "dblclick",
-      startNodeOnDBLClick
-    );
-    targetNodeRef.current.self.removeEventListener(
-      "mousedown",
-      targetNodeOnMouseDown
-    );
-    targetNodeRef.current.self.removeEventListener(
-      "mousedown",
-      animateRef.current
-    );
-    targetNodeRef.current.self.removeEventListener(
-      "mouseup",
-      targetNodeOnMouseUp
-    );
-    targetNodeRef.current.self.removeEventListener(
-      "dblclick",
-      targetNodeOnDBLClick
-    );
+    let target = targetNodeRef.current.self;
+    let start = startNodeRef.current.self;
+    start.removeEventListener("mousedown", startNodeOnMouseDown);
+    start.removeEventListener("mouseup", startNodeOnMouseUp);
+    start.removeEventListener("dblclick", startNodeOnDBLClick);
+    target.removeEventListener("mousedown", targetNodeOnMouseDown);
+    target.removeEventListener("mouseup", targetNodeOnMouseUp);
+    target.removeEventListener("dblclick", targetNodeOnDBLClick);
   };
 
   /**
