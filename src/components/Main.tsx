@@ -49,12 +49,10 @@ const Main = () => {
   let animationFunRef: any = useRef();
   let animationRef: any = useRef();
   let animationArrRef: any = useRef();
-  /**
-   *
-   * ANIMATION FUNCTION START
-   *
-   */
 
+  /**
+   * Path Node Animation
+   */
   let animatePath = () => {
     if (pathArrIndexRef.current >= pathArr.current.length) {
       dispatch({ type: "CHANGE_PLAY", payload: false });
@@ -79,6 +77,10 @@ const Main = () => {
     }
   };
 
+  /**
+   * Visited Node Animation
+   */
+
   let animateVisited = () => {
     if (visitedArrIndexRef.current >= visitedArr.current.length) {
       pathArrIndexRef.current = 0;
@@ -95,6 +97,11 @@ const Main = () => {
       visitedArrIndexRef.current++;
     }
   };
+
+  /**
+   * Maze Animation
+   */
+
   let animateMaze = () => {
     if (mazeArrIndexRef.current >= mazeArr.current.length) {
       visitedArrIndexRef.current = 0;
@@ -114,12 +121,21 @@ const Main = () => {
       mazeArrIndexRef.current++;
     }
   };
+
+  /**
+   * Reset Animation
+   */
   const resetAnimation = () => {
     visitedArrIndexRef.current = 0;
     cancelAnimationFrame(animationRef.current);
     animationRef.current = null;
     animationArrRef.current = animateVisited;
   };
+
+  /**
+   * Reset Path Visited Node
+   */
+
   const resetPathVisitedNode = useCallback(() => {
     document.querySelectorAll(".visited-node").forEach((node) => {
       node.classList.remove("visited-node");
@@ -134,35 +150,39 @@ const Main = () => {
       node.classList.remove("path-node-1");
     });
   }, []);
+
+  /**
+   * Algorithm Check
+   */
+
   let checkAlgorithm = useCallback(
     (
       r: number,
       c: number,
       algo: string,
-      startNode: SpecialNodeType,
-      targetNode: SpecialNodeType
+      { x, y }: SpecialNodeType,
+      { x: tX, y: tY }: SpecialNodeType
     ) => {
-      let obj = {
-        visitedArr: [] as VertexType[],
-        pathArr: [] as VertexType[],
-      };
-      let { x, y } = startNode;
-      let { x: tX, y: tY } = targetNode;
-      if (algo === "bfs") {
-        obj = bfs(r, c, { x, y }, { x: tX, y: tY });
-      } else if (algo === "dfs") {
-        obj = dfsAlgorithm(r, c, { x, y }, { x: tX, y: tY });
-      } else if (algo === "dijkstra") {
-        obj = dijkstra(r, c, { x, y }, { x: tX, y: tY });
-      } else if (algo === "greedy best-first search") {
-        obj = gbfs(r, c, { x, y }, { x: tX, y: tY });
-      } else if (algo === "a*") {
-        obj = aStar(r, c, { x, y }, { x: tX, y: tY });
+      switch (algo) {
+        case "bfs":
+          return bfs(r, c, { x, y }, { x: tX, y: tY });
+        case "dfs":
+          return dfsAlgorithm(r, c, { x, y }, { x: tX, y: tY });
+        case "dijkstra":
+          return dijkstra(r, c, { x, y }, { x: tX, y: tY });
+        case "greedy best-first search":
+          return gbfs(r, c, { x, y }, { x: tX, y: tY });
+        case "a*":
+          return aStar(r, c, { x, y }, { x: tX, y: tY });
+        default:
+          return { visitedArr: [], pathArr: [] };
       }
-      return obj;
     },
     []
   );
+  /**
+   * Instant Animation
+   */
   let animate = () => {
     console.log("animation");
     let obj = checkAlgorithm(
@@ -186,9 +206,7 @@ const Main = () => {
   };
 
   /**
-   *
-   * EVENTS
-   *
+   * Node Mouse Enter event
    */
   const handleMouseEnter = useCallback((event: any) => {
     let { x: sX, y: sY } = findXY(event.target.getAttribute("id"));
@@ -206,6 +224,11 @@ const Main = () => {
       event.target.classList.add("black-node");
     }
   }, []);
+
+  /**
+   * Node Mouse Down event
+   */
+
   const handleMouseDown = useCallback((event: any) => {
     if (!event.target.getAttribute("id")) {
       return;
@@ -235,68 +258,35 @@ const Main = () => {
       }
     }
   }, []);
+
+  /**
+   * Node Mouse Up event
+   */
+
   let handleMouseUp = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
       node.removeEventListener("mouseenter", handleMouseEnter);
     });
   }, []);
 
+  /**
+   * Node Touch End event
+   */
+
   const handleTouchEnd = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
-      node.removeEventListener("touchstart", handleTouchStartOfStartNode);
-      node.removeEventListener("touchstart", handleTouchStartOfTargetNode);
+      node.removeEventListener("touchstart", handleStartNodeMouseEnter);
+      node.removeEventListener("touchstart", handleTargetNodeMouseEnter);
     });
   }, []);
 
-  // start node events
-
-  const startNodeOnMouseEnter = useCallback((event: any) => {
-    if (!event.target.getAttribute("id")) {
-      return;
-    }
-    event.target.classList.remove("black-node");
-    event.target.classList.remove("black-node-1");
-
-    const { x, y } = findXY(event.target.getAttribute("id"));
-    let currParentOfStartNode = document.getElementById(`node-${x}-${y}`)!;
-    if (!currParentOfStartNode.hasChildNodes()) {
-      let prevParentOfStartNode = document.getElementById(
-        `node-${startNodeRef.current.x}-${startNodeRef.current.y}`
-      )!;
-      prevParentOfStartNode.removeChild(startNodeRef.current.self);
-      startNodeRef.current = {
-        ...startNodeRef.current,
-        x: parseInt(x),
-        y: parseInt(y),
-      };
-      currParentOfStartNode.appendChild(startNodeRef.current.self);
-      dispatch({
-        type: "ADD_SPECIAL_START_NODE",
-        payload: { x: parseInt(x), y: parseInt(y) },
-      });
-    }
-  }, []);
-  const startNodeOnMouseDown = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.addEventListener("mouseenter", startNodeOnMouseEnter);
-    });
-  }, []);
-  const startNodeOnMouseUp = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.removeEventListener("mouseenter", startNodeOnMouseEnter);
-    });
-  }, []);
-  const handleTouchStartOfStartNode = useCallback((event: any) => {
-    startNodeOnMouseEnter(event);
-  }, []);
-  const startNodeOnDBLClick = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.addEventListener("touchstart", handleTouchStartOfStartNode);
-    });
-  }, []);
-
-  //  target node events
-  const targetNodeOnMouseEnter = useCallback((event: any) => {
+  /**
+   * Change Special node position
+   */
+  const changeSpecialNodePosition = (
+    event: any,
+    specialNode: SpecialNodeType
+  ) => {
     if (!event.target.getAttribute("id")) {
       return;
     }
@@ -306,44 +296,95 @@ const Main = () => {
     let currParentOfTargetNode = document.getElementById(`node-${x}-${y}`)!;
     if (!currParentOfTargetNode.hasChildNodes()) {
       let prevParentOfTargetNode = document.getElementById(
-        `node-${targetNodeRef.current.x}-${targetNodeRef.current.y}`
+        `node-${specialNode.x}-${specialNode.y}`
       )!;
-      prevParentOfTargetNode.removeChild(targetNodeRef.current.self);
-      targetNodeRef.current = {
-        ...targetNodeRef.current,
+      prevParentOfTargetNode.removeChild(specialNode.self);
+      currParentOfTargetNode.appendChild(specialNode.self);
+      return {
+        ...specialNode,
         x: parseInt(x),
         y: parseInt(y),
       };
-      currParentOfTargetNode.appendChild(targetNodeRef.current.self);
-      dispatch({
-        type: "ADD_SPECIAL_TARGET_NODE",
-        payload: { x: parseInt(x), y: parseInt(y) },
-      });
     }
-  }, []);
-  const targetNodeOnMouseDown = useCallback(() => {
+    return null;
+  };
+  /**
+   * Start Node Mouse Enter Event
+   */
+  const handleStartNodeMouseEnter = (event: any) => {
+    let specialNode = changeSpecialNodePosition(event, startNodeRef.current);
+    if (specialNode) {
+      startNodeRef.current = specialNode;
+    }
+  };
+
+  /**
+   * Start Node Mouse Down event
+   */
+
+  const startNodeOnMouseDown = useCallback(() => {
     document.querySelectorAll(".node").forEach((node) => {
-      node.addEventListener("mouseenter", targetNodeOnMouseEnter);
-    });
-  }, []);
-  const targetNodeOnMouseUp = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.removeEventListener("mouseenter", targetNodeOnMouseEnter);
-    });
-  }, []);
-  const handleTouchStartOfTargetNode = useCallback((event: any) => {
-    targetNodeOnMouseEnter(event);
-  }, []);
-  const targetNodeOnDBLClick = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.addEventListener("touchstart", handleTouchStartOfTargetNode);
+      node.addEventListener("mouseenter", handleStartNodeMouseEnter);
     });
   }, []);
 
   /**
-   *
-   * UPDATE SIZE END
-   *
+   * Start Node Mouse Up event
+   */
+
+  const startNodeOnMouseUp = useCallback(() => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.removeEventListener("mouseenter", handleStartNodeMouseEnter);
+    });
+  }, []);
+  /**
+   * Start Node Double Click event
+   */
+
+  const startNodeOnDBLClick = useCallback(() => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.addEventListener("touchstart", handleStartNodeMouseEnter);
+    });
+  }, []);
+
+  /**
+   * Target Node Mouse Enter event
+   */
+
+  const handleTargetNodeMouseEnter = (event: any) => {
+    let specialNode = changeSpecialNodePosition(event, targetNodeRef.current);
+    if (specialNode) {
+      targetNodeRef.current = specialNode;
+    }
+  };
+
+  /**
+   * Target Node Mouse Down event
+   */
+  const targetNodeOnMouseDown = useCallback(() => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.addEventListener("mouseenter", handleTargetNodeMouseEnter);
+    });
+  }, []);
+  /**
+   * Target Node Mouse Up event
+   */
+  const targetNodeOnMouseUp = useCallback(() => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.removeEventListener("mouseenter", handleTargetNodeMouseEnter);
+    });
+  }, []);
+  /**
+   * Target Node Double Click event
+   */
+  const targetNodeOnDBLClick = useCallback(() => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.addEventListener("touchstart", handleTargetNodeMouseEnter);
+    });
+  }, []);
+
+  /**
+   * Update Size
    */
   const updateSize = () => {
     console.log("update size");
@@ -409,25 +450,73 @@ const Main = () => {
           targetNodeRef.current = { x: row, y: targetCol, self: targetNode };
         }
         nodesRow.appendChild(node);
-        node.addEventListener("mousedown", handleMouseDown);
-        node.addEventListener("mouseup", handleMouseUp);
-        node.addEventListener("touchend", handleTouchEnd);
+        nodeEventAdd(node);
       }
     }
-    dispatch({
-      type: "ADD_SPECIAL_START_NODE",
-      payload: { x: row, y: startCol },
-    });
-    dispatch({
-      type: "ADD_SPECIAL_TARGET_NODE",
-      payload: { x: row, y: targetCol },
-    });
-
     addSpecialNodeEvents();
     visitedArr.current = [];
     pathArr.current = [];
     animationArrRef.current = animateVisited;
   };
+  /**
+   * add all event
+   */
+  const addAllEventListeners = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      nodeEventAdd(node);
+    });
+    addSpecialNodeEvents();
+  };
+  /**
+   * remove all events
+   */
+  const removeAllEventListeners = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      nodeEventRemove(node);
+    });
+    removeSpecialNodeEvents();
+  };
+  /**
+   * add node event
+   */
+  const nodeEventAdd = (node: Element) => {
+    node.addEventListener("mousedown", handleMouseDown);
+    node.addEventListener("mouseup", handleMouseUp);
+    node.addEventListener("touchend", handleTouchEnd);
+  };
+  /**
+   * remove node event
+   */
+  const nodeEventRemove = (node: Element) => {
+    node.removeEventListener("mousedown", handleMouseDown);
+    node.removeEventListener("mouseup", handleMouseUp);
+    node.removeEventListener("touchend", handleTouchEnd);
+  };
+
+  /**
+   * add special node event
+   */
+  const addSpecialNodeEvents = () => {
+    startNodeRef.current.self.addEventListener(
+      "mousedown",
+      startNodeOnMouseDown
+    );
+    startNodeRef.current.self.addEventListener("mouseup", startNodeOnMouseUp);
+    startNodeRef.current.self.addEventListener("dblclick", startNodeOnDBLClick);
+    targetNodeRef.current.self.addEventListener(
+      "mousedown",
+      targetNodeOnMouseDown
+    );
+    targetNodeRef.current.self.addEventListener("mouseup", targetNodeOnMouseUp);
+    targetNodeRef.current.self.addEventListener(
+      "dblclick",
+      targetNodeOnDBLClick
+    );
+  };
+  /**
+   * remove special node event
+   */
+
   const removeSpecialNodeEvents = () => {
     startNodeRef.current.self.removeEventListener(
       "mousedown",
@@ -458,47 +547,6 @@ const Main = () => {
       targetNodeOnDBLClick
     );
   };
-  const nodeEventRemove = (node: Element) => {
-    node.removeEventListener("mousedown", handleMouseDown);
-    node.removeEventListener("mouseup", handleMouseUp);
-    node.removeEventListener("touchend", handleTouchEnd);
-  };
-  const removeAllEventListeners = () => {
-    document.querySelectorAll(".node").forEach((node) => {
-      nodeEventRemove(node);
-    });
-    removeSpecialNodeEvents();
-  };
-  const addSpecialNodeEvents = () => {
-    startNodeRef.current.self.addEventListener(
-      "mousedown",
-      startNodeOnMouseDown
-    );
-    startNodeRef.current.self.addEventListener("mouseup", startNodeOnMouseUp);
-    startNodeRef.current.self.addEventListener("dblclick", startNodeOnDBLClick);
-    targetNodeRef.current.self.addEventListener(
-      "mousedown",
-      targetNodeOnMouseDown
-    );
-    targetNodeRef.current.self.addEventListener("mouseup", targetNodeOnMouseUp);
-    targetNodeRef.current.self.addEventListener(
-      "dblclick",
-      targetNodeOnDBLClick
-    );
-  };
-  const addAllEventListeners = () => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.addEventListener("mousedown", handleMouseDown);
-      node.addEventListener("mouseup", handleMouseUp);
-      node.addEventListener("touchend", handleTouchEnd);
-    });
-    addSpecialNodeEvents();
-  };
-  /**
-   *
-   * UPDATE SIZE END
-   *
-   */
 
   /**
    * all useEffect start

@@ -1,18 +1,8 @@
 import { AppStateType, GridType, ModalStateType } from "./state";
-import { VertexType } from "../mazes/dfs";
-
 export type ActionType =
   | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
   | { type: "CHANGE_ASIDE_MODAL"; payload: boolean }
-  | {
-      type: "ADD_SPECIAL_START_NODE";
-      payload: VertexType;
-    }
   | { type: "ADD_GRID"; payload: GridType }
-  | {
-      type: "ADD_SPECIAL_TARGET_NODE";
-      payload: VertexType;
-    }
   | { type: "OPEN_SETTINGS"; payload: boolean }
   | { type: "CLEAR_BOARD"; payload: boolean }
   | { type: "CHANGE_MODAL_STATE"; payload: ModalStateType }
