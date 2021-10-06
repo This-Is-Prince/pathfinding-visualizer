@@ -70,19 +70,19 @@ export interface AppStateType {
 
 const AppInitialState: AppStateType = {
   grid: { row: 0, column: 0 },
-  isFullScreenModelOpen: true,
   nodeMaxWidth: 25,
+  modalState: mazesPatterns,
+  speed: "fast",
+  pathArr: [],
+  visitedArr: [],
+  maze: "",
+  algorithm: "",
   isPlay: false,
-  isAnimationComplete: false,
+  isBoardClear: false,
   isSettingsOpen: false,
   isAsideModalOpen: false,
-  isBoardClear: false,
-  modalState: mazesPatterns,
-  speed: "normal",
-  algorithm: "",
-  visitedArr: [],
-  pathArr: [],
-  maze: "",
+  isAnimationComplete: false,
+  isFullScreenModelOpen: true,
   isMazeAnimationComplete: true,
 };
 

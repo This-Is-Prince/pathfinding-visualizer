@@ -32,10 +32,10 @@ const Main = () => {
   const rowRef = useRef(0);
   const columnRef = useRef(0);
   let animateRef: any = useRef();
-  let speed = useRef(500);
+  let speed = useRef(0);
   useEffect(() => {
     speed.current =
-      AppState.speed === "fast" ? 0 : AppState.speed === "slow" ? 500 : 250;
+      AppState.speed === "fast" ? 0 : AppState.speed === "slow" ? 200 : 100;
   }, [AppState.speed]);
   // path arr
   let pathArr = useRef([] as VertexType[]);
@@ -60,19 +60,15 @@ const Main = () => {
 
   let animatePath = () => {
     if (pathArrIndexRef.current >= pathArr.current.length) {
-      visitedArrIndexRef.current = 0;
       dispatch({ type: "CHANGE_PLAY", payload: false });
       dispatch({ type: "ANIMATION_COMPLETE", payload: true });
-      addAllEventListeners();
       animateRef.current = animate;
       targetNodeRef.current.self.addEventListener(
         "mousedown",
         animateRef.current
       );
-      visitedArrIndexRef.current = 0;
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
-      animationArrRef.current = animateVisited;
+      resetAnimation();
+      addAllEventListeners();
     } else {
       let { x, y } = pathArr.current[pathArrIndexRef.current];
       let node = document.getElementById(`node-${x}-${y}`)!;
@@ -121,44 +117,74 @@ const Main = () => {
       mazeArrIndexRef.current++;
     }
   };
-  let animate = () => {
-    console.log("animation");
-    let obj = { visitedArr: [] as VertexType[], pathArr: [] as VertexType[] };
-    let algo = AppState.algorithm;
-    let r = rowRef.current,
-      c = columnRef.current;
-    let { x, y } = startNodeRef.current;
-    let { x: tX, y: tY } = targetNodeRef.current;
-    if (algo === "bfs") {
-      obj = bfs(r, c, { x, y }, { x: tX, y: tY });
-    } else if (algo === "dfs") {
-      obj = dfsAlgorithm(r, c, { x, y }, { x: tX, y: tY });
-    } else if (algo === "dijkstra") {
-      obj = dijkstra(r, c, { x, y }, { x: tX, y: tY });
-    } else if (algo === "greedy best-first search") {
-      obj = gbfs(r, c, { x, y }, { x: tX, y: tY });
-    } else if (algo === "a*") {
-      obj = aStar(r, c, { x, y }, { x: tX, y: tY });
-    }
-    visitedArr.current.forEach(({ x, y }) => {
-      let node = document.getElementById(`node-${x}-${y}`)!;
+  const resetAnimation = () => {
+    visitedArrIndexRef.current = 0;
+    cancelAnimationFrame(animationRef.current);
+    animationRef.current = null;
+    animationArrRef.current = animateVisited;
+  };
+  const resetPathVisitedNode = useCallback(() => {
+    document.querySelectorAll(".visited-node").forEach((node) => {
       node.classList.remove("visited-node");
+    });
+    document.querySelectorAll(".visited-node-1").forEach((node) => {
       node.classList.remove("visited-node-1");
     });
-    pathArr.current.forEach(({ x, y }) => {
-      let node = document.getElementById(`node-${x}-${y}`)!;
+    document.querySelectorAll(".path-node").forEach((node) => {
       node.classList.remove("path-node");
+    });
+    document.querySelectorAll(".path-node-1").forEach((node) => {
       node.classList.remove("path-node-1");
     });
+  }, []);
+  let checkAlgorithm = useCallback(
+    (
+      r: number,
+      c: number,
+      algo: string,
+      startNode: SpecialNodeType,
+      targetNode: SpecialNodeType
+    ) => {
+      let obj = {
+        visitedArr: [] as VertexType[],
+        pathArr: [] as VertexType[],
+      };
+      let { x, y } = startNode;
+      let { x: tX, y: tY } = targetNode;
+      if (algo === "bfs") {
+        obj = bfs(r, c, { x, y }, { x: tX, y: tY });
+      } else if (algo === "dfs") {
+        obj = dfsAlgorithm(r, c, { x, y }, { x: tX, y: tY });
+      } else if (algo === "dijkstra") {
+        obj = dijkstra(r, c, { x, y }, { x: tX, y: tY });
+      } else if (algo === "greedy best-first search") {
+        obj = gbfs(r, c, { x, y }, { x: tX, y: tY });
+      } else if (algo === "a*") {
+        obj = aStar(r, c, { x, y }, { x: tX, y: tY });
+      }
+      return obj;
+    },
+    []
+  );
+  let animate = () => {
+    console.log("animation");
+    let obj = checkAlgorithm(
+      rowRef.current,
+      columnRef.current,
+      AppState.algorithm,
+      startNodeRef.current,
+      targetNodeRef.current
+    );
+    resetPathVisitedNode();
     visitedArr.current = obj.visitedArr;
     pathArr.current = obj.pathArr;
     visitedArr.current.forEach(({ x, y }) => {
-      let node = document.getElementById(`node-${x}-${y}`)!;
-      node.classList.add("visited-node-1");
+      document
+        .getElementById(`node-${x}-${y}`)!
+        .classList.add("visited-node-1");
     });
     pathArr.current.forEach(({ x, y }) => {
-      let node = document.getElementById(`node-${x}-${y}`)!;
-      node.classList.add("path-node-1");
+      document.getElementById(`node-${x}-${y}`)!.classList.add("path-node-1");
     });
   };
   useEffect(() => {
@@ -520,24 +546,15 @@ const Main = () => {
 
   // animation complete
   useEffect(() => {
-    visitedArrIndexRef.current = 0;
-    let obj = { visitedArr: [] as VertexType[], pathArr: [] as VertexType[] };
-    let algo = AppState.algorithm;
-    let r = rowRef.current,
-      c = columnRef.current;
-    let { x, y } = startNodeRef.current;
-    let { x: tX, y: tY } = targetNodeRef.current;
-    if (algo === "bfs") {
-      obj = bfs(r, c, { x, y }, { x: tX, y: tY });
-    } else if (algo === "dfs") {
-      obj = dfsAlgorithm(r, c, { x, y }, { x: tX, y: tY });
-    } else if (algo === "dijkstra") {
-      obj = dijkstra(r, c, { x, y }, { x: tX, y: tY });
-    } else if (algo === "greedy best-first search") {
-      obj = gbfs(r, c, { x, y }, { x: tX, y: tY });
-    } else if (algo === "a*") {
-      obj = aStar(r, c, { x, y }, { x: tX, y: tY });
-    }
+    resetAnimation();
+    resetPathVisitedNode();
+    let obj = checkAlgorithm(
+      rowRef.current,
+      columnRef.current,
+      AppState.algorithm,
+      startNodeRef.current,
+      targetNodeRef.current
+    );
     if (obj.visitedArr.length > 0) {
       removeAllEventListeners();
     }
@@ -547,32 +564,14 @@ const Main = () => {
   }, [AppState.algorithm]);
 
   useEffect(() => {
+    // checking is animation is play or pause
     if (AppState.isPlay) {
+      console.log("play");
+      // if animation complete and we click on play button all animation removed
       if (AppState.isAnimationComplete) {
-        let row = rowRef.current,
-          column = columnRef.current;
-        for (let i = 0; i < row; i++) {
-          for (let j = 0; j < column; j++) {
-            let elm = document.getElementById(`node-${i}-${j}`)!;
-            let isVisited =
-              elm.classList.contains("visited-node") ||
-              elm.classList.contains("visited-node-1");
-            let isPath =
-              elm.classList.contains("path-node") ||
-              elm.classList.contains("path-node-1");
-            if (isVisited) {
-              elm.classList.remove("visited-node");
-              elm.classList.remove("visited-node-1");
-            }
-            if (isPath) {
-              elm.classList.remove("path-node");
-              elm.classList.remove("path-node-1");
-            }
-          }
-        }
+        resetPathVisitedNode();
         dispatch({ type: "ANIMATION_COMPLETE", payload: false });
       }
-      console.log("play");
       animationFunRef.current = animationArrRef.current;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     } else {
