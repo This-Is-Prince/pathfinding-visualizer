@@ -15,10 +15,10 @@
   --clr-sec: #002233;
   --clr-yellow: #ffd803;
 }
-.startNode {
+#startNode {
   background-image: url("./src/assets/start.png");
 }
-.targetNode {
+#targetNode {
   background-image: url("./src/assets/target.png");
 }
 body {

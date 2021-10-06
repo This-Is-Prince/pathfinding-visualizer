@@ -210,165 +210,82 @@ const Main = () => {
   /**
    * Node Mouse Enter event
    */
-  const handleMouseEnter = useCallback((event: any) => {
-    let { x, y } = findXY(event);
-    const { sX, sY, tX, tY } = specialNodeXY();
-    if ((x === sX && y === sY) || (x === tX && y === tY)) {
-      event.target.classList.remove("black-node");
+  const mainMouseOverEvent = (event: any) => {
+    let classList = event.target.classList;
+    let isNode =
+      classList.contains("node") && !classList.contains("black-node");
+    if (isNode) {
+      classList.add("black-node");
+    }
+  };
+
+  /**
+   * target node event
+   */
+  let targetDragStart = useCallback((event: any) => {
+    event.dataTransfer!.setData("text", event.target.id);
+  }, []);
+  /**
+   * start node event
+   */
+  let startDragStart = useCallback((event: any) => {
+    event.dataTransfer!.setData("text", event.target.id);
+  }, []);
+  /**
+   * Node Mouse Down event
+   */
+
+  const handleMouseDown = useCallback((event: any) => {
+    let id = event.target.getAttribute("id");
+    if (!id || id === "startNode" || id === "targetNode") {
+      return;
+    }
+    mainRef.current.addEventListener("mouseover", mainMouseOverEvent);
+    let isBlack =
+      event.target.classList.contains("black-node") ||
+      event.target.classList.contains("black-node-1");
+    if (isBlack) {
       event.target.classList.remove("black-node-1");
+      event.target.classList.remove("black-node");
     } else {
       event.target.classList.add("black-node");
     }
   }, []);
 
   /**
-   * Node Mouse Down event
+   * Node Drag Over event
    */
-
-  const handleMouseDown = useCallback((event: any) => {
-    if (!event.target.getAttribute("id")) {
-      return;
-    }
-    let { x, y } = findXY(event);
-    const { sX, sY, tX, tY } = specialNodeXY();
-    if (!((x === sX && y === sY) || (x === tX && y === tY))) {
-      document.querySelectorAll(".node").forEach((node) => {
-        node.addEventListener("mouseenter", handleMouseEnter);
-      });
-      let isBlack =
-        event.target.classList.contains("black-node") ||
-        event.target.classList.contains("black-node-1");
+  let handleDragOver = useCallback((event: any) => {
+    event.preventDefault();
+  }, []);
+  /**
+   * Node Drop event
+   */
+  let handleDrop = useCallback((event: any) => {
+    event.preventDefault();
+    let id = event.dataTransfer.getData("text");
+    let elm = event.target;
+    let parentID = elm.id;
+    if (parentID !== "startNode" && parentID !== "targetNode") {
+      elm.appendChild(document.getElementById(id));
+      let isBlack = elm.classList.contains("black-node");
       if (isBlack) {
-        event.target.classList.remove("black-node-1");
-        event.target.classList.remove("black-node");
+        elm.classList.remove("black-node");
+      }
+      let { x, y } = findXY(event);
+      if (id === "startNode") {
+        startNodeRef.current = { ...startNodeRef.current, x, y };
       } else {
-        event.target.classList.add("black-node");
+        targetNodeRef.current = { ...targetNodeRef.current, x, y };
       }
     }
   }, []);
-
   /**
    * Node Mouse Up event
    */
 
   let handleMouseUp = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.removeEventListener("mouseenter", handleMouseEnter);
-    });
-  }, []);
-
-  /**
-   * Node Touch End event
-   */
-
-  const handleTouchEnd = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.removeEventListener("touchstart", handleStartNodeMouseEnter);
-      node.removeEventListener("touchstart", handleTargetNodeMouseEnter);
-    });
-  }, []);
-
-  /**
-   * Change Special node position
-   */
-  const changeSpecialNodePosition = (
-    event: any,
-    specialNode: SpecialNodeType
-  ) => {
-    if (!event.target.getAttribute("id")) {
-      return;
-    }
-    event.target.classList.remove("black-node");
-    event.target.classList.remove("black-node-1");
-    const { x, y } = findXY(event);
-    let currParentOfTargetNode = document.getElementById(`node-${x}-${y}`)!;
-    if (!currParentOfTargetNode.hasChildNodes()) {
-      let prevParentOfTargetNode = document.getElementById(
-        `node-${specialNode.x}-${specialNode.y}`
-      )!;
-      prevParentOfTargetNode.removeChild(specialNode.self);
-      currParentOfTargetNode.appendChild(specialNode.self);
-      return {
-        ...specialNode,
-        x,
-        y,
-      };
-    }
-    return null;
-  };
-  /**
-   * Start Node Mouse Enter Event
-   */
-  const handleStartNodeMouseEnter = (event: any) => {
-    let specialNode = changeSpecialNodePosition(event, startNodeRef.current);
-    if (specialNode) {
-      startNodeRef.current = specialNode;
-    }
-  };
-
-  /**
-   * Start Node Mouse Down event
-   */
-
-  const startNodeOnMouseDown = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.addEventListener("mouseenter", handleStartNodeMouseEnter);
-    });
-  }, []);
-
-  /**
-   * Start Node Mouse Up event
-   */
-
-  const startNodeOnMouseUp = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.removeEventListener("mouseenter", handleStartNodeMouseEnter);
-    });
-  }, []);
-  /**
-   * Start Node Double Click event
-   */
-
-  const startNodeOnDBLClick = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.addEventListener("touchstart", handleStartNodeMouseEnter);
-    });
-  }, []);
-
-  /**
-   * Target Node Mouse Enter event
-   */
-
-  const handleTargetNodeMouseEnter = (event: any) => {
-    let specialNode = changeSpecialNodePosition(event, targetNodeRef.current);
-    if (specialNode) {
-      targetNodeRef.current = specialNode;
-    }
-  };
-
-  /**
-   * Target Node Mouse Down event
-   */
-  const targetNodeOnMouseDown = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.addEventListener("mouseenter", handleTargetNodeMouseEnter);
-    });
-  }, []);
-  /**
-   * Target Node Mouse Up event
-   */
-  const targetNodeOnMouseUp = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.removeEventListener("mouseenter", handleTargetNodeMouseEnter);
-    });
-  }, []);
-  /**
-   * Target Node Double Click event
-   */
-  const targetNodeOnDBLClick = useCallback(() => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.addEventListener("touchstart", handleTargetNodeMouseEnter);
-    });
+    mainRef.current.removeEventListener("mouseover", mainMouseOverEvent);
   }, []);
 
   /**
@@ -429,11 +346,9 @@ const Main = () => {
         node.setAttribute("id", `node-${i}-${j}`);
         node.setAttribute("class", "node");
         if (i === row && j === startCol) {
-          startNode.classList.add("startNode");
           node.appendChild(startNode);
           startNodeRef.current = { x: row, y: startCol, self: startNode };
         } else if (i === row && j === targetCol) {
-          targetNode.classList.add("targetNode");
           node.appendChild(targetNode);
           targetNodeRef.current = { x: row, y: targetCol, self: targetNode };
         }
@@ -446,10 +361,29 @@ const Main = () => {
     pathArr.current = [];
     animationArrRef.current = animateVisitedNode;
   };
+
+  /**
+   * add special node event
+   */
+  let addSpecialNodeEvents = () => {
+    targetNodeRef.current.self.addEventListener("dragstart", targetDragStart);
+    startNodeRef.current.self.addEventListener("dragstart", startDragStart);
+  };
+  /**
+   * remove special node event
+   */
+  let removeSpecialNodeEvents = () => {
+    targetNodeRef.current.self.removeEventListener(
+      "dragstart",
+      targetDragStart
+    );
+    startNodeRef.current.self.removeEventListener("dragstart", startDragStart);
+  };
   /**
    * add all event
    */
   const addAllEventListeners = () => {
+    console.log("add all listeners");
     document.querySelectorAll(".node").forEach(nodeEventAdd);
     addSpecialNodeEvents();
   };
@@ -457,6 +391,8 @@ const Main = () => {
    * remove all events
    */
   const removeAllEventListeners = () => {
+    console.log("remove all listeners");
+
     document.querySelectorAll(".node").forEach(nodeEventRemove);
     removeSpecialNodeEvents();
   };
@@ -466,7 +402,8 @@ const Main = () => {
   const nodeEventAdd = (node: Element) => {
     node.addEventListener("mousedown", handleMouseDown);
     node.addEventListener("mouseup", handleMouseUp);
-    node.addEventListener("touchend", handleTouchEnd);
+    node.addEventListener("dragover", handleDragOver);
+    node.addEventListener("drop", handleDrop);
   };
   /**
    * remove node event
@@ -474,37 +411,9 @@ const Main = () => {
   const nodeEventRemove = (node: Element) => {
     node.removeEventListener("mousedown", handleMouseDown);
     node.removeEventListener("mouseup", handleMouseUp);
-    node.removeEventListener("touchend", handleTouchEnd);
+    node.removeEventListener("dragover", handleDragOver);
+    node.removeEventListener("drop", handleDrop);
   };
-
-  /**
-   * add special node event
-   */
-  const addSpecialNodeEvents = () => {
-    let target = targetNodeRef.current.self;
-    let start = startNodeRef.current.self;
-    start.addEventListener("mousedown", startNodeOnMouseDown);
-    start.addEventListener("mouseup", startNodeOnMouseUp);
-    start.addEventListener("dblclick", startNodeOnDBLClick);
-    target.addEventListener("mousedown", targetNodeOnMouseDown);
-    target.addEventListener("mouseup", targetNodeOnMouseUp);
-    target.addEventListener("dblclick", targetNodeOnDBLClick);
-  };
-  /**
-   * remove special node event
-   */
-
-  const removeSpecialNodeEvents = () => {
-    let target = targetNodeRef.current.self;
-    let start = startNodeRef.current.self;
-    start.removeEventListener("mousedown", startNodeOnMouseDown);
-    start.removeEventListener("mouseup", startNodeOnMouseUp);
-    start.removeEventListener("dblclick", startNodeOnDBLClick);
-    target.removeEventListener("mousedown", targetNodeOnMouseDown);
-    target.removeEventListener("mouseup", targetNodeOnMouseUp);
-    target.removeEventListener("dblclick", targetNodeOnDBLClick);
-  };
-
   /**
    * all useEffect start
    */
@@ -543,7 +452,6 @@ const Main = () => {
         nodeEventRemove(node);
         node.classList.add("black-node-1");
       });
-      removeSpecialNodeEvents();
       let node = document.getElementById(`node-${sX}-${sY}`)!;
       node.classList.remove("black-node-1");
       node = document.getElementById(`node-${tX}-${tY}`)!;
@@ -603,10 +511,6 @@ const Main = () => {
       if (AppState.isAnimationComplete) {
         console.log("animation complete");
         removeAllEventListeners();
-        // targetNodeRef.current.self.removeEventListener(
-        //   "mouseup",
-        //   animateRef.current
-        // );
         resetPathVisitedNode();
         dispatch({ type: "ANIMATION_COMPLETE", payload: false });
       }
