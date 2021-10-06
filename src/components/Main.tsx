@@ -33,10 +33,7 @@ const Main = () => {
   const columnRef = useRef(0);
   let animateRef: any = useRef();
   let speed = useRef(0);
-  useEffect(() => {
-    speed.current =
-      AppState.speed === "fast" ? 0 : AppState.speed === "slow" ? 200 : 100;
-  }, [AppState.speed]);
+
   // path arr
   let pathArr = useRef([] as VertexType[]);
   let pathArrIndexRef = useRef(0);
@@ -187,40 +184,7 @@ const Main = () => {
       document.getElementById(`node-${x}-${y}`)!.classList.add("path-node-1");
     });
   };
-  useEffect(() => {
-    updateSize();
-    let vertices: VertexType[] = [];
-    let maze = AppState.maze;
-    let r = rowRef.current,
-      c = columnRef.current;
-    let { x, y } = startNodeRef.current;
-    let { x: tX, y: tY } = targetNodeRef.current;
-    if (maze === "circle pattern") {
-      vertices = circle(r, c, { x, y }, { x: tX, y: tY });
-      removeAllEventListeners();
-    } else if (
-      maze === "recursive division" ||
-      maze === "recursive division (vertical skew)" ||
-      maze === "recursive division (horizontal skew)"
-    ) {
-      removeAllEventListeners();
-      vertices = dfs(r, c, maze);
-    } else if (maze === "mst maze") {
-      removeAllEventListeners();
-      vertices = mst(r, c);
-    }
-    document.querySelectorAll(".node").forEach((node) => {
-      node.classList.add("black-node-1");
-    });
-    let node = document.getElementById(`node-${x}-${y}`)!;
-    node.classList.remove("black-node-1");
-    node = document.getElementById(`node-${tX}-${tY}`)!;
-    node.classList.remove("black-node-1");
-    mazeArrIndexRef.current = 0;
-    mazeArr.current = vertices;
-    animationFunRef.current = animateMaze;
-    animationRef.current = requestAnimationFrame(animationFunRef.current);
-  }, [AppState.maze]);
+
   /**
    *
    * EVENTS
@@ -382,7 +346,8 @@ const Main = () => {
    *
    */
   const updateSize = () => {
-    cancelAnimationFrame(animationRef.current);
+    console.log("update size");
+    resetAnimation();
     dispatch({ type: "CHANGE_PLAY", payload: false });
     dispatch({ type: "CHANGE_ALGORITHM", payload: "" });
     let width = mainRef.current.getBoundingClientRect().width - 20;
@@ -458,23 +423,12 @@ const Main = () => {
       payload: { x: row, y: targetCol },
     });
 
-    startNode.addEventListener("mousedown", startNodeOnMouseDown);
-    startNode.addEventListener("mouseup", startNodeOnMouseUp);
-    startNode.addEventListener("dblclick", startNodeOnDBLClick);
-    targetNode.addEventListener("mousedown", targetNodeOnMouseDown);
-    targetNode.addEventListener("mouseup", targetNodeOnMouseUp);
-    targetNode.addEventListener("dblclick", targetNodeOnDBLClick);
-    visitedArrIndexRef.current = 0;
+    addSpecialNodeEvents();
     visitedArr.current = [];
     pathArr.current = [];
     animationArrRef.current = animateVisited;
   };
-  const removeAllEventListeners = () => {
-    document.querySelectorAll(".node").forEach((node) => {
-      node.removeEventListener("mousedown", handleMouseDown);
-      node.removeEventListener("mouseup", handleMouseUp);
-      node.removeEventListener("touchend", handleTouchEnd);
-    });
+  const removeSpecialNodeEvents = () => {
     startNodeRef.current.self.removeEventListener(
       "mousedown",
       startNodeOnMouseDown
@@ -504,12 +458,18 @@ const Main = () => {
       targetNodeOnDBLClick
     );
   };
-  const addAllEventListeners = () => {
+  const nodeEventRemove = (node: Element) => {
+    node.removeEventListener("mousedown", handleMouseDown);
+    node.removeEventListener("mouseup", handleMouseUp);
+    node.removeEventListener("touchend", handleTouchEnd);
+  };
+  const removeAllEventListeners = () => {
     document.querySelectorAll(".node").forEach((node) => {
-      node.addEventListener("mousedown", handleMouseDown);
-      node.addEventListener("mouseup", handleMouseUp);
-      node.addEventListener("touchend", handleTouchEnd);
+      nodeEventRemove(node);
     });
+    removeSpecialNodeEvents();
+  };
+  const addSpecialNodeEvents = () => {
     startNodeRef.current.self.addEventListener(
       "mousedown",
       startNodeOnMouseDown
@@ -526,48 +486,115 @@ const Main = () => {
       targetNodeOnDBLClick
     );
   };
+  const addAllEventListeners = () => {
+    document.querySelectorAll(".node").forEach((node) => {
+      node.addEventListener("mousedown", handleMouseDown);
+      node.addEventListener("mouseup", handleMouseUp);
+      node.addEventListener("touchend", handleTouchEnd);
+    });
+    addSpecialNodeEvents();
+  };
   /**
    *
    * UPDATE SIZE END
    *
    */
+
+  /**
+   * all useEffect start
+   */
+
+  // useEffect for Speed
   useEffect(() => {
-    updateSize();
+    console.log("useEffect speed");
+    speed.current =
+      AppState.speed === "fast" ? 0 : AppState.speed === "slow" ? 200 : 100;
+  }, [AppState.speed]);
+
+  // useEffect for Maze
+  useEffect(() => {
+    console.log("useEffect maze");
+    if (AppState.maze) {
+      console.log("in maze");
+      updateSize();
+      let vertices: VertexType[] = [];
+      let maze = AppState.maze;
+      let r = rowRef.current,
+        c = columnRef.current;
+      let { x, y } = startNodeRef.current;
+      let { x: tX, y: tY } = targetNodeRef.current;
+      if (maze === "circle pattern") {
+        vertices = circle(r, c, { x, y }, { x: tX, y: tY });
+      } else if (
+        maze === "recursive division" ||
+        maze === "recursive division (vertical skew)" ||
+        maze === "recursive division (horizontal skew)"
+      ) {
+        vertices = dfs(r, c, maze);
+      } else if (maze === "mst maze") {
+        vertices = mst(r, c);
+      }
+      document.querySelectorAll(".node").forEach((node) => {
+        nodeEventRemove(node);
+        node.classList.add("black-node-1");
+      });
+      removeSpecialNodeEvents();
+      let node = document.getElementById(`node-${x}-${y}`)!;
+      node.classList.remove("black-node-1");
+      node = document.getElementById(`node-${tX}-${tY}`)!;
+      node.classList.remove("black-node-1");
+      mazeArrIndexRef.current = 0;
+      mazeArr.current = vertices;
+      animationFunRef.current = animateMaze;
+      animationRef.current = requestAnimationFrame(animationFunRef.current);
+    }
+  }, [AppState.maze]);
+
+  // useEffect for window resize event
+
+  useEffect(() => {
+    console.log("useEffect only one time");
     window.addEventListener("resize", updateSize);
     return () => {
       window.removeEventListener("resize", updateSize);
     };
   }, []);
+
+  // useEffect for isBoardClear,nodeMaxWidth
+
   useEffect(() => {
+    console.log("useEffect isBoardClear nodeMaxWidth");
     updateSize();
   }, [AppState.isBoardClear, AppState.nodeMaxWidth]);
 
-  // animation for algorithm
+  // useEffect for algorithm
 
-  // animation complete
   useEffect(() => {
-    resetAnimation();
-    resetPathVisitedNode();
-    let obj = checkAlgorithm(
-      rowRef.current,
-      columnRef.current,
-      AppState.algorithm,
-      startNodeRef.current,
-      targetNodeRef.current
-    );
-    if (obj.visitedArr.length > 0) {
-      removeAllEventListeners();
+    console.log("useEffect algorithm");
+    if (AppState.algorithm) {
+      resetAnimation();
+      resetPathVisitedNode();
+      let obj = checkAlgorithm(
+        rowRef.current,
+        columnRef.current,
+        AppState.algorithm,
+        startNodeRef.current,
+        targetNodeRef.current
+      );
+      if (obj.visitedArr.length > 0) {
+        removeAllEventListeners();
+      }
+      visitedArr.current = obj.visitedArr;
+      pathArr.current = obj.pathArr;
+      animationArrRef.current = animateVisited;
     }
-    visitedArr.current = obj.visitedArr;
-    pathArr.current = obj.pathArr;
-    animationArrRef.current = animateVisited;
   }, [AppState.algorithm]);
 
+  // useEffect for Play
+
   useEffect(() => {
-    // checking is animation is play or pause
     if (AppState.isPlay) {
       console.log("play");
-      // if animation complete and we click on play button all animation removed
       if (AppState.isAnimationComplete) {
         resetPathVisitedNode();
         dispatch({ type: "ANIMATION_COMPLETE", payload: false });
@@ -580,6 +607,9 @@ const Main = () => {
       cancelAnimationFrame(animationRef.current);
     }
   }, [AppState.isPlay]);
+  /**
+   * all useEffect end
+   */
   return <main ref={mainRef} className="main flex-center"></main>;
 };
 
