@@ -459,7 +459,13 @@ const Main = () => {
     console.log("useEffect maze");
     if (AppState.maze) {
       console.log("in maze");
-      updateSize();
+      // updateSize();
+
+      // update start
+      resetAnimation();
+      dispatch({ type: "CHANGE_PLAY", payload: false });
+      dispatch({type:"MAZE_ANIMATION_COMPLETE",payload:false})
+      // update end
       let vertices: VertexType[] = [];
       let maze = AppState.maze;
       let r = rowRef.current,
@@ -478,13 +484,19 @@ const Main = () => {
       }
       document.querySelectorAll(".node").forEach((node) => {
         nodeEventRemove(node);
+        node.classList.remove("black-node");
+        node.classList.remove("visited-node");
+        node.classList.remove("visited-node-1");
+        node.classList.remove("path-node");
+        node.classList.remove("path-node-1");
         node.classList.add("black-node-1");
       });
+      visitedArr.current = [];
+      pathArr.current = [];
       let node = document.getElementById(`node-${sX}-${sY}`)!;
       node.classList.remove("black-node-1");
       node = document.getElementById(`node-${tX}-${tY}`)!;
       node.classList.remove("black-node-1");
-      mazeArrIndexRef.current = 0;
       mazeArr.current = vertices;
       animationFunRef.current = animateMazeNode;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
