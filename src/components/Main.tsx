@@ -262,7 +262,13 @@ const Main = () => {
       id = elm.getAttribute("id"),
       s = startNodeRef.current,
       t = targetNodeRef.current;
-
+    let isBlack =
+      elm.classList.contains("black-node") ||
+      elm.classList.contains("black-node-1");
+    if (isBlack) {
+      elm.classList.remove("black-node");
+      elm.classList.remove("black-node-1");
+    }
     if (
       elm.classList.contains("node") &&
       id !== `node-${t.x}-${t.y}` &&
@@ -464,7 +470,7 @@ const Main = () => {
       // update start
       resetAnimation();
       dispatch({ type: "CHANGE_PLAY", payload: false });
-      dispatch({type:"MAZE_ANIMATION_COMPLETE",payload:false})
+      dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: false });
       // update end
       let vertices: VertexType[] = [];
       let maze = AppState.maze;
