@@ -189,6 +189,9 @@ const Main = () => {
       targetNodeRef.current
     );
     resetPathVisitedNode();
+    if (!AppState.isFindAnimationNodes) {
+      dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
+    }
     visitedArr.current = obj.visitedArr;
     pathArr.current = obj.pathArr;
     visitedArr.current.forEach(({ x, y }) => {
@@ -269,6 +272,10 @@ const Main = () => {
       elm.classList.remove("black-node");
       elm.classList.remove("black-node-1");
     }
+    if (elm.innerHTML.length > 0) {
+      elm.textContent = "";
+      elm.removeAttribute("data-weight");
+    }
     if (
       elm.classList.contains("node") &&
       id !== `node-${t.x}-${t.y}` &&
@@ -299,7 +306,6 @@ const Main = () => {
     let elm = event.target;
     let parentID = elm.id;
     if (parentID !== "startNode" && parentID !== "targetNode") {
-      elm.appendChild(document.getElementById(id));
       let isBlack =
         elm.classList.contains("black-node") ||
         elm.classList.contains("black-node-1");
@@ -307,6 +313,11 @@ const Main = () => {
         elm.classList.remove("black-node");
         elm.classList.remove("black-node-1");
       }
+      if (elm.innerHTML.length > 0) {
+        elm.textContent = "";
+        elm.removeAttribute("data-weight");
+      }
+      elm.appendChild(document.getElementById(id));
       let { x, y } = findXY(event.target.getAttribute("id"));
       if (id === "startNode") {
         startNodeRef.current = { ...startNodeRef.current, x, y };
@@ -329,8 +340,18 @@ const Main = () => {
   const updateSize = () => {
     console.log("update size");
     resetAnimation();
-    dispatch({ type: "CHANGE_PLAY", payload: false });
-    dispatch({ type: "CHANGE_ALGORITHM", payload: "" });
+    if (AppState.maze) {
+      dispatch({ type: "CHANGE_MAZE", payload: "" });
+    }
+    if (AppState.isPlay) {
+      dispatch({ type: "CHANGE_PLAY", payload: false });
+    }
+    if (!AppState.isMazeAnimationComplete) {
+      dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
+    }
+    if (!AppState.isFindAnimationNodes) {
+      dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
+    }
     let width = mainRef.current.getBoundingClientRect().width - 20;
     let height = mainRef.current.getBoundingClientRect().height - 20;
 
@@ -394,6 +415,10 @@ const Main = () => {
     addSpecialNodeEvents();
     visitedArr.current = [];
     pathArr.current = [];
+    mazeArr.current = [];
+    visitedArrIndexRef.current = 0;
+    pathArrIndexRef.current = 0;
+    mazeArrIndexRef.current = 0;
     animationArrRef.current = animateVisitedNode;
   };
 
@@ -465,13 +490,13 @@ const Main = () => {
     console.log("useEffect maze");
     if (AppState.maze) {
       console.log("in maze");
-      // updateSize();
-
-      // update start
       resetAnimation();
-      dispatch({ type: "CHANGE_PLAY", payload: false });
-      dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: false });
-      // update end
+      if (AppState.isPlay) {
+        dispatch({ type: "CHANGE_PLAY", payload: false });
+      }
+      if (AppState.isMazeAnimationComplete) {
+        dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: false });
+      }
       let vertices: VertexType[] = [];
       let maze = AppState.maze;
       let r = rowRef.current,
@@ -490,6 +515,11 @@ const Main = () => {
       }
       document.querySelectorAll(".node").forEach((node) => {
         nodeEventRemove(node);
+        if (node.innerHTML.length < 5) {
+          node.textContent = "";
+          node.removeAttribute("data-weight");
+        }
+        node.classList.remove("black-node-1");
         node.classList.remove("black-node");
         node.classList.remove("visited-node");
         node.classList.remove("visited-node-1");
@@ -499,6 +529,7 @@ const Main = () => {
       });
       visitedArr.current = [];
       pathArr.current = [];
+      mazeArrIndexRef.current = 0;
       let node = document.getElementById(`node-${sX}-${sY}`)!;
       node.classList.remove("black-node-1");
       node = document.getElementById(`node-${tX}-${tY}`)!;
@@ -506,6 +537,7 @@ const Main = () => {
       mazeArr.current = vertices;
       animationFunRef.current = animateMazeNode;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
+      dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
     }
   }, [AppState.maze]);
 
@@ -526,44 +558,43 @@ const Main = () => {
     updateSize();
   }, [AppState.isBoardClear, AppState.nodeMaxWidth]);
 
-  // useEffect for algorithm
-
-  useEffect(() => {
-    console.log("useEffect algorithm");
-    if (AppState.algorithm) {
-      resetAnimation();
-      resetPathVisitedNode();
-      let obj = checkAlgorithm(
-        rowRef.current,
-        columnRef.current,
-        AppState.algorithm,
-        startNodeRef.current,
-        targetNodeRef.current
-      );
-      if (obj.visitedArr.length > 0) {
-        removeAllEventListeners();
-      }
-      visitedArr.current = obj.visitedArr;
-      pathArr.current = obj.pathArr;
-      animationArrRef.current = animateVisitedNode;
-    }
-  }, [AppState.algorithm]);
+  // finding animation nodes Arr
+  const findAnimationNodes = (algo: string) => {
+    console.log("algorithm", algo);
+    console.log("find animation nodes");
+    let obj = checkAlgorithm(
+      rowRef.current,
+      columnRef.current,
+      algo,
+      startNodeRef.current,
+      targetNodeRef.current
+    );
+    visitedArr.current = obj.visitedArr;
+    pathArr.current = obj.pathArr;
+    animationArrRef.current = animateVisitedNode;
+  };
 
   // useEffect for Play
 
   useEffect(() => {
     if (AppState.isPlay) {
       console.log("play");
-      if (AppState.isAnimationComplete) {
-        console.log("animation complete");
-        removeAllEventListeners();
+      if (AppState.isFindAnimationNodes) {
+        console.log("find animation nodes");
+        resetAnimation();
         resetPathVisitedNode();
+        removeAllEventListeners();
+        findAnimationNodes(AppState.algorithm);
+        dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: false });
         dispatch({ type: "ANIMATION_COMPLETE", payload: false });
       }
-      if (AppState.algorithm) {
-        animationFunRef.current = animationArrRef.current;
-        animationRef.current = requestAnimationFrame(animationFunRef.current);
+      if (AppState.isAnimationComplete) {
+        console.log("animation complete");
+        resetPathVisitedNode();
+        removeAllEventListeners();
       }
+      animationFunRef.current = animationArrRef.current;
+      animationRef.current = requestAnimationFrame(animationFunRef.current);
     } else {
       console.log("pause");
       animationFunRef.current = () => {};

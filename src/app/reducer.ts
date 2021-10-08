@@ -9,7 +9,8 @@ export type ActionType =
   | { type: "CHANGE_PLAY"; payload: boolean }
   | { type: "CHANGE_SPEED"; payload: string }
   | { type: "CHANGE_ALGORITHM"; payload: string }
-  | { type: "CHANGE_MAZES"; payload: string }
+  | { type: "CHANGE_FIND_ANIMATION_NODES"; payload: boolean }
+  | { type: "CHANGE_MAZE"; payload: string }
   | { type: "ANIMATION_COMPLETE"; payload: boolean }
   | { type: "MAZE_ANIMATION_COMPLETE"; payload: boolean }
   | { type: "CHANGE_NODE_MAX_WIDTH"; payload: number };
@@ -22,6 +23,7 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         grid: action.payload,
       };
     }
+
     case "CHANGE_PLAY": {
       return {
         ...state,
@@ -65,11 +67,17 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
         isFullScreenModelOpen: action.payload,
       };
     }
-    case "CHANGE_MAZES": {
+    case "CHANGE_MAZE": {
       return {
         ...state,
         isMazeAnimationComplete: false,
         maze: action.payload,
+      };
+    }
+    case "CHANGE_FIND_ANIMATION_NODES": {
+      return {
+        ...state,
+        isFindAnimationNodes: action.payload,
       };
     }
     case "CHANGE_ALGORITHM": {

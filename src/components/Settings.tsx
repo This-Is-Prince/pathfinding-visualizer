@@ -83,6 +83,12 @@ const Settings = () => {
             aria-label="Add Weight"
             title="Add Weight"
             onClick={() => {
+              if (
+                !AppState.isMazeAnimationComplete ||
+                !AppState.isAnimationComplete
+              ) {
+                return;
+              }
               weightArr.current.forEach(({ x, y }) => {
                 let elm = document.getElementById(`node-${x}-${y}`)!;
                 elm.textContent = "";
@@ -109,6 +115,10 @@ const Settings = () => {
                   elm.textContent = `${weight}`;
                 }
               }
+              dispatch({
+                type: "CHANGE_FIND_ANIMATION_NODES",
+                payload: true,
+              });
             }}
           >
             <span className="flex-center">
@@ -118,25 +128,15 @@ const Settings = () => {
           </button>
           <button
             className="btn setting-btn "
-            aria-label="Clear Board"
-            title="Clear Board"
-            onClick={() => {
-              dispatch({
-                type: "CLEAR_BOARD",
-                payload: !AppState.isBoardClear,
-              });
-            }}
-          >
-            <span className="flex-center">
-              <FaChessBoard />
-            </span>
-            <span>Clear Board</span>
-          </button>
-          <button
-            className="btn setting-btn "
             aria-label="Clear Path"
             title="Clear Path"
             onClick={() => {
+              if (
+                !AppState.isMazeAnimationComplete ||
+                !AppState.isAnimationComplete
+              ) {
+                return;
+              }
               document.querySelectorAll(".path-node").forEach((node) => {
                 node.classList.remove("visited-node");
                 node.classList.remove("path-node");
@@ -163,14 +163,23 @@ const Settings = () => {
             aria-label="Clear Walls"
             title="Clear Walls"
             onClick={() => {
+              if (
+                !AppState.isMazeAnimationComplete ||
+                !AppState.isAnimationComplete
+              ) {
+                return;
+              }
               document.querySelectorAll(".black-node").forEach((node) => {
                 node.classList.remove("black-node");
               });
               document.querySelectorAll(".black-node-1").forEach((node) => {
                 node.classList.remove("black-node-1");
               });
-              dispatch({ type: "CHANGE_ALGORITHM", payload: "" });
-              dispatch({ type: "CHANGE_MAZES", payload: "" });
+              dispatch({
+                type: "CHANGE_FIND_ANIMATION_NODES",
+                payload: true,
+              });
+              dispatch({ type: "CHANGE_MAZE", payload: "" });
             }}
           >
             <span className="flex-center">
@@ -183,8 +192,12 @@ const Settings = () => {
           <Modal
             radioState={AppState.maze}
             handleChange={(e) => {
-              dispatch({ type: "CHANGE_ALGORITHM", payload: "" });
-              dispatch({ type: "CHANGE_MAZES", payload: e.target.value });
+              dispatch({
+                type: "CHANGE_FIND_ANIMATION_NODES",
+                payload: true,
+              });
+              dispatch({ type: "OPEN_SETTINGS", payload: false });
+              dispatch({ type: "CHANGE_MAZE", payload: e.target.value });
             }}
           >
             <GiMaze />
@@ -193,6 +206,7 @@ const Settings = () => {
           <Modal
             radioState={AppState.algorithm}
             handleChange={(e) => {
+              dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
               dispatch({ type: "CHANGE_ALGORITHM", payload: e.target.value });
             }}
           >

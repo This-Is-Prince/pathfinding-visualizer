@@ -64,6 +64,7 @@ export interface AppStateType {
   pathArr: VertexType[];
   maze: string;
   isMazeAnimationComplete: boolean;
+  isFindAnimationNodes: boolean;
   isAnimationComplete: boolean;
   isAsideModalOpen: boolean;
 }
@@ -76,12 +77,13 @@ const AppInitialState: AppStateType = {
   pathArr: [],
   visitedArr: [],
   maze: "",
-  algorithm: "",
+  algorithm: "bfs",
   isPlay: false,
   isBoardClear: false,
   isSettingsOpen: false,
   isAsideModalOpen: false,
-  isAnimationComplete: false,
+  isAnimationComplete: true,
+  isFindAnimationNodes: true,
   isFullScreenModelOpen: true,
   isMazeAnimationComplete: true,
 };
