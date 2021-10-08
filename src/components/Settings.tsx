@@ -169,6 +169,7 @@ const Settings = () => {
               document.querySelectorAll(".black-node-1").forEach((node) => {
                 node.classList.remove("black-node-1");
               });
+              dispatch({ type: "CHANGE_ALGORITHM", payload: "" });
               dispatch({ type: "CHANGE_MAZES", payload: "" });
             }}
           >
@@ -182,6 +183,7 @@ const Settings = () => {
           <Modal
             radioState={AppState.maze}
             handleChange={(e) => {
+              dispatch({ type: "CHANGE_ALGORITHM", payload: "" });
               dispatch({ type: "CHANGE_MAZES", payload: e.target.value });
             }}
           >
