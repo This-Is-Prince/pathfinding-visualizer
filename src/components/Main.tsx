@@ -29,6 +29,8 @@ const Main = () => {
   const mainRef = useRef<HTMLElement>({} as HTMLElement);
   const startNodeRef = useRef<SpecialNodeType>({} as SpecialNodeType);
   const targetNodeRef = useRef<SpecialNodeType>({} as SpecialNodeType);
+  const prevStartNodeRef = useRef<SpecialNodeType>({} as SpecialNodeType);
+  const prevTargetNodeRef = useRef<SpecialNodeType>({} as SpecialNodeType);
   const whichSpecialNode = useRef<"target" | "start">("target");
   const rowRef = useRef(0);
   const columnRef = useRef(0);
@@ -60,7 +62,7 @@ const Main = () => {
       dispatch({ type: "ANIMATION_COMPLETE", payload: true });
       animateRef.current = animate;
       document.querySelectorAll(".node").forEach((node) => {
-        node.addEventListener("drop", animateRef.current);
+        node.addEventListener("dragover", animateRef.current);
       });
       resetAnimation();
       addAllEventListeners();
@@ -102,6 +104,8 @@ const Main = () => {
    */
 
   let animateMazeNode = () => {
+    console.log("animate maze node");
+
     if (mazeArrIndexRef.current >= mazeArr.current.length) {
       dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
       dispatch({ type: "CHANGE_PLAY", payload: false });
@@ -179,6 +183,13 @@ const Main = () => {
    * Instant Animation
    */
   let animate = () => {
+    let { x: sX, y: sY } = startNodeRef.current;
+    let { x: tX, y: tY } = targetNodeRef.current;
+    let { x: psX, y: psY } = prevStartNodeRef.current;
+    let { x: ptX, y: ptY } = prevTargetNodeRef.current;
+    if (sX === psX && sY === psY && tX === ptX && tY === ptY) {
+      return;
+    }
     console.log("instant animation");
     let obj = checkAlgorithm(
       rowRef.current,
@@ -264,6 +275,8 @@ const Main = () => {
       id = elm.getAttribute("id"),
       s = startNodeRef.current,
       t = targetNodeRef.current;
+    prevStartNodeRef.current = { ...s };
+    prevTargetNodeRef.current = { ...t };
     let isBlack =
       elm.classList.contains("black-node") ||
       elm.classList.contains("black-node-1");
@@ -282,12 +295,14 @@ const Main = () => {
     ) {
       let { x, y } = findXY(id);
       if (whichSpecialNode.current === "target") {
+        elm.appendChild(document.getElementById("targetNode"));
         targetNodeRef.current = {
           ...targetNodeRef.current,
           x,
           y,
         };
       } else {
+        elm.appendChild(document.getElementById("startNode"));
         startNodeRef.current = {
           ...startNodeRef.current,
           x,
@@ -304,6 +319,8 @@ const Main = () => {
     let id = event.dataTransfer.getData("text");
     let elm = event.target;
     let parentID = elm.id;
+    prevStartNodeRef.current = { ...startNodeRef.current };
+    prevTargetNodeRef.current = { ...targetNodeRef.current };
     if (parentID !== "startNode" && parentID !== "targetNode") {
       let isBlack =
         elm.classList.contains("black-node") ||
@@ -407,9 +424,11 @@ const Main = () => {
         if (i === row && j === startCol) {
           node.appendChild(startNode);
           startNodeRef.current = { x: row, y: startCol, self: startNode };
+          prevStartNodeRef.current = { ...startNodeRef.current };
         } else if (i === row && j === targetCol) {
           node.appendChild(targetNode);
           targetNodeRef.current = { x: row, y: targetCol, self: targetNode };
+          prevTargetNodeRef.current = { ...targetNodeRef.current };
         }
         nodesRow.appendChild(node);
         nodeEventAdd(node);
@@ -472,6 +491,7 @@ const Main = () => {
     node.removeEventListener("mousedown", handleMouseDown);
     node.removeEventListener("mouseup", handleMouseUp);
     node.removeEventListener("dragover", handleDragOver);
+    node.removeEventListener("dragover", animateRef.current);
     node.removeEventListener("drop", handleDrop);
   };
   /**
@@ -492,17 +512,21 @@ const Main = () => {
     if (AppState.maze) {
       console.log("in maze");
       resetAnimation();
-      if (AppState.isPlay) {
-        dispatch({ type: "CHANGE_PLAY", payload: false });
-      }
       if (AppState.isMazeAnimationComplete) {
         dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: false });
+      }
+      if (!AppState.isFindAnimationNodes) {
+        dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
+      }
+      if (!AppState.isAnimationComplete) {
+        dispatch({ type: "ANIMATION_COMPLETE", payload: true });
       }
       let vertices: VertexType[] = [];
       let maze = AppState.maze;
       let r = rowRef.current,
         c = columnRef.current;
       let { sX, sY, tX, tY } = specialNodeXY();
+      console.log(maze);
       if (maze === "circle pattern") {
         vertices = circle(r, c, { x: sX, y: sY }, { x: tX, y: tY });
       } else if (
@@ -536,9 +560,10 @@ const Main = () => {
       node = document.getElementById(`node-${tX}-${tY}`)!;
       node.classList.remove("black-node-1");
       mazeArr.current = vertices;
-      animationFunRef.current = animateMazeNode;
+      animationArrRef.current = animateMazeNode;
+      animationFunRef.current = animationArrRef.current;
+      console.log(animationFunRef.current);
       animationRef.current = requestAnimationFrame(animationFunRef.current);
-      dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
     }
   }, [AppState.maze]);
 
