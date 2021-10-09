@@ -68,7 +68,6 @@ const Main = () => {
       let { x, y } = pathArr.current[pathArrIndexRef.current];
       let node = document.getElementById(`node-${x}-${y}`)!;
       node.classList.remove("visited-node");
-      node.classList.remove("visited-node-1");
       node.classList.add("path-node");
       setTimeout(() => {
         animationRef.current = requestAnimationFrame(animationFunRef.current);
@@ -104,7 +103,6 @@ const Main = () => {
 
   let animateMazeNode = () => {
     if (mazeArrIndexRef.current >= mazeArr.current.length) {
-      visitedArrIndexRef.current = 0;
       dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
       dispatch({ type: "CHANGE_PLAY", payload: false });
       addAllEventListeners();
@@ -353,6 +351,10 @@ const Main = () => {
     if (!AppState.isFindAnimationNodes) {
       dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
     }
+    if (!AppState.isAnimationComplete) {
+      dispatch({ type: "ANIMATION_COMPLETE", payload: true });
+    }
+
     let width = mainRef.current.getBoundingClientRect().width - 20;
     let height = mainRef.current.getBoundingClientRect().height - 20;
 
@@ -417,10 +419,8 @@ const Main = () => {
     visitedArr.current = [];
     pathArr.current = [];
     mazeArr.current = [];
-    visitedArrIndexRef.current = 0;
     pathArrIndexRef.current = 0;
     mazeArrIndexRef.current = 0;
-    animationArrRef.current = animateVisitedNode;
   };
 
   /**
