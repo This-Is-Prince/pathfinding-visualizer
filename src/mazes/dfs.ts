@@ -1,7 +1,5 @@
-export type VertexType = {
-  x: number;
-  y: number;
-};
+import { VertexType } from "../types";
+
 let vertices: VertexType[],
   visited: any,
   row = 0,

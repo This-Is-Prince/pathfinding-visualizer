@@ -1,6 +1,5 @@
 import { mazesPatterns } from "../assets/data";
-import { VertexType } from "../mazes/dfs";
-
+import { AppStateType } from "../types";
 export class Node {
   constructor(
     private id: string,
@@ -34,39 +33,6 @@ export class Node {
   setColor(value: string) {
     this.color = value;
   }
-}
-
-export interface ModalStateType {
-  heading: string;
-  name: string;
-  list: ModalListType[];
-}
-export interface ModalListType {
-  title: string;
-  value: string;
-  id: number;
-}
-export type GridType = {
-  row: number;
-  column: number;
-};
-export interface AppStateType {
-  grid: GridType;
-  isFullScreenModelOpen: boolean;
-  nodeMaxWidth: number;
-  isPlay: boolean;
-  isSettingsOpen: boolean;
-  isBoardClear: boolean;
-  modalState: ModalStateType;
-  speed: string;
-  algorithm: string;
-  visitedArr: VertexType[];
-  pathArr: VertexType[];
-  maze: string;
-  isMazeAnimationComplete: boolean;
-  isFindAnimationNodes: boolean;
-  isAnimationComplete: boolean;
-  isAsideModalOpen: boolean;
 }
 
 const AppInitialState: AppStateType = {

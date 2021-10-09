@@ -1,4 +1,4 @@
-import { VertexType } from "../mazes/dfs";
+import { VertexType } from "../types";
 
 export const findNeighbour = (
   x: number,

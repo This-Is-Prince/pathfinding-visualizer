@@ -1,4 +1,4 @@
-import { VertexType } from "../mazes/dfs";
+import { VertexType } from "../types";
 import { unVisitedNeighbour } from "./bfs";
 
 let column = 0,

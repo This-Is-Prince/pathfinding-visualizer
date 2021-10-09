@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import AppContext from "../../app/AppContext";
 
 const FullScreenModal = () => {
-  const { AppState, dispatch } = useContext(AppContext);
+  const { dispatch } = useContext(AppContext);
   const changeFullScreen = () => {
     const fullScreenCheck = () => {
       if (document.fullscreenElement) return;

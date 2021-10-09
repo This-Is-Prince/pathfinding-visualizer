@@ -1,19 +1,4 @@
-import { AppStateType, GridType, ModalStateType } from "./state";
-export type ActionType =
-  | { type: "CHANGE_FULLSCREEN_MODEL"; payload: boolean }
-  | { type: "CHANGE_ASIDE_MODAL"; payload: boolean }
-  | { type: "ADD_GRID"; payload: GridType }
-  | { type: "OPEN_SETTINGS"; payload: boolean }
-  | { type: "CLEAR_BOARD"; payload: boolean }
-  | { type: "CHANGE_MODAL_STATE"; payload: ModalStateType }
-  | { type: "CHANGE_PLAY"; payload: boolean }
-  | { type: "CHANGE_SPEED"; payload: string }
-  | { type: "CHANGE_ALGORITHM"; payload: string }
-  | { type: "CHANGE_FIND_ANIMATION_NODES"; payload: boolean }
-  | { type: "CHANGE_MAZE"; payload: string }
-  | { type: "ANIMATION_COMPLETE"; payload: boolean }
-  | { type: "MAZE_ANIMATION_COMPLETE"; payload: boolean }
-  | { type: "CHANGE_NODE_MAX_WIDTH"; payload: number };
+import { ActionType, AppStateType } from "../types";
 
 const reducer = (state: AppStateType, action: ActionType): AppStateType => {
   switch (action.type) {

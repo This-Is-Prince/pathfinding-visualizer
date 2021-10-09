@@ -1,11 +1,11 @@
 import React, { useContext, useRef } from "react";
 import { IoMdSpeedometer } from "react-icons/io";
-import { FaSitemap, FaRegTimesCircle, FaChessBoard } from "react-icons/fa";
+import { FaSitemap, FaRegTimesCircle } from "react-icons/fa";
 import { GiMaze, GiBrickWall, GiPathDistance, GiWeight } from "react-icons/gi";
 import AppContext from "../app/AppContext";
 import Modal from "./modal/Modal";
 import { mazesPatterns, algorithms, speed } from "../assets/data";
-import { VertexType } from "../mazes/dfs";
+import { VertexType } from "../types";
 
 const Settings = () => {
   const weightArr = useRef([] as VertexType[]);

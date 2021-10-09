@@ -2,12 +2,8 @@ import React, { useContext } from "react";
 import AppContext from "../../app/AppContext";
 import { FaWalking } from "react-icons/fa";
 import { GiRaceCar, GiTurtle } from "react-icons/gi";
+import { ModalType } from "../../types";
 
-type ModalType = {
-  children: any;
-  handleChange: (e: any) => void;
-  radioState: string;
-};
 const Modal: React.FC<ModalType> = ({ children, handleChange, radioState }) => {
   const { AppState } = useContext(AppContext);
   return (

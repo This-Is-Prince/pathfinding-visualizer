@@ -1,6 +1,5 @@
 import React, { createContext } from "react";
-import { ActionType } from "./reducer";
-import { AppStateType } from "./state";
+import { AppStateType, ActionType } from "../types";
 
 interface AppContextType {
   AppState: AppStateType;

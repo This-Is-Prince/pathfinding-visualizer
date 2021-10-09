@@ -1,20 +1,4 @@
-import { VertexType } from "./dfs";
-type Index = {
-  r: number;
-  c: number;
-};
-type Point = {
-  tRC: Index;
-  tLC: Index;
-  bRC: Index;
-  bLC: Index;
-};
-type IndexDone = {
-  isTRC: boolean;
-  isTLC: boolean;
-  isBRC: boolean;
-  isBLC: boolean;
-};
+import { IndexDone, Point, VertexType } from "../types";
 
 let findVertex = (
   row: number,

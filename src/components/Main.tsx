@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef } from "react";
 import bfs from "../algorithm/bfs";
 import AppContext from "../app/AppContext";
-import { VertexType } from "../mazes/dfs";
 import dfsAlgorithm from "../algorithm/dfs";
 import dfs from "../mazes/dfs";
 import mst from "../mazes/mst";
@@ -9,6 +8,7 @@ import dijkstra from "../algorithm/dijkstra";
 import gbfs from "../algorithm/gbfs";
 import aStar from "../algorithm/a_star";
 import circle from "../mazes/circle";
+import { VertexType } from "../types";
 
 let findXY = (id: string) => {
   id = id.substring(5);
@@ -27,23 +27,23 @@ export type SpecialNodeType = {
 const Main = () => {
   const { AppState, dispatch } = useContext(AppContext);
   const mainRef = useRef<HTMLElement>({} as HTMLElement);
-  const startNodeRef = useRef({} as SpecialNodeType);
-  const targetNodeRef = useRef({} as SpecialNodeType);
-  const whichSpecialNode = useRef("target");
+  const startNodeRef = useRef<SpecialNodeType>({} as SpecialNodeType);
+  const targetNodeRef = useRef<SpecialNodeType>({} as SpecialNodeType);
+  const whichSpecialNode = useRef<"target" | "start">("target");
   const rowRef = useRef(0);
   const columnRef = useRef(0);
   let animateRef: any = useRef();
   let speed = useRef(0);
 
   // path arr
-  let pathArr = useRef([] as VertexType[]);
+  let pathArr = useRef<VertexType[]>([]);
   let pathArrIndexRef = useRef(0);
   // visited arr
-  let visitedArr = useRef([] as VertexType[]);
+  let visitedArr = useRef<VertexType[]>([]);
   let visitedArrIndexRef = useRef(0);
 
   // maze arr
-  let mazeArr = useRef([] as VertexType[]);
+  let mazeArr = useRef<VertexType[]>([]);
   let mazeArrIndexRef = useRef(0);
 
   // animation function

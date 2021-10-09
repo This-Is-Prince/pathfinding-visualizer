@@ -1,4 +1,5 @@
-import { VertexType } from "./dfs";
+import { VertexType } from "../types";
+
 export class Node {
   constructor(public x: number, public y: number, public id: number) {}
 }
@@ -77,7 +78,7 @@ const union = (subsets: Subset[], x: number, y: number) => {
 
 const mst = (row: number, column: number) => {
   let { edgesArray, noOfNodes } = makeEdges(row, column);
-  let vertices = [] as VertexType[];
+  let vertices: VertexType[] = [];
   let e = 0,
     i = 0;
   edgesArray.sort((a, b) => {
