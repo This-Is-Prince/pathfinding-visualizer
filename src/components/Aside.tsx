@@ -51,7 +51,15 @@ const Aside = () => {
           }
         }}
       >
-        {AppState.isPlay ? <FaPauseCircle /> : <FaPlayCircle />}
+        {AppState.isMazeAnimationComplete ? (
+          AppState.isPlay ? (
+            <FaPauseCircle />
+          ) : (
+            <FaPlayCircle />
+          )
+        ) : (
+          <FaPlayCircle />
+        )}
       </button>
     </aside>
   );
