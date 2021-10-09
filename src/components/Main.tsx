@@ -122,6 +122,7 @@ const Main = () => {
    * Reset Animation
    */
   const resetAnimation = () => {
+    console.log("reset animation");
     visitedArrIndexRef.current = 0;
     cancelAnimationFrame(animationRef.current);
     animationRef.current = null;
@@ -180,7 +181,7 @@ const Main = () => {
    * Instant Animation
    */
   let animate = () => {
-    console.log("animation");
+    console.log("instant animation");
     let obj = checkAlgorithm(
       rowRef.current,
       columnRef.current,
@@ -579,19 +580,16 @@ const Main = () => {
   useEffect(() => {
     if (AppState.isPlay) {
       console.log("play");
-      if (AppState.isFindAnimationNodes) {
-        console.log("find animation nodes");
-        resetAnimation();
+      if (AppState.isAnimationComplete || AppState.isFindAnimationNodes) {
+        console.log("animation complete in play");
         resetPathVisitedNode();
         removeAllEventListeners();
-        findAnimationNodes(AppState.algorithm);
-        dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: false });
         dispatch({ type: "ANIMATION_COMPLETE", payload: false });
       }
-      if (AppState.isAnimationComplete) {
-        console.log("animation complete");
-        resetPathVisitedNode();
-        removeAllEventListeners();
+      if (AppState.isFindAnimationNodes) {
+        resetAnimation();
+        findAnimationNodes(AppState.algorithm);
+        dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: false });
       }
       animationFunRef.current = animationArrRef.current;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
