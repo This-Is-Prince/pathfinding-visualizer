@@ -1,4 +1,4 @@
-import { VertexType } from "../types";
+import { AlgorithmFunType, VertexType } from "../types";
 import { unVisitedNeighbour } from "./bfs";
 
 let column = 0,
@@ -30,14 +30,14 @@ const dfsMain = (vertex: VertexType) => {
   });
 };
 
-const dfs = (
-  r: number,
-  c: number,
-  startVertex: VertexType,
-  targetVertex: VertexType
+const dfs: AlgorithmFunType = (
+  noOfRow,
+  noOfColumn,
+  startVertex,
+  targetVertex
 ) => {
-  column = c;
-  row = r;
+  column = noOfColumn;
+  row = noOfRow;
   visited = {};
   visitedArr = [];
   visitedArr.push(startVertex);

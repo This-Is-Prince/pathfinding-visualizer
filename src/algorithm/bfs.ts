@@ -1,4 +1,4 @@
-import { VertexType } from "../types";
+import { AlgorithmFunType, VertexType } from "../types";
 
 export const findNeighbour = (
   x: number,
@@ -42,11 +42,11 @@ export const unVisitedNeighbour = (
   return vertices;
 };
 
-const bfs = (
-  r: number,
-  c: number,
-  startVertex: VertexType,
-  endVertex: VertexType
+const bfs: AlgorithmFunType = (
+  noOfRow,
+  noOfColumn,
+  startVertex,
+  targetVertex
 ) => {
   let visited = {} as any;
   let queue: VertexType[] = [];
@@ -60,10 +60,15 @@ const bfs = (
     }
     let currVertex = queue.shift()!;
     visitedArr.push(currVertex);
-    let neighbourVertices = unVisitedNeighbour(currVertex, r, c, visited);
+    let neighbourVertices = unVisitedNeighbour(
+      currVertex,
+      noOfRow,
+      noOfColumn,
+      visited
+    );
     neighbourVertices.forEach((neighbourVertex) => {
       let { x, y } = neighbourVertex;
-      if (x === endVertex.x && y === endVertex.y) {
+      if (x === targetVertex.x && y === targetVertex.y) {
         isTargetVertexFind = true;
         visited[`node-${x}-${y}`] = currVertex;
         visitedArr.push(neighbourVertex);
@@ -77,7 +82,7 @@ const bfs = (
     });
   }
   let pathArr: VertexType[] = [];
-  let { x, y } = endVertex;
+  let { x, y } = targetVertex;
   pathArr.push({ x, y });
   while (visited[`node-${x}-${y}`] !== true) {
     let parentVertex = visited[`node-${x}-${y}`];

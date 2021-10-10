@@ -1,12 +1,16 @@
 import { AlgorithmFunType, VertexType } from "../types";
 import { PriorityQueue } from "./PriorityQueue";
 
+interface VisitedType<T> {
+  [key: string]: T;
+}
+
 const findNeighbour = (
   x: number,
   y: number,
   row: number,
   column: number,
-  visited: any,
+  visited: VisitedType<Node>,
   targetVertex: VertexType,
   vertices: Node[]
 ) => {
@@ -40,7 +44,7 @@ const neighbour = (
   vertex: VertexType,
   row: number,
   column: number,
-  visited: any,
+  visited: VisitedType<Node>,
   targetVertex: VertexType
 ) => {
   let vertices: Node[] = [];
@@ -74,7 +78,7 @@ const gbfs: AlgorithmFunType = (
   startVertex,
   targetVertex
 ) => {
-  let visited: any = {};
+  let visited: VisitedType<Node> = {};
   let visitedArr = [] as VertexType[];
   let pathArr = [] as VertexType[];
   let que = new PriorityQueue(
@@ -131,7 +135,7 @@ const gbfs: AlgorithmFunType = (
   let parent = visited[`node-${x}-${y}`];
   while (parent) {
     pathArr.push(parent.self);
-    parent = parent.parent;
+    parent = parent.parent!;
   }
   pathArr.reverse();
   return { visitedArr, pathArr };
