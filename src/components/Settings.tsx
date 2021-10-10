@@ -82,11 +82,12 @@ const Settings = () => {
             className="btn setting-btn "
             aria-label="Add Weight"
             title="Add Weight"
-            onClick={() => {
+            onClick={(event) => {
               if (
                 !AppState.isMazeAnimationComplete ||
                 !AppState.isAnimationComplete
               ) {
+                event.preventDefault();
                 return;
               }
               weightArr.current.forEach(({ x, y }) => {
@@ -130,11 +131,12 @@ const Settings = () => {
             className="btn setting-btn "
             aria-label="Clear Path"
             title="Clear Path"
-            onClick={() => {
+            onClick={(event) => {
               if (
                 !AppState.isMazeAnimationComplete ||
                 !AppState.isAnimationComplete
               ) {
+                event.preventDefault();
                 return;
               }
               document.querySelectorAll(".path-node").forEach((node) => {
@@ -162,11 +164,12 @@ const Settings = () => {
             className="btn setting-btn "
             aria-label="Clear Walls"
             title="Clear Walls"
-            onClick={() => {
+            onClick={(event) => {
               if (
                 !AppState.isMazeAnimationComplete ||
                 !AppState.isAnimationComplete
               ) {
+                event.preventDefault();
                 return;
               }
               document.querySelectorAll(".black-node").forEach((node) => {
