@@ -1,4 +1,4 @@
-import { VertexType } from "../types";
+import { AlgorithmFunType, VertexType } from "../types";
 import { PriorityQueue } from "./PriorityQueue";
 
 const findNeighbour = (
@@ -61,11 +61,11 @@ export class Node {
 }
 export type CompareToFun<T> = (a: T, b: T) => number;
 
-const dijkstra = (
-  r: number,
-  c: number,
-  startVertex: VertexType,
-  targetVertex: VertexType
+const dijkstra: AlgorithmFunType = (
+  noOfRow,
+  noOfColumn,
+  startVertex,
+  targetVertex
 ) => {
   let visited: any = {};
   let visit: any = {};
@@ -85,7 +85,7 @@ const dijkstra = (
     }
     visit[`node-${x}-${y}`] = true;
     visitedArr.push(u.self);
-    let vertexNeighbour = neighbour(u.self, r, c, visited);
+    let vertexNeighbour = neighbour(u.self, noOfRow, noOfColumn, visited);
     vertexNeighbour.forEach((v) => {
       let { x, y } = v.self;
       if (!isTargetNodeFind) {

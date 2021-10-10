@@ -1,4 +1,4 @@
-import { VertexType } from "../types";
+import { AlgorithmFunType, VertexType } from "../types";
 import { PriorityQueue } from "./PriorityQueue";
 
 const findNeighbour = (
@@ -75,11 +75,11 @@ class Node {
     this.g = Number.MAX_VALUE;
   }
 }
-const aStar = (
-  r: number,
-  c: number,
-  startVertex: VertexType,
-  targetVertex: VertexType
+const aStar: AlgorithmFunType = (
+  noOfRow,
+  noOfColumn,
+  startVertex,
+  targetVertex
 ) => {
   let visited: any = {};
   let visitedArr = [] as VertexType[];
@@ -109,7 +109,13 @@ const aStar = (
     if (isTargetNodeFind) {
       break;
     }
-    let vertexNeighbour = neighbour(current.self, r, c, visited, targetVertex);
+    let vertexNeighbour = neighbour(
+      current.self,
+      noOfRow,
+      noOfColumn,
+      visited,
+      targetVertex
+    );
     vertexNeighbour.forEach((vertex) => {
       let { x, y } = vertex.self;
       if (!isTargetNodeFind) {

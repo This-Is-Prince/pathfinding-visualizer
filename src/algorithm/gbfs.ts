@@ -1,4 +1,4 @@
-import { VertexType } from "../types";
+import { AlgorithmFunType, VertexType } from "../types";
 import { PriorityQueue } from "./PriorityQueue";
 
 const findNeighbour = (
@@ -68,11 +68,11 @@ class Node {
     public heuristic: number
   ) {}
 }
-const gbfs = (
-  r: number,
-  c: number,
-  startVertex: VertexType,
-  targetVertex: VertexType
+const gbfs: AlgorithmFunType = (
+  noOfRow,
+  noOfColumn,
+  startVertex,
+  targetVertex
 ) => {
   let visited: any = {};
   let visitedArr = [] as VertexType[];
@@ -104,7 +104,13 @@ const gbfs = (
     }
     visited[`node-${x}-${y}`] = u;
     visitedArr.push(u.self);
-    let vertexNeighbour = neighbour(u.self, r, c, visited, targetVertex);
+    let vertexNeighbour = neighbour(
+      u.self,
+      noOfRow,
+      noOfColumn,
+      visited,
+      targetVertex
+    );
     vertexNeighbour.forEach((v) => {
       let { x, y } = v.self;
       if (x === targetVertex.x && y === targetVertex.y) {

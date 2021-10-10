@@ -1,3 +1,14 @@
+export interface AlgorithmFunType {
+  (
+    noOfRow: number,
+    noOfColumn: number,
+    startVertex: VertexType,
+    targetVertex: VertexType
+  ): {
+    visitedArr: VertexType[];
+    pathArr: VertexType[];
+  };
+}
 export type VertexType = {
   x: number;
   y: number;
