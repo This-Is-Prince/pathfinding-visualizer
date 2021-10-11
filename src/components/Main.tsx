@@ -280,13 +280,9 @@ const Main = () => {
     let isBlack =
       elm.classList.contains("black-node") ||
       elm.classList.contains("black-node-1");
-    if (isBlack) {
-      elm.classList.remove("black-node");
-      elm.classList.remove("black-node-1");
-    }
-    if (elm.innerHTML.length > 0) {
-      elm.textContent = "";
-      elm.removeAttribute("data-weight");
+    if (isBlack || elm.innerHTML.length > 0) {
+      event.preventDefault();
+      return;
     }
     if (
       elm.classList.contains("node") &&
@@ -325,13 +321,9 @@ const Main = () => {
       let isBlack =
         elm.classList.contains("black-node") ||
         elm.classList.contains("black-node-1");
-      if (isBlack) {
-        elm.classList.remove("black-node");
-        elm.classList.remove("black-node-1");
-      }
-      if (elm.innerHTML.length > 0) {
-        elm.textContent = "";
-        elm.removeAttribute("data-weight");
+      if (isBlack || elm.innerHTML.length > 0) {
+        event.preventDefault();
+        return;
       }
       elm.appendChild(document.getElementById(id));
       let { x, y } = findXY(event.target.getAttribute("id"));
