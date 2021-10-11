@@ -36,31 +36,33 @@ export interface AlgorithmFunType {
     pathArr: VertexType[];
   };
 }
-export type VertexType = {
+export interface VertexType {
   x: number;
   y: number;
-};
-export type Index = {
+}
+
+export interface Index {
   r: number;
   c: number;
-};
-export type Point = {
+}
+export interface Point {
   tRC: Index;
   tLC: Index;
   bRC: Index;
   bLC: Index;
-};
-export type IndexDone = {
+}
+export interface IndexDone {
   isTRC: boolean;
   isTLC: boolean;
   isBRC: boolean;
   isBLC: boolean;
-};
-export type ModalType = {
+}
+
+export interface ModalType {
   children: any;
   handleChange: (e: any) => void;
   radioState: string;
-};
+}
 export interface ModalStateType {
   heading: string;
   name: string;
@@ -71,10 +73,10 @@ export interface ModalListType {
   value: string;
   id: number;
 }
-export type GridType = {
+export interface GridType {
   row: number;
   column: number;
-};
+}
 export interface AppStateType {
   grid: GridType;
   isFullScreenModelOpen: boolean;
