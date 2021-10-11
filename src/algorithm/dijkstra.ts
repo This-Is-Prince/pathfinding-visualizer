@@ -1,4 +1,4 @@
-import { AlgorithmFunType, VertexType } from "../types";
+import { AlgorithmFunType, VertexType, VisitedType } from "../types";
 import { DijkstraNode } from "./algo_classes";
 import { neighbour } from "./algo_utility_method";
 import { PriorityQueue } from "./PriorityQueue";
@@ -9,7 +9,7 @@ const dijkstra: AlgorithmFunType = (
   startVertex,
   targetVertex
 ) => {
-  let visited: any = {};
+  let visited: VisitedType<DijkstraNode> = {};
   let visit: any = {};
   let visitedArr = [] as VertexType[];
   let pathArr = [] as VertexType[];
@@ -63,6 +63,9 @@ const dijkstra: AlgorithmFunType = (
   let parent = visited[`node-${x}-${y}`];
   while (parent) {
     pathArr.push(parent.self);
+    if (parent.parent === null) {
+      break;
+    }
     parent = parent.parent;
   }
   pathArr.reverse();

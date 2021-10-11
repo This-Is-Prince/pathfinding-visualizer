@@ -68,6 +68,9 @@ const gbfs: AlgorithmFunType = (
   let parent = visited[`node-${x}-${y}`];
   while (parent) {
     pathArr.push(parent.self);
+    if (parent.parent === null) {
+      break;
+    }
     parent = parent.parent!;
   }
   pathArr.reverse();

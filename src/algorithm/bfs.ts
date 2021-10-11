@@ -1,4 +1,4 @@
-import { AlgorithmFunType, VertexType } from "../types";
+import { AlgorithmFunType, VertexType, VisitedType } from "../types";
 import { neighbour } from "./algo_utility_method";
 
 const bfs: AlgorithmFunType = (
@@ -7,9 +7,9 @@ const bfs: AlgorithmFunType = (
   startVertex,
   targetVertex
 ) => {
-  let visited = {} as any;
+  let visited = {} as VisitedType<VertexType>;
   let queue: VertexType[] = [];
-  visited[`node-${startVertex.x}-${startVertex.y}`] = true;
+  visited[`node-${startVertex.x}-${startVertex.y}`] = startVertex;
   queue.push(startVertex);
   let visitedArr: VertexType[] = [];
   let isTargetVertexFind = false;
@@ -45,7 +45,7 @@ const bfs: AlgorithmFunType = (
   let pathArr: VertexType[] = [];
   let { x, y } = targetVertex;
   pathArr.push({ x, y });
-  while (visited[`node-${x}-${y}`] !== true) {
+  while (visited[`node-${x}-${y}`] !== startVertex) {
     let parentVertex = visited[`node-${x}-${y}`];
     if (!parentVertex) {
       break;

@@ -1,9 +1,9 @@
-import { AlgorithmFunType, VertexType } from "../types";
+import { AlgorithmFunType, VertexType, VisitedType } from "../types";
 import { neighbour } from "./algo_utility_method";
 
 let column = 0,
   row = 0,
-  visited: any = {},
+  visited: VisitedType<VertexType> = {},
   visitedArr: VertexType[],
   isTargetVertexFind = false,
   endVertex: VertexType;
@@ -48,14 +48,14 @@ const dfs: AlgorithmFunType = (
   visited = {};
   visitedArr = [];
   visitedArr.push(startVertex);
-  visited[`node-${startVertex.x}-${startVertex.y}`] = true;
+  visited[`node-${startVertex.x}-${startVertex.y}`] = startVertex;
   isTargetVertexFind = false;
   endVertex = targetVertex;
   dfsMain(startVertex);
   let pathArr: VertexType[] = [];
   let { x, y } = endVertex;
   pathArr.push({ x, y });
-  while (visited[`node-${x}-${y}`] !== true) {
+  while (visited[`node-${x}-${y}`] !== startVertex) {
     let parentVertex = visited[`node-${x}-${y}`];
     if (!parentVertex) {
       break;

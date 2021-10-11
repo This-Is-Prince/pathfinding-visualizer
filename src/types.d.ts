@@ -9,7 +9,7 @@ export type NeighbourType = (
   column: number,
   which: string,
   vertices: (GBFSNode | VertexType | DijkstraNode | AStarNode)[],
-  visited?: any,
+  visited: VisitedType<GBFSNode | VertexType | DijkstraNode | AStarNode>,
   targetVertex?: VertexType
 ) => (GBFSNode | VertexType | DijkstraNode | AStarNode)[];
 export type FindNeighbourType = (
@@ -19,7 +19,7 @@ export type FindNeighbourType = (
   column: number,
   which: string,
   vertices: (GBFSNode | VertexType | DijkstraNode | AStarNode)[],
-  visited?: any,
+  visited: VisitedType<GBFSNode | VertexType | DijkstraNode | AStarNode>,
   targetVertex?: VertexType
 ) => void;
 
