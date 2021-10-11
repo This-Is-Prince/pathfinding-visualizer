@@ -16,15 +16,16 @@ export class AStarNode {
 export class DijkstraNode {
   constructor(
     public self: VertexType,
-    public wsf: number,
     public parent: DijkstraNode | null,
-    public weight: number
+    public weight: number,
+    public wsf: number
   ) {}
 }
 export class GBFSNode {
   constructor(
     public self: VertexType,
     public parent: GBFSNode | null,
+    public weight: number,
     public heuristic: number
   ) {}
 }

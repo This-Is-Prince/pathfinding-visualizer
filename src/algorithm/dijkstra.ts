@@ -19,7 +19,7 @@ const dijkstra: AlgorithmFunType = (
     new Set()
   );
   let isTargetNodeFind = false;
-  que.add(new DijkstraNode(startVertex, 0, null, 0));
+  que.add(new DijkstraNode(startVertex, null, 0, 0));
   while (!que.isEmpty()) {
     let u = que.get();
     let { x, y } = u.self;

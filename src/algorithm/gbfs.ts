@@ -14,7 +14,7 @@ const gbfs: AlgorithmFunType = (
   let pathArr = [] as VertexType[];
   let que = new PriorityQueue<GBFSNode>(
     (a, b) => {
-      return a.heuristic - b.heuristic;
+      return a.heuristic + a.weight - b.heuristic - b.weight;
     },
     [],
     new Set()
@@ -24,6 +24,7 @@ const gbfs: AlgorithmFunType = (
     new GBFSNode(
       startVertex,
       null,
+      0,
       Math.abs(startVertex.x - targetVertex.x) +
         Math.abs(startVertex.y - targetVertex.y)
     )
