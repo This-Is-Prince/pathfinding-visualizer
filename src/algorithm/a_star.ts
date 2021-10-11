@@ -1,20 +1,8 @@
 import { AlgorithmFunType, VertexType } from "../types";
+import { AStarNode } from "./algo_classes";
 import { neighbour } from "./algo_utility_method";
 import { PriorityQueue } from "./PriorityQueue";
 
-export class AStarNode {
-  f: number;
-  g: number;
-  constructor(
-    public self: VertexType,
-    public parent: AStarNode | null,
-    public weight: number,
-    public heuristic: number
-  ) {
-    this.f = Number.MAX_VALUE;
-    this.g = Number.MAX_VALUE;
-  }
-}
 const aStar: AlgorithmFunType = (
   noOfRow,
   noOfColumn,

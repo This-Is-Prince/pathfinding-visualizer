@@ -1,15 +1,7 @@
 import { AlgorithmFunType, VertexType } from "../types";
+import { DijkstraNode } from "./algo_classes";
 import { neighbour } from "./algo_utility_method";
 import { PriorityQueue } from "./PriorityQueue";
-
-export class DijkstraNode {
-  constructor(
-    public self: VertexType,
-    public wsf: number,
-    public parent: DijkstraNode | null,
-    public weight: number
-  ) {}
-}
 
 const dijkstra: AlgorithmFunType = (
   noOfRow,

@@ -1,14 +1,8 @@
 import { AlgorithmFunType, VertexType, VisitedType } from "../types";
+import { GBFSNode } from "./algo_classes";
 import { neighbour } from "./algo_utility_method";
 import { PriorityQueue } from "./PriorityQueue";
 
-export class GBFSNode {
-  constructor(
-    public self: VertexType,
-    public parent: GBFSNode | null,
-    public heuristic: number
-  ) {}
-}
 const gbfs: AlgorithmFunType = (
   noOfRow,
   noOfColumn,

@@ -1,7 +1,5 @@
 import { FindNeighbourType, NeighbourType } from "../types";
-import { AStarNode } from "./a_star";
-import { DijkstraNode } from "./dijkstra";
-import { GBFSNode } from "./gbfs";
+import { AStarNode, DijkstraNode, GBFSNode } from "./algo_classes";
 
 export const findNeighbour: FindNeighbourType = (
   x,

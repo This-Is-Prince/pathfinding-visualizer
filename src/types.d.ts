@@ -1,6 +1,4 @@
-import { AStarNode } from "./algorithm/a_star";
-import { DijkstraNode } from "./algorithm/dijkstra";
-import { GBFSNode } from "./algorithm/gbfs";
+import { AStarNode, DijkstraNode, GBFSNode } from "./algorithm/algo_classes";
 
 export interface VisitedType<T> {
   [key: string]: T;
