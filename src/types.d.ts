@@ -1,3 +1,32 @@
+import { AStarNode } from "./algorithm/a_star";
+import { DijkstraNode } from "./algorithm/dijkstra";
+import { GBFSNode } from "./algorithm/gbfs";
+
+export interface VisitedType<T> {
+  [key: string]: T;
+}
+export type NeighbourType = (
+  vertex: VertexType,
+  row: number,
+  column: number,
+  which: string,
+  vertices: (GBFSNode | VertexType | DijkstraNode | AStarNode)[],
+  visited?: any,
+  targetVertex?: VertexType
+) => (GBFSNode | VertexType | DijkstraNode | AStarNode)[];
+export type FindNeighbourType = (
+  x: number,
+  y: number,
+  row: number,
+  column: number,
+  which: string,
+  vertices: (GBFSNode | VertexType | DijkstraNode | AStarNode)[],
+  visited?: any,
+  targetVertex?: VertexType
+) => void;
+
+export type CompareToFun<T> = (a: T, b: T) => number;
+
 export interface AlgorithmFunType {
   (
     noOfRow: number,

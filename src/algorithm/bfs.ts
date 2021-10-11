@@ -1,46 +1,5 @@
 import { AlgorithmFunType, VertexType } from "../types";
-
-export const findNeighbour = (
-  x: number,
-  y: number,
-  row: number,
-  column: number,
-  vertices: VertexType[],
-  visited: any
-) => {
-  let isBlack: boolean, elm: HTMLElement;
-  if (x >= 0 && x < row && y >= 0 && y < column) {
-    elm = document.getElementById(`node-${x}-${y}`)!;
-    isBlack =
-      elm.classList.contains("black-node-1") ||
-      elm.classList.contains("black-node");
-    if (!isBlack && !visited[`node-${x}-${y}`]) {
-      vertices.push({ x, y });
-    }
-  }
-};
-
-export const unVisitedNeighbour = (
-  vertex: VertexType,
-  r: number,
-  c: number,
-  visited: any
-) => {
-  let vertices = [] as VertexType[];
-  let x = vertex.x - 1,
-    y = vertex.y;
-  findNeighbour(x, y, r, c, vertices, visited);
-  x = vertex.x;
-  y = vertex.y + 1;
-  findNeighbour(x, y, r, c, vertices, visited);
-  y = vertex.y - 1;
-  findNeighbour(x, y, r, c, vertices, visited);
-
-  x = vertex.x + 1;
-  y = vertex.y;
-  findNeighbour(x, y, r, c, vertices, visited);
-  return vertices;
-};
+import { neighbour } from "./algo_utility_method";
 
 const bfs: AlgorithmFunType = (
   noOfRow,
@@ -60,12 +19,14 @@ const bfs: AlgorithmFunType = (
     }
     let currVertex = queue.shift()!;
     visitedArr.push(currVertex);
-    let neighbourVertices = unVisitedNeighbour(
+    let neighbourVertices = neighbour(
       currVertex,
       noOfRow,
       noOfColumn,
+      "bfs",
+      [],
       visited
-    );
+    ) as VertexType[];
     neighbourVertices.forEach((neighbourVertex) => {
       let { x, y } = neighbourVertex;
       if (x === targetVertex.x && y === targetVertex.y) {

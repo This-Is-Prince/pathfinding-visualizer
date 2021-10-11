@@ -1,5 +1,5 @@
 import { AlgorithmFunType, VertexType } from "../types";
-import { unVisitedNeighbour } from "./bfs";
+import { neighbour } from "./algo_utility_method";
 
 let column = 0,
   row = 0,
@@ -12,7 +12,14 @@ const dfsMain = (vertex: VertexType) => {
   if (isTargetVertexFind) {
     return;
   }
-  let unVisitedVertices = unVisitedNeighbour(vertex, row, column, visited);
+  let unVisitedVertices = neighbour(
+    vertex,
+    row,
+    column,
+    "dfs",
+    [],
+    visited
+  ) as VertexType[];
   unVisitedVertices.forEach((nxtVertex) => {
     let { x, y } = nxtVertex;
     if (x === endVertex.x && y === endVertex.y) {

@@ -1,74 +1,11 @@
-import { AlgorithmFunType, VertexType } from "../types";
+import { AlgorithmFunType, VertexType, VisitedType } from "../types";
+import { neighbour } from "./algo_utility_method";
 import { PriorityQueue } from "./PriorityQueue";
 
-interface VisitedType<T> {
-  [key: string]: T;
-}
-
-const findNeighbour = (
-  x: number,
-  y: number,
-  row: number,
-  column: number,
-  visited: VisitedType<Node>,
-  targetVertex: VertexType,
-  vertices: Node[]
-) => {
-  if (x >= 0 && x < row && y >= 0 && y < column) {
-    let isBlack: boolean, elm: HTMLElement;
-    elm = document.getElementById(`node-${x}-${y}`)!;
-    isBlack =
-      elm.classList.contains("black-node-1") ||
-      elm.classList.contains("black-node");
-    if (!isBlack) {
-      if (visited[`node-${x}-${y}`]) {
-        vertices.push(visited[`node-${x}-${y}`]);
-      } else {
-        let dataWeight = elm.getAttribute("data-weight");
-        let weight = 1;
-        if (dataWeight) {
-          weight = parseInt(dataWeight);
-        }
-        vertices.push(
-          new Node(
-            { x, y },
-            null,
-            Math.abs(x - targetVertex.x) + Math.abs(y - targetVertex.y) + weight
-          )
-        );
-      }
-    }
-  }
-};
-const neighbour = (
-  vertex: VertexType,
-  row: number,
-  column: number,
-  visited: VisitedType<Node>,
-  targetVertex: VertexType
-) => {
-  let vertices: Node[] = [];
-
-  let x = vertex.x - 1,
-    y = vertex.y;
-  findNeighbour(x, y, row, column, visited, targetVertex, vertices);
-  x = vertex.x;
-  y = vertex.y + 1;
-  findNeighbour(x, y, row, column, visited, targetVertex, vertices);
-
-  y = vertex.y - 1;
-  findNeighbour(x, y, row, column, visited, targetVertex, vertices);
-
-  x = vertex.x + 1;
-  y = vertex.y;
-  findNeighbour(x, y, row, column, visited, targetVertex, vertices);
-
-  return vertices;
-};
-class Node {
+export class GBFSNode {
   constructor(
     public self: VertexType,
-    public parent: Node | null,
+    public parent: GBFSNode | null,
     public heuristic: number
   ) {}
 }
@@ -78,19 +15,19 @@ const gbfs: AlgorithmFunType = (
   startVertex,
   targetVertex
 ) => {
-  let visited: VisitedType<Node> = {};
+  let visited: VisitedType<GBFSNode> = {};
   let visitedArr = [] as VertexType[];
   let pathArr = [] as VertexType[];
-  let que = new PriorityQueue(
-    (a: Node, b: Node) => {
+  let que = new PriorityQueue<GBFSNode>(
+    (a, b) => {
       return a.heuristic - b.heuristic;
     },
     [],
-    new Set<Node>()
+    new Set()
   );
   let isTargetNodeFind = false;
   que.add(
-    new Node(
+    new GBFSNode(
       startVertex,
       null,
       Math.abs(startVertex.x - targetVertex.x) +
@@ -112,9 +49,11 @@ const gbfs: AlgorithmFunType = (
       u.self,
       noOfRow,
       noOfColumn,
+      "gbfs",
+      [],
       visited,
       targetVertex
-    );
+    ) as GBFSNode[];
     vertexNeighbour.forEach((v) => {
       let { x, y } = v.self;
       if (x === targetVertex.x && y === targetVertex.y) {

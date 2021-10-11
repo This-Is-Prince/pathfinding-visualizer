@@ -1,4 +1,5 @@
-import { CompareToFun } from "./dijkstra";
+import { CompareToFun } from "../types";
+
 export class PriorityQueue<T> {
   constructor(
     public compareTo: CompareToFun<T>,
