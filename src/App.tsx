@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import "./App.css";
 import AppContext from "./app/AppContext";
 import reducer from "./app/reducer";
@@ -8,6 +8,7 @@ import Aside from "./components/Aside";
 import FullScreenModal from "./components/modal/FullScreenModal";
 import Settings from "./components/Settings";
 import AsideModal from "./components/modal/AsideModal";
+
 const App = () => {
   const [AppState, dispatch] = useReducer(reducer, AppInitialState);
   const checkScreen = () => {

@@ -110,3 +110,9 @@ export type ActionType =
   | { type: "ANIMATION_COMPLETE"; payload: boolean }
   | { type: "MAZE_ANIMATION_COMPLETE"; payload: boolean }
   | { type: "CHANGE_NODE_MAX_WIDTH"; payload: number };
+
+export type SpecialNodeType = {
+  x: number;
+  y: number;
+  self: HTMLElement;
+};
