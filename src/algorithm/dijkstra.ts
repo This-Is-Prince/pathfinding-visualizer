@@ -4,8 +4,8 @@ import { neighbour } from "./algo_utility_method";
 import { PriorityQueue } from "./PriorityQueue";
 
 const dijkstra: AlgorithmFunType = (
-  noOfRow,
-  noOfColumn,
+  totalRow,
+  totalColumn,
   startVertex,
   targetVertex
 ) => {
@@ -33,8 +33,8 @@ const dijkstra: AlgorithmFunType = (
     visitedArr.push(u.self);
     let vertexNeighbour = neighbour(
       u.self,
-      noOfRow,
-      noOfColumn,
+      totalRow,
+      totalColumn,
       "dijkstra",
       [],
       visited

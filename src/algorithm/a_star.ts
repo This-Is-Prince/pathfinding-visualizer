@@ -4,8 +4,8 @@ import { neighbour } from "./algo_utility_method";
 import { PriorityQueue } from "./PriorityQueue";
 
 const aStar: AlgorithmFunType = (
-  noOfRow,
-  noOfColumn,
+  totalRow,
+  totalColumn,
   startVertex,
   targetVertex
 ) => {
@@ -39,8 +39,8 @@ const aStar: AlgorithmFunType = (
     }
     let vertexNeighbour = neighbour(
       current.self,
-      noOfRow,
-      noOfColumn,
+      totalRow,
+      totalColumn,
       "a_star",
       [],
       visited,

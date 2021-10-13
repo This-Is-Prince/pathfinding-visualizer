@@ -38,13 +38,13 @@ const dfsMain = (vertex: VertexType) => {
 };
 
 const dfs: AlgorithmFunType = (
-  noOfRow,
-  noOfColumn,
+  totalRow,
+  totalColumn,
   startVertex,
   targetVertex
 ) => {
-  column = noOfColumn;
-  row = noOfRow;
+  column = totalColumn;
+  row = totalRow;
   visited = {};
   visitedArr = [];
   visitedArr.push(startVertex);

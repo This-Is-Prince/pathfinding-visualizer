@@ -4,8 +4,8 @@ import { neighbour } from "./algo_utility_method";
 import { PriorityQueue } from "./PriorityQueue";
 
 const gbfs: AlgorithmFunType = (
-  noOfRow,
-  noOfColumn,
+  totalRow,
+  totalColumn,
   startVertex,
   targetVertex
 ) => {
@@ -42,8 +42,8 @@ const gbfs: AlgorithmFunType = (
     visitedArr.push(u.self);
     let vertexNeighbour = neighbour(
       u.self,
-      noOfRow,
-      noOfColumn,
+      totalRow,
+      totalColumn,
       "gbfs",
       [],
       visited,

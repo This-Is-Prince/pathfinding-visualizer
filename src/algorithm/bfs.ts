@@ -2,8 +2,8 @@ import { AlgorithmFunType, VertexType, VisitedType } from "../types";
 import { neighbour } from "./algo_utility_method";
 
 const bfs: AlgorithmFunType = (
-  noOfRow,
-  noOfColumn,
+  totalRow,
+  totalColumn,
   startVertex,
   targetVertex
 ) => {
@@ -21,8 +21,8 @@ const bfs: AlgorithmFunType = (
     visitedArr.push(currVertex);
     let neighbourVertices = neighbour(
       currVertex,
-      noOfRow,
-      noOfColumn,
+      totalRow,
+      totalColumn,
       "bfs",
       [],
       visited

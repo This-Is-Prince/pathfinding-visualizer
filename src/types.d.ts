@@ -116,3 +116,13 @@ export type SpecialNodeType = {
   y: number;
   self: HTMLElement;
 };
+export type RunningAlgorithmType = (
+  totalRow: number,
+  totalColumn: number,
+  whichAlgorithm: string,
+  startVertex: SpecialNodeType,
+  targetVertex: SpecialNodeType
+) => {
+  visitedArr: VertexType[];
+  pathArr: VertexType[];
+};

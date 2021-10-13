@@ -8,7 +8,7 @@ import dijkstra from "../algorithm/dijkstra";
 import gbfs from "../algorithm/gbfs";
 import aStar from "../algorithm/a_star";
 import circle from "../mazes/circle";
-import { SpecialNodeType, VertexType } from "../types";
+import { RunningAlgorithmType, SpecialNodeType, VertexType } from "../types";
 
 let findXY = (id: string) => {
   id = id.substring(5);
@@ -97,12 +97,11 @@ const Main = () => {
 
   let animateMazeNode = () => {
     console.log("animate maze node");
-
     if (mazeArrIndexRef.current >= mazeArr.current.length) {
       dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
       dispatch({ type: "CHANGE_PLAY", payload: false });
-      addAllEventListeners();
       resetAnimation();
+      addAllEventListeners();
     } else {
       let { x, y } = mazeArr.current[mazeArrIndexRef.current];
       let node = document.getElementById(`node-${x}-${y}`)!;
@@ -145,25 +144,24 @@ const Main = () => {
    * Algorithm Check
    */
 
-  let checkAlgorithm = useCallback(
-    (
-      r: number,
-      c: number,
-      algo: string,
-      { x, y }: SpecialNodeType,
-      { x: tX, y: tY }: SpecialNodeType
-    ) => {
-      switch (algo) {
+  let runningAlgorithm: RunningAlgorithmType = useCallback(
+    (totalRow, totalColumn, whichAlgorithm, { x, y }, { x: tX, y: tY }) => {
+      switch (whichAlgorithm) {
         case "bfs":
-          return bfs(r, c, { x, y }, { x: tX, y: tY });
+          return bfs(totalRow, totalColumn, { x, y }, { x: tX, y: tY });
         case "dfs":
-          return dfsAlgorithm(r, c, { x, y }, { x: tX, y: tY });
+          return dfsAlgorithm(
+            totalRow,
+            totalColumn,
+            { x, y },
+            { x: tX, y: tY }
+          );
         case "dijkstra":
-          return dijkstra(r, c, { x, y }, { x: tX, y: tY });
+          return dijkstra(totalRow, totalColumn, { x, y }, { x: tX, y: tY });
         case "greedy best-first search":
-          return gbfs(r, c, { x, y }, { x: tX, y: tY });
+          return gbfs(totalRow, totalColumn, { x, y }, { x: tX, y: tY });
         case "a*":
-          return aStar(r, c, { x, y }, { x: tX, y: tY });
+          return aStar(totalRow, totalColumn, { x, y }, { x: tX, y: tY });
         default:
           return { visitedArr: [], pathArr: [] };
       }
@@ -182,7 +180,7 @@ const Main = () => {
       return;
     }
     console.log("instant animation");
-    let obj = checkAlgorithm(
+    let obj = runningAlgorithm(
       rowRef.current,
       columnRef.current,
       AppState.algorithm,
@@ -571,7 +569,7 @@ const Main = () => {
   const findAnimationNodes = (algo: string) => {
     console.log("algorithm", algo);
     console.log("find animation nodes");
-    let obj = checkAlgorithm(
+    let obj = runningAlgorithm(
       rowRef.current,
       columnRef.current,
       algo,
