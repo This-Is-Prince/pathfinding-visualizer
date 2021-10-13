@@ -199,7 +199,9 @@ const Main = () => {
         .classList.add("visited-node-1");
     });
     pathArr.current.forEach(({ x, y }) => {
-      document.getElementById(`node-${x}-${y}`)!.classList.add("path-node-1");
+      let classList = document.getElementById(`node-${x}-${y}`)!.classList;
+      classList.remove("visited-node-1");
+      classList.add("path-node-1");
     });
   };
 
@@ -244,14 +246,13 @@ const Main = () => {
       return;
     }
     mainRef.current.addEventListener("mouseover", mainMouseOverEvent);
-    let isBlack =
-      event.target.classList.contains("black-node") ||
-      event.target.classList.contains("black-node-1");
-    if (isBlack) {
-      event.target.classList.remove("black-node-1");
-      event.target.classList.remove("black-node");
+    let classList = event.target.classList;
+    if (classList.contains("black-node")) {
+      classList.remove("black-node");
+    } else if (classList.contains("black-node-1")) {
+      classList.remove("black-node-1");
     } else {
-      event.target.classList.add("black-node");
+      classList.add("black-node");
     }
   }, []);
 
@@ -266,15 +267,19 @@ const Main = () => {
       t = targetNodeRef.current;
     prevStartNodeRef.current = { ...s };
     prevTargetNodeRef.current = { ...t };
-    let isBlack =
-      elm.classList.contains("black-node") ||
-      elm.classList.contains("black-node-1");
-    if (isBlack || elm.innerHTML.length > 0) {
+
+    let classList = elm.classList;
+
+    if (
+      classList.contains("black-node") ||
+      classList.contains("black-node-1") ||
+      elm.innerHTML.length > 0
+    ) {
       event.preventDefault();
       return;
     }
     if (
-      elm.classList.contains("node") &&
+      classList.contains("node") &&
       id !== `node-${t.x}-${t.y}` &&
       id !== `node-${s.x}-${s.y}`
     ) {
@@ -282,14 +287,14 @@ const Main = () => {
       if (whichSpecialNode.current === "target") {
         elm.appendChild(document.getElementById("targetNode"));
         targetNodeRef.current = {
-          ...targetNodeRef.current,
+          ...t,
           x,
           y,
         };
       } else {
         elm.appendChild(document.getElementById("startNode"));
         startNodeRef.current = {
-          ...startNodeRef.current,
+          ...s,
           x,
           y,
         };
