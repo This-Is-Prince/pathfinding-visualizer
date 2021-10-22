@@ -55,7 +55,6 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
     case "CHANGE_MAZE": {
       return {
         ...state,
-        isMazeAnimationComplete: false,
         maze: action.payload,
       };
     }

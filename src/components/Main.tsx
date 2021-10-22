@@ -556,7 +556,7 @@ const Main = () => {
   // useEffect for window resize event
 
   useEffect(() => {
-    console.log("useEffect only one time");
+    console.log("useEffect run only one time");
     window.addEventListener("resize", updateSize);
     return () => {
       window.removeEventListener("resize", updateSize);
@@ -572,8 +572,8 @@ const Main = () => {
 
   // finding animation nodes Arr
   const findAnimationNodes = (algo: string) => {
-    console.log("algorithm", algo);
-    console.log("find animation nodes");
+    console.log("which algorithm", algo);
+    console.log("in findAnimationNodes function");
     let obj = runningAlgorithm(
       rowRef.current,
       columnRef.current,
@@ -589,10 +589,11 @@ const Main = () => {
   // useEffect for Play
 
   useEffect(() => {
+    console.log("useEffect isPlay");
     if (AppState.isPlay) {
       console.log("play");
       if (AppState.isAnimationComplete || AppState.isFindAnimationNodes) {
-        console.log("animation complete in play");
+        console.log("in play if isAnimationComplete || isFindAnimationNodes");
         resetPathVisitedNode();
         removeAllEventListeners();
         dispatch({ type: "ANIMATION_COMPLETE", payload: false });

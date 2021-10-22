@@ -182,6 +182,7 @@ const Settings = () => {
                 type: "CHANGE_FIND_ANIMATION_NODES",
                 payload: true,
               });
+              dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
               dispatch({ type: "CHANGE_MAZE", payload: "" });
             }}
           >
@@ -200,6 +201,7 @@ const Settings = () => {
                 payload: true,
               });
               dispatch({ type: "OPEN_SETTINGS", payload: false });
+              dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: false });
               dispatch({ type: "CHANGE_MAZE", payload: e.target.value });
             }}
           >
