@@ -16,10 +16,10 @@
   --clr-yellow: #ffd803;
 }
 #startNode {
-  background-image: url("./src/assets/start.png");
+  background-image: url("./assets/start.png");
 }
 #targetNode {
-  background-image: url("./src/assets/target.png");
+  background-image: url("./assets/target.png");
 }
 body {
   font-family: Arial, Helvetica, sans-serif;
