@@ -18,7 +18,6 @@ const AsideModal = () => {
             aria-label="close"
             onClick={() => {
               dispatch({ type: "CHANGE_ASIDE_MODAL", payload: false });
-              console.log("close");
             }}
           >
             <FaTimesCircle />

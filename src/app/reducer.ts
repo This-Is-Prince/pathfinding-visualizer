@@ -22,7 +22,6 @@ const reducer = (state: AppStateType, action: ActionType): AppStateType => {
       };
     }
     case "ANIMATION_COMPLETE": {
-      console.log(`animation complete ${action.payload}`);
       return {
         ...state,
         isAnimationComplete: action.payload,

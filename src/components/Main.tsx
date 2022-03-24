@@ -96,7 +96,6 @@ const Main = () => {
    */
 
   let animateMazeNode = () => {
-    console.log("animate maze node");
     if (mazeArrIndexRef.current >= mazeArr.current.length) {
       dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
       dispatch({ type: "CHANGE_PLAY", payload: false });
@@ -115,7 +114,6 @@ const Main = () => {
    * Reset Animation
    */
   const resetAnimation = () => {
-    console.log("reset animation");
     cancelAnimationFrame(animationRef.current);
     visitedArrIndexRef.current = 0;
     animationArrRef.current = animateVisitedNode;
@@ -179,7 +177,6 @@ const Main = () => {
     if (sX === psX && sY === psY && tX === ptX && tY === ptY) {
       return;
     }
-    console.log("instant animation");
     let obj = runningAlgorithm(
       rowRef.current,
       columnRef.current,
@@ -340,7 +337,6 @@ const Main = () => {
    * Update Size
    */
   const updateSize = () => {
-    console.log("update size");
     resetAnimation();
     if (AppState.maze) {
       dispatch({ type: "CHANGE_MAZE", payload: "" });
@@ -449,7 +445,6 @@ const Main = () => {
    * add all event
    */
   const addAllEventListeners = () => {
-    console.log("add all listeners");
     document.querySelectorAll(".node").forEach(nodeEventAdd);
     addSpecialNodeEvents();
   };
@@ -457,7 +452,6 @@ const Main = () => {
    * remove all events
    */
   const removeAllEventListeners = () => {
-    console.log("remove all listeners");
     document.querySelectorAll(".node").forEach(nodeEventRemove);
     removeSpecialNodeEvents();
   };
@@ -486,7 +480,6 @@ const Main = () => {
 
   // useEffect for Speed
   useEffect(() => {
-    console.log("useEffect speed");
     speed.current =
       AppState.speed === "fast" ? 0 : AppState.speed === "slow" ? 200 : 100;
   }, [AppState.speed]);
@@ -494,9 +487,7 @@ const Main = () => {
   // useEffect for Maze
 
   useEffect(() => {
-    console.log("useEffect maze");
     if (AppState.maze) {
-      console.log("in maze");
       resetAnimation();
       if (AppState.isMazeAnimationComplete) {
         dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: false });
@@ -512,7 +503,7 @@ const Main = () => {
       let r = rowRef.current,
         c = columnRef.current;
       let { sX, sY, tX, tY } = specialNodeXY();
-      console.log(maze);
+
       if (maze === "circle pattern") {
         vertices = circle(r, c, { x: sX, y: sY }, { x: tX, y: tY });
       } else if (
@@ -548,7 +539,7 @@ const Main = () => {
       mazeArr.current = vertices;
       animationArrRef.current = animateMazeNode;
       animationFunRef.current = animationArrRef.current;
-      console.log(animationFunRef.current);
+
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     }
   }, [AppState.maze]);
@@ -556,7 +547,6 @@ const Main = () => {
   // useEffect for window resize event
 
   useEffect(() => {
-    console.log("useEffect run only one time");
     window.addEventListener("resize", updateSize);
     return () => {
       window.removeEventListener("resize", updateSize);
@@ -566,14 +556,11 @@ const Main = () => {
   // useEffect for isBoardClear,nodeMaxWidth
 
   useEffect(() => {
-    console.log("useEffect isBoardClear nodeMaxWidth");
     updateSize();
   }, [AppState.isBoardClear, AppState.nodeMaxWidth]);
 
   // finding animation nodes Arr
   const findAnimationNodes = (algo: string) => {
-    console.log("which algorithm", algo);
-    console.log("in findAnimationNodes function");
     let obj = runningAlgorithm(
       rowRef.current,
       columnRef.current,
@@ -589,11 +576,8 @@ const Main = () => {
   // useEffect for Play
 
   useEffect(() => {
-    console.log("useEffect isPlay");
     if (AppState.isPlay) {
-      console.log("play");
       if (AppState.isAnimationComplete || AppState.isFindAnimationNodes) {
-        console.log("in play if isAnimationComplete || isFindAnimationNodes");
         resetPathVisitedNode();
         removeAllEventListeners();
         dispatch({ type: "ANIMATION_COMPLETE", payload: false });
@@ -606,7 +590,6 @@ const Main = () => {
       animationFunRef.current = animationArrRef.current;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     } else {
-      console.log("pause");
       animationFunRef.current = () => {};
       cancelAnimationFrame(animationRef.current);
     }

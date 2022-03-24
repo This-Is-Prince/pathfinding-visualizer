@@ -12,7 +12,6 @@ const Aside = () => {
         aria-label="settings"
         title="Settings"
         onClick={() => {
-          console.log("settings");
           dispatch({ type: "OPEN_SETTINGS", payload: true });
         }}
       >
