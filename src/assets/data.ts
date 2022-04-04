@@ -76,26 +76,11 @@ let algorithms = {
     },
     {
       id: 4,
-      title: "swarm algorithm",
-      value: "swarm",
-    },
-    {
-      id: 5,
-      title: "convergent swarm algorithm",
-      value: "convergent swarm",
-    },
-    {
-      id: 6,
-      title: "bidirectional swarm algorithm",
-      value: "bidirectional swarm",
-    },
-    {
-      id: 7,
       title: "breadth-first search",
       value: "bfs",
     },
     {
-      id: 8,
+      id: 5,
       title: "depth-first search",
       value: "dfs",
     },
