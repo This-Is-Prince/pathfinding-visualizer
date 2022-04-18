@@ -79,7 +79,7 @@ const aStar: AlgorithmFunType = (
     if (parent.parent === null) {
       break;
     }
-    parent = parent.parent;
+    parent = parent.parent as AStarNode;
   }
   pathArr.reverse();
   return { visitedArr, pathArr };

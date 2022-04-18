@@ -66,7 +66,7 @@ const dijkstra: AlgorithmFunType = (
     if (parent.parent === null) {
       break;
     }
-    parent = parent.parent;
+    parent = parent.parent as DijkstraNode;
   }
   pathArr.reverse();
   return { visitedArr, pathArr };

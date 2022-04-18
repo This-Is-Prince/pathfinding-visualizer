@@ -72,7 +72,7 @@ const gbfs: AlgorithmFunType = (
     if (parent.parent === null) {
       break;
     }
-    parent = parent.parent!;
+    parent = parent.parent! as GBFSNode;
   }
   pathArr.reverse();
   return { visitedArr, pathArr };
