@@ -1,20 +1,52 @@
-import React, { useContext, useRef } from "react";
+import { useRef } from "react";
 import { IoMdSpeedometer } from "react-icons/io";
 import { FaSitemap, FaRegTimesCircle } from "react-icons/fa";
 import { GiMaze, GiBrickWall, GiPathDistance, GiWeight } from "react-icons/gi";
-import AppContext from "../app/AppContext";
 import Modal from "./modal/Modal";
-import { mazesPatterns, algorithms, speed } from "../assets/data";
+import { mazesPatterns, algorithms, speed as speeds } from "../assets/data";
 import { VertexType } from "../types";
+import useStore from "../store";
 
 const Settings = () => {
   const weightArr = useRef([] as VertexType[]);
-  const { AppState, dispatch } = useContext(AppContext);
+  const {
+    algorithm,
+    changeAlgorithm,
+    changeFindAnimationNodes,
+    changeMaze,
+    changeModalState,
+    changeSpeed,
+    grid,
+    isAnimationComplete,
+    isMazeAnimationComplete,
+    isSettingsOpen,
+    maze,
+    mazeAnimationComplete,
+    modalState,
+    openSettings,
+    speed,
+  } = useStore((store) => ({
+    maze: store.maze,
+    grid: store.grid,
+    speed: store.speed,
+    algorithm: store.algorithm,
+    modalState: store.modalState,
+    isSettingsOpen: store.isSettingsOpen,
+    isAnimationComplete: store.isAnimationComplete,
+    isMazeAnimationComplete: store.isMazeAnimationComplete,
+
+    // Action
+    changeMaze: store.changeMaze,
+    changeSpeed: store.changeSpeed,
+    openSettings: store.openSettings,
+    changeAlgorithm: store.changeAlgorithm,
+    changeModalState: store.changeModalState,
+    mazeAnimationComplete: store.mazeAnimationComplete,
+    changeFindAnimationNodes: store.changeFindAnimationNodes,
+  }));
   return (
     <section
-      className={`settings-section  ${
-        AppState.isSettingsOpen ? "settings--open" : ""
-      }`}
+      className={`settings-section  ${isSettingsOpen ? "settings--open" : ""}`}
     >
       <header className="settings-section__header">
         <h2 className="settings__heading">Settings</h2>
@@ -23,7 +55,7 @@ const Settings = () => {
           aria-label="settings close "
           title="Settings Close"
           onClick={() => {
-            dispatch({ type: "OPEN_SETTINGS", payload: false });
+            openSettings(false);
           }}
         >
           <FaRegTimesCircle />
@@ -33,14 +65,12 @@ const Settings = () => {
         <aside className="settings-types">
           <button
             className={`btn setting-btn ${
-              AppState.modalState.heading === "mazes & patterns"
-                ? "selected"
-                : ""
+              modalState.heading === "mazes & patterns" ? "selected" : ""
             }`}
             aria-label="choose mazes"
             title="Choose Mazes"
             onClick={() => {
-              dispatch({ type: "CHANGE_MODAL_STATE", payload: mazesPatterns });
+              changeModalState(mazesPatterns);
             }}
           >
             <span className="flex-center">
@@ -50,12 +80,12 @@ const Settings = () => {
           </button>
           <button
             className={`btn setting-btn ${
-              AppState.modalState.heading === "algorithms" ? "selected" : ""
+              modalState.heading === "algorithms" ? "selected" : ""
             }`}
             aria-label="Choose Algorithm"
             title="Choose Algorithm"
             onClick={() => {
-              dispatch({ type: "CHANGE_MODAL_STATE", payload: algorithms });
+              changeModalState(algorithms);
             }}
           >
             <span className="flex-center">
@@ -65,12 +95,12 @@ const Settings = () => {
           </button>
           <button
             className={`btn setting-btn ${
-              AppState.modalState.heading === "speed" ? "selected" : ""
+              modalState.heading === "speed" ? "selected" : ""
             }`}
             aria-label="Change Speed"
             title="Change Speed"
             onClick={() => {
-              dispatch({ type: "CHANGE_MODAL_STATE", payload: speed });
+              changeModalState(speeds);
             }}
           >
             <span className="flex-center">
@@ -83,10 +113,7 @@ const Settings = () => {
             aria-label="Add Weight"
             title="Add Weight"
             onClick={(event) => {
-              if (
-                !AppState.isMazeAnimationComplete ||
-                !AppState.isAnimationComplete
-              ) {
+              if (!isMazeAnimationComplete || !isAnimationComplete) {
                 event.preventDefault();
                 return;
               }
@@ -96,7 +123,7 @@ const Settings = () => {
                 elm.removeAttribute("data-weight");
               });
               weightArr.current = [];
-              let { row, column } = AppState.grid,
+              let { row, column } = grid,
                 r = 0,
                 c = 0,
                 weight = 0,
@@ -116,10 +143,7 @@ const Settings = () => {
                   elm.textContent = `${weight}`;
                 }
               }
-              dispatch({
-                type: "CHANGE_FIND_ANIMATION_NODES",
-                payload: true,
-              });
+              changeFindAnimationNodes(true);
             }}
           >
             <span className="flex-center">
@@ -132,10 +156,7 @@ const Settings = () => {
             aria-label="Clear Path"
             title="Clear Path"
             onClick={(event) => {
-              if (
-                !AppState.isMazeAnimationComplete ||
-                !AppState.isAnimationComplete
-              ) {
+              if (!isMazeAnimationComplete || !isAnimationComplete) {
                 event.preventDefault();
                 return;
               }
@@ -165,10 +186,7 @@ const Settings = () => {
             aria-label="Clear Walls"
             title="Clear Walls"
             onClick={(event) => {
-              if (
-                !AppState.isMazeAnimationComplete ||
-                !AppState.isAnimationComplete
-              ) {
+              if (!isMazeAnimationComplete || !isAnimationComplete) {
                 event.preventDefault();
                 return;
               }
@@ -178,12 +196,9 @@ const Settings = () => {
               document.querySelectorAll(".black-node-1").forEach((node) => {
                 node.classList.remove("black-node-1");
               });
-              dispatch({
-                type: "CHANGE_FIND_ANIMATION_NODES",
-                payload: true,
-              });
-              dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
-              dispatch({ type: "CHANGE_MAZE", payload: "" });
+              changeFindAnimationNodes(true);
+              mazeAnimationComplete(true);
+              changeMaze("");
             }}
           >
             <span className="flex-center">
@@ -192,36 +207,33 @@ const Settings = () => {
             <span>Clear Walls</span>
           </button>
         </aside>
-        {AppState.modalState.name === "mazes" ? (
+        {modalState.name === "mazes" ? (
           <Modal
-            radioState={AppState.maze}
+            radioState={maze}
             handleChange={(e) => {
-              dispatch({
-                type: "CHANGE_FIND_ANIMATION_NODES",
-                payload: true,
-              });
-              dispatch({ type: "OPEN_SETTINGS", payload: false });
-              dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: false });
-              dispatch({ type: "CHANGE_MAZE", payload: e.target.value });
+              changeFindAnimationNodes(true);
+              openSettings(true);
+              mazeAnimationComplete(false);
+              changeMaze(e.target.value);
             }}
           >
             <GiMaze />
           </Modal>
-        ) : AppState.modalState.name === "algorithm" ? (
+        ) : modalState.name === "algorithm" ? (
           <Modal
-            radioState={AppState.algorithm}
+            radioState={algorithm}
             handleChange={(e) => {
-              dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
-              dispatch({ type: "CHANGE_ALGORITHM", payload: e.target.value });
+              changeFindAnimationNodes(true);
+              changeAlgorithm(e.target.value);
             }}
           >
             <FaSitemap />
           </Modal>
         ) : (
           <Modal
-            radioState={AppState.speed}
+            radioState={speed}
             handleChange={(e) => {
-              dispatch({ type: "CHANGE_SPEED", payload: e.target.value });
+              changeSpeed(e.target.value);
             }}
           >
             <IoMdSpeedometer />

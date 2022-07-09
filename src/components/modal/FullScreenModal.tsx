@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
-import AppContext from "../../app/AppContext";
+import useStore from "../../store";
 
 const FullScreenModal = () => {
-  const { dispatch } = useContext(AppContext);
+  const { changeFullscreenModal } = useStore((store) => ({
+    changeFullscreenModal: store.changeFullscreenModal,
+  }));
   const changeFullScreen = () => {
     const fullScreenCheck = () => {
       if (document.fullscreenElement) return;
@@ -18,7 +19,7 @@ const FullScreenModal = () => {
           await fullScreenCheck();
           await screen.orientation.lock("landscape");
         }
-        dispatch({ type: "CHANGE_FULLSCREEN_MODEL", payload: false });
+        changeFullscreenModal(false);
       } catch (error) {
         console.log(error);
       }

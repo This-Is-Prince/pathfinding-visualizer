@@ -1,13 +1,22 @@
-import React, { useContext } from "react";
 import { FaTimesCircle } from "react-icons/fa";
-import AppContext from "../../app/AppContext";
+import useStore from "../../store";
 
 const AsideModal = () => {
-  const { AppState, dispatch } = useContext(AppContext);
+  const {
+    isAsideModalOpen,
+    changeAsideModal,
+    nodeMaxWidth,
+    changeNodeMaxWidth,
+  } = useStore((store) => ({
+    isAsideModalOpen: store.isAsideModalOpen,
+    changeAsideModal: store.changeAsideModal,
+    nodeMaxWidth: store.nodeMaxWidth,
+    changeNodeMaxWidth: store.changeNodeMaxWidth,
+  }));
   return (
     <div
       className={`aside-modal__wrapper flex-center ${
-        AppState.isAsideModalOpen ? "open--aside-modal" : ""
+        isAsideModalOpen ? "open--aside-modal" : ""
       }`}
     >
       <section className="aside-modal">
@@ -17,24 +26,21 @@ const AsideModal = () => {
             className="btn flex-center aside-modal__close-btn"
             aria-label="close"
             onClick={() => {
-              dispatch({ type: "CHANGE_ASIDE_MODAL", payload: false });
+              changeAsideModal(false);
             }}
           >
             <FaTimesCircle />
           </button>
         </header>
         <article className="aside-modal__content">
-          <output className="output">{AppState.nodeMaxWidth}</output>
+          <output className="output">{nodeMaxWidth}</output>
           <input
             type="range"
             min={window.innerHeight < 500 ? "15" : "25"}
             max={window.innerHeight < 500 ? "30" : "50"}
-            value={AppState.nodeMaxWidth}
+            value={nodeMaxWidth}
             onChange={(e) => {
-              dispatch({
-                type: "CHANGE_NODE_MAX_WIDTH",
-                payload: parseInt(e.target.value),
-              });
+              changeNodeMaxWidth(parseInt(e.target.value));
             }}
             className="range"
           />
