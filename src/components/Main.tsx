@@ -1,6 +1,5 @@
-import { useCallback, useContext, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import bfs from "../algorithm/bfs";
-import AppContext from "../app/AppContext";
 import dfsAlgorithm from "../algorithm/dfs";
 import dfs from "../mazes/dfs";
 import mst from "../mazes/mst";
@@ -9,6 +8,7 @@ import gbfs from "../algorithm/gbfs";
 import aStar from "../algorithm/a_star";
 import circle from "../mazes/circle";
 import { RunningAlgorithmType, SpecialNodeType, VertexType } from "../types";
+import useStore from "../store";
 
 let findXY = (id: string) => {
   id = id.substring(5);
@@ -19,7 +19,43 @@ let findXY = (id: string) => {
 };
 
 const Main = () => {
-  const { AppState, dispatch } = useContext(AppContext);
+  const {
+    algorithm,
+    isFindAnimationNodes,
+    isAnimationComplete,
+    isBoardClear,
+    isMazeAnimationComplete,
+    isPlay,
+    maze,
+    nodeMaxWidth,
+    speed,
+
+    // Action
+    addGrid,
+    changePlay,
+    mazeAnimationComplete,
+    animationComplete,
+    changeMaze,
+    changeFindAnimationNodes,
+  } = useStore((store) => ({
+    algorithm: store.algorithm,
+    isFindAnimationNodes: store.isFindAnimationNodes,
+    maze: store.maze,
+    isPlay: store.isPlay,
+    isMazeAnimationComplete: store.isMazeAnimationComplete,
+    isAnimationComplete: store.isAnimationComplete,
+    nodeMaxWidth: store.nodeMaxWidth,
+    speed: store.speed,
+    isBoardClear: store.isBoardClear,
+
+    // Action
+    addGrid: store.addGrid,
+    changePlay: store.changePlay,
+    mazeAnimationComplete: store.mazeAnimationComplete,
+    animationComplete: store.animationComplete,
+    changeMaze: store.changeMaze,
+    changeFindAnimationNodes: store.changeFindAnimationNodes,
+  }));
   const mainRef = useRef<HTMLElement>({} as HTMLElement);
   const startNodeRef = useRef<SpecialNodeType>({} as SpecialNodeType);
   const targetNodeRef = useRef<SpecialNodeType>({} as SpecialNodeType);
@@ -29,7 +65,7 @@ const Main = () => {
   const rowRef = useRef(0);
   const columnRef = useRef(0);
   const animateRef = useRef<() => void>(() => {});
-  let speed = useRef(0);
+  let speedRef = useRef(0);
 
   // path arr
   let pathArr = useRef<VertexType[]>([]);
@@ -50,8 +86,8 @@ const Main = () => {
    */
   let animatePathNode = () => {
     if (pathArrIndexRef.current >= pathArr.current.length) {
-      dispatch({ type: "CHANGE_PLAY", payload: false });
-      dispatch({ type: "ANIMATION_COMPLETE", payload: true });
+      changePlay(false);
+      animationComplete(true);
       animateRef.current = animate;
       document.querySelectorAll(".node").forEach((node) => {
         node.addEventListener("dragover", animateRef.current);
@@ -65,7 +101,7 @@ const Main = () => {
       node.classList.add("path-node");
       setTimeout(() => {
         animationRef.current = requestAnimationFrame(animationFunRef.current);
-      }, speed.current);
+      }, speedRef.current);
       pathArrIndexRef.current++;
     }
   };
@@ -86,7 +122,7 @@ const Main = () => {
       elm.classList.add("visited-node");
       setTimeout(() => {
         animationRef.current = requestAnimationFrame(animationFunRef.current);
-      }, speed.current);
+      }, speedRef.current);
       visitedArrIndexRef.current++;
     }
   };
@@ -97,8 +133,8 @@ const Main = () => {
 
   let animateMazeNode = () => {
     if (mazeArrIndexRef.current >= mazeArr.current.length) {
-      dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
-      dispatch({ type: "CHANGE_PLAY", payload: false });
+      mazeAnimationComplete(true);
+      changePlay(false);
       resetAnimation();
       addAllEventListeners();
     } else {
@@ -180,13 +216,13 @@ const Main = () => {
     let obj = runningAlgorithm(
       rowRef.current,
       columnRef.current,
-      AppState.algorithm,
+      algorithm,
       startNodeRef.current,
       targetNodeRef.current
     );
     resetPathVisitedNode();
-    if (!AppState.isFindAnimationNodes) {
-      dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
+    if (!isFindAnimationNodes) {
+      changeFindAnimationNodes(true);
     }
     visitedArr.current = obj.visitedArr;
     pathArr.current = obj.pathArr;
@@ -338,20 +374,20 @@ const Main = () => {
    */
   const updateSize = () => {
     resetAnimation();
-    if (AppState.maze) {
-      dispatch({ type: "CHANGE_MAZE", payload: "" });
+    if (maze) {
+      changeMaze("");
     }
-    if (AppState.isPlay) {
-      dispatch({ type: "CHANGE_PLAY", payload: false });
+    if (isPlay) {
+      changePlay(false);
     }
-    if (!AppState.isMazeAnimationComplete) {
-      dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: true });
+    if (!isMazeAnimationComplete) {
+      mazeAnimationComplete(true);
     }
-    if (!AppState.isFindAnimationNodes) {
-      dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
+    if (!isFindAnimationNodes) {
+      changeFindAnimationNodes(true);
     }
-    if (!AppState.isAnimationComplete) {
-      dispatch({ type: "ANIMATION_COMPLETE", payload: true });
+    if (!isAnimationComplete) {
+      animationComplete(true);
     }
 
     let width = mainRef.current.getBoundingClientRect().width - 20;
@@ -373,12 +409,9 @@ const Main = () => {
 
     // calculating row and column
 
-    let noOfNodesInRow = Math.floor(height / AppState.nodeMaxWidth),
-      noOfNodesInColumn = Math.floor(width / AppState.nodeMaxWidth);
-    dispatch({
-      type: "ADD_GRID",
-      payload: { row: noOfNodesInRow, column: noOfNodesInColumn },
-    });
+    let noOfNodesInRow = Math.floor(height / nodeMaxWidth),
+      noOfNodesInColumn = Math.floor(width / nodeMaxWidth);
+    addGrid({ row: noOfNodesInRow, column: noOfNodesInColumn });
 
     rowRef.current = noOfNodesInRow;
     columnRef.current = noOfNodesInColumn;
@@ -480,26 +513,24 @@ const Main = () => {
 
   // useEffect for Speed
   useEffect(() => {
-    speed.current =
-      AppState.speed === "fast" ? 0 : AppState.speed === "slow" ? 200 : 100;
-  }, [AppState.speed]);
+    speedRef.current = speed === "fast" ? 0 : speed === "slow" ? 200 : 100;
+  }, [speed]);
 
   // useEffect for Maze
 
   useEffect(() => {
-    if (AppState.maze) {
+    if (maze) {
       resetAnimation();
-      if (AppState.isMazeAnimationComplete) {
-        dispatch({ type: "MAZE_ANIMATION_COMPLETE", payload: false });
+      if (isMazeAnimationComplete) {
+        mazeAnimationComplete(false);
       }
-      if (!AppState.isFindAnimationNodes) {
-        dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: true });
+      if (!isFindAnimationNodes) {
+        changeFindAnimationNodes(true);
       }
-      if (!AppState.isAnimationComplete) {
-        dispatch({ type: "ANIMATION_COMPLETE", payload: true });
+      if (!isAnimationComplete) {
+        animationComplete(true);
       }
       let vertices: VertexType[] = [];
-      let maze = AppState.maze;
       let r = rowRef.current,
         c = columnRef.current;
       let { sX, sY, tX, tY } = specialNodeXY();
@@ -542,7 +573,7 @@ const Main = () => {
 
       animationRef.current = requestAnimationFrame(animationFunRef.current);
     }
-  }, [AppState.maze]);
+  }, [maze]);
 
   // useEffect for window resize event
 
@@ -557,7 +588,7 @@ const Main = () => {
 
   useEffect(() => {
     updateSize();
-  }, [AppState.isBoardClear, AppState.nodeMaxWidth]);
+  }, [isBoardClear, nodeMaxWidth]);
 
   // finding animation nodes Arr
   const findAnimationNodes = (algo: string) => {
@@ -576,16 +607,16 @@ const Main = () => {
   // useEffect for Play
 
   useEffect(() => {
-    if (AppState.isPlay) {
-      if (AppState.isAnimationComplete || AppState.isFindAnimationNodes) {
+    if (isPlay) {
+      if (isAnimationComplete || isFindAnimationNodes) {
         resetPathVisitedNode();
         removeAllEventListeners();
-        dispatch({ type: "ANIMATION_COMPLETE", payload: false });
+        animationComplete(false);
       }
-      if (AppState.isFindAnimationNodes) {
+      if (isFindAnimationNodes) {
         resetAnimation();
-        findAnimationNodes(AppState.algorithm);
-        dispatch({ type: "CHANGE_FIND_ANIMATION_NODES", payload: false });
+        findAnimationNodes(algorithm);
+        changeFindAnimationNodes(false);
       }
       animationFunRef.current = animationArrRef.current;
       animationRef.current = requestAnimationFrame(animationFunRef.current);
@@ -593,7 +624,7 @@ const Main = () => {
       animationFunRef.current = () => {};
       cancelAnimationFrame(animationRef.current);
     }
-  }, [AppState.isPlay]);
+  }, [isPlay]);
   /**
    * all useEffect end
    */

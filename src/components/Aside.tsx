@@ -1,10 +1,17 @@
-import React, { useContext } from "react";
 import { GiResize } from "react-icons/gi";
 import { FiSettings } from "react-icons/fi";
 import { FaChessBoard, FaPauseCircle, FaPlayCircle } from "react-icons/fa";
-import AppContext from "../app/AppContext";
+import useStore from "../store";
 const Aside = () => {
-  const { AppState, dispatch } = useContext(AppContext);
+  const {changeAsideModal,changePlay,clearBoard,isBoardClear,isMazeAnimationComplete,isPlay,openSettings}=useStore((store)=>({
+    isPlay:store.isPlay,
+    isBoardClear:store.isBoardClear,
+    isMazeAnimationComplete:store.isMazeAnimationComplete,
+    openSettings: store.openSettings,
+    changeAsideModal: store.changeAsideModal,
+    clearBoard: store.clearBoard,
+    changePlay: store.changePlay,
+  }))
   return (
     <aside className="aside">
       <button
@@ -12,7 +19,7 @@ const Aside = () => {
         aria-label="settings"
         title="Settings"
         onClick={() => {
-          dispatch({ type: "OPEN_SETTINGS", payload: true });
+          openSettings(true);
         }}
       >
         <FiSettings />
@@ -22,7 +29,7 @@ const Aside = () => {
         aria-label="resize"
         title="Resize"
         onClick={() => {
-          dispatch({ type: "CHANGE_ASIDE_MODAL", payload: true });
+          changeAsideModal(true);
         }}
       >
         <GiResize />
@@ -32,10 +39,7 @@ const Aside = () => {
         aria-label="clear board"
         title="Clear Board"
         onClick={() => {
-          dispatch({
-            type: "CLEAR_BOARD",
-            payload: !AppState.isBoardClear,
-          });
+          clearBoard(!isBoardClear);
         }}
       >
         <FaChessBoard />
@@ -45,13 +49,13 @@ const Aside = () => {
         aria-label="play/pause"
         title="Play / Pause"
         onClick={() => {
-          if (AppState.isMazeAnimationComplete) {
-            dispatch({ type: "CHANGE_PLAY", payload: !AppState.isPlay });
+          if (isMazeAnimationComplete) {
+            changePlay(!isPlay)
           }
         }}
       >
-        {AppState.isMazeAnimationComplete ? (
-          AppState.isPlay ? (
+        {isMazeAnimationComplete ? (
+          isPlay ? (
             <FaPauseCircle />
           ) : (
             <FaPlayCircle />

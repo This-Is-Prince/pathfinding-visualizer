@@ -1,22 +1,22 @@
-import { useEffect, useReducer } from "react";
+import { useEffect } from "react";
 import "./App.css";
-import AppContext from "./app/AppContext";
-import reducer from "./app/reducer";
-import AppInitialState from "./app/state";
 import Main from "./components/Main";
 import Aside from "./components/Aside";
 import FullScreenModal from "./components/modal/FullScreenModal";
 import Settings from "./components/Settings";
 import AsideModal from "./components/modal/AsideModal";
+import useStore from "./store";
 
 const App = () => {
-  const [AppState, dispatch] = useReducer(reducer, AppInitialState);
+  const { changeFullscreenModal, isFullScreenModelOpen } = useStore(
+    (store) => ({
+      changeFullscreenModal: store.changeFullscreenModal,
+      isFullScreenModelOpen: store.isFullScreenModelOpen,
+    })
+  );
   const checkScreen = () => {
     if (document.fullscreenElement) return;
-    dispatch({
-      type: "CHANGE_FULLSCREEN_MODEL",
-      payload: true,
-    });
+    changeFullscreenModal(true);
   };
   useEffect(() => {
     document.addEventListener("fullscreenchange", checkScreen);
@@ -25,8 +25,8 @@ const App = () => {
     };
   }, []);
   return (
-    <AppContext.Provider value={{ AppState, dispatch }}>
-      {AppState.isFullScreenModelOpen ? (
+    <>
+      {isFullScreenModelOpen ? (
         <FullScreenModal />
       ) : (
         <>
@@ -36,7 +36,7 @@ const App = () => {
           <AsideModal />
         </>
       )}
-    </AppContext.Provider>
+    </>
   );
 };
 

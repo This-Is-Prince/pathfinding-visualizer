@@ -1,31 +1,33 @@
-import React, { useContext } from "react";
-import AppContext from "../../app/AppContext";
+import React from "react";
 import { FaWalking } from "react-icons/fa";
 import { GiRaceCar, GiTurtle } from "react-icons/gi";
 import { ModalType } from "../../types";
+import useStore from "../../store";
 
 const Modal: React.FC<ModalType> = ({ children, handleChange, radioState }) => {
-  const { AppState } = useContext(AppContext);
+  const { modalState } = useStore((store) => ({
+    modalState: store.modalState,
+  }));
   return (
     <section className="modal">
       <header className="modal__header ">
         <p className="modal__heading">
           <span className="flex-center modal__header__icon">{children}</span>
-          <span>{AppState.modalState.heading}</span>
+          <span>{modalState.heading}</span>
         </p>
       </header>
       <article
         className={`modal__content ${
-          AppState.modalState.name === "speed" ? "modal__speed" : ""
+          modalState.name === "speed" ? "modal__speed" : ""
         }`}
       >
-        {AppState.modalState.list.map(({ title, value, id }) => {
+        {modalState.list.map(({ title, value, id }) => {
           return (
             <div className="radio-container" key={id}>
               <input
                 type="radio"
                 aria-label={title}
-                name={AppState.modalState.name}
+                name={modalState.name}
                 checked={radioState === value}
                 value={value}
                 onChange={handleChange}
@@ -33,7 +35,7 @@ const Modal: React.FC<ModalType> = ({ children, handleChange, radioState }) => {
                   radioState === value ? "selected" : ""
                 }`}
               />
-              {AppState.modalState.name === "speed" && (
+              {modalState.name === "speed" && (
                 <p
                   className={`speed__icon flex-center ${
                     radioState === value ? "selected" : ""

@@ -1,4 +1,6 @@
-let mazesPatterns = {
+import { ModalStateType } from "../types";
+
+let mazesPatterns: ModalStateType = {
   heading: "mazes & patterns",
   name: "mazes",
   list: [
